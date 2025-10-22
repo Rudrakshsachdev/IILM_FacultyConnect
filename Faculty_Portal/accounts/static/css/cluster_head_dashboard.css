@@ -1,0 +1,24 @@
+:root {
+            --iilm-blue: #003366;
+            --iilm-gold: #D4AF37;
+            --iilm-light-blue: #0055a5;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .status-pending { background-color: #fef3c7; color: #d97706; }
+        .status-approved { background-color: #d1fae5; color: #065f46; }
+        .status-rejected { background-color: #fee2e2; color: #dc2626; }
+        .status-under-review { background-color: #dbeafe; color: #1e40af; }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+    
+    
+    

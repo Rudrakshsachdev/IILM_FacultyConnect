@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify OTP & Reset Password - IILM University</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/verify_reset_otp.css' %}">
+</head>
+<body>
+  <div class="container">
+    <div class="info-section">
+      <div class="info-content">
+        <h1>Verify OTP & Reset Password</h1>
+        <p>Enter the 6-digit OTP sent to your email and create a new secure password for your faculty account.</p>
+        
+        <ul class="features">
+          <li><i class="fas fa-shield-alt"></i> Secure OTP verification</li>
+          <li><i class="fas fa-key"></i> Create a strong new password</li>
+          <li><i class="fas fa-user-lock"></i> Enhanced account protection</li>
+          <li><i class="fas fa-check-circle"></i> Immediate access after reset</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="otp-section">
+      <div class="logo-container">
+        <div class="logo-placeholder">
+          <img src="{% static 'images/iilm.png' %}" alt="IILM University Logo" style="width: 100px; height: auto; position: relative; z-index: 1;">
+        </div>
+      </div>
+      
+      <div class="otp-container">
+        <h2>Verify OTP & Reset Password</h2>
+        <p>Enter OTP sent to your email and choose a new password</p>
+        
+        <div class="message-container">
+          {% if messages %}
+            {% for message in messages %}
+              <p class="msg {% if message.tags %}{{ message.tags }}{% else %}error{% endif %}">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                {{ message }}
+              </p>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="otp-info">
+          <h4><i class="fas fa-info-circle"></i> OTP Verification</h4>
+          <p>Check your email for the 6-digit OTP code. Enter it below along with your new password to complete the reset process.</p>
+        </div>
+        
+        <form method="POST" id="otpForm">
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <i class="fas fa-shield-alt"></i>
+            <input type="text" name="otp" maxlength="6" placeholder="Enter 6-digit OTP" required>
+          </div>
+
+          <div class="form-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" name="new_password" id="newPassword" placeholder="New Password" required>
+            <button type="button" class="password-toggle" id="togglePassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          
+          <div class="password-strength" id="passwordStrength">
+            <div class="strength-meter">
+              <div class="strength-fill" id="strengthFill"></div>
+            </div>
+            <div class="strength-text" id="strengthText">Password strength: None</div>
+          </div>
+          
+          <div class="form-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm New Password" required>
+            <button type="button" class="password-toggle" id="toggleConfirmPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          
+          <div class="requirements">
+            <h4>Password Requirements:</h4>
+            <ul>
+              <li id="req-length"><i class="fas fa-circle"></i> At least 8 characters</li>
+              <li id="req-uppercase"><i class="fas fa-circle"></i> One uppercase letter</li>
+              <li id="req-lowercase"><i class="fas fa-circle"></i> One lowercase letter</li>
+              <li id="req-number"><i class="fas fa-circle"></i> One number</li>
+              <li id="req-special"><i class="fas fa-circle"></i> One special character</li>
+            </ul>
+          </div>
+          
+          <button type="submit" class="btn" id="submitBtn">
+            <span>Reset Password</span>
+          </button>
+        </form>
+        
+        <div class="otp-timer" id="otpTimer">
+          OTP expires in: <span id="timer">15:00</span>
+        </div>
+        
+        <div class="resend-otp">
+          <a href="#" id="resendOtp" class="disabled">Resend OTP</a>
+        </div>
+        
+        <p class="back-login">
+          <a href="{% url 'login' %}">Back to Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/verify_reset_otp.js' %}">
+    
+  </script>
+</body>
+</html>

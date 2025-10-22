@@ -1,0 +1,475 @@
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cluster Head Dashboard</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f8f9fa; margin: 0; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #007bff; color: white; }
+        a.review-btn { color: white; background: #007bff; padding: 8px 14px; border-radius: 6px; text-decoration: none; }
+        a.review-btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>📊 Cluster Head Review Dashboard</h1>
+
+    <table>
+        <tr>
+            <th>Faculty Name</th>
+            <th>Paper Title</th>
+            <th>Journal Name</th>
+            <th>Status</th>
+            <th>Submitted At</th>
+            <th>Action</th>
+        </tr>
+        {% for sub in submissions %}
+        <tr>
+            <td>{{ sub.user.full_name }}</td>
+            <td>{{ sub.title_of_paper }}</td>
+            <td>{{ sub.journal_name }}</td>
+            <td>{{ sub.get_status_display }}</td>
+            <td>{{ sub.submitted_at|date:"d M Y, H:i" }}</td>
+            <td><a href="{% url 'review_submission' sub.id %}" class="review-btn">Review</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center;">No submissions to review.</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html> {% endcomment %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cluster Head Dashboard | IILM University</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="{% static 'css/cluster_head_dashboard.css' %}">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'iilm-blue': '#003366',
+                        'iilm-gold': '#D4AF37',
+                        'iilm-light-blue': '#0055a5',
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-in': 'slideIn 0.3s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+        
+</head>
+<body class="font-poppins min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-iilm-blue shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        {% comment %} <i class="fas fa-graduation-cap text-iilm-gold text-2xl mr-3"></i> {% endcomment %}
+                         <img src="{% static 'images/blue_iilm.jpeg' %}" alt="IILM Logo" class="h-8 w-8 mr-3">
+                        <span class="text-white text-xl font-bold">IILM University</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-white text-sm bg-iilm-light-blue px-3 py-1 rounded-full">
+                        Cluster Head
+                    </span>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center text-sm text-white focus:outline-none">
+                            <div class="h-8 w-8 rounded-full bg-iilm-gold flex items-center justify-center text-white font-bold">
+                                
+                                {{ user.full_name|first|upper }}
+                            </div>
+                            <span class="ml-2">{{ user.full_name }}</span>
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        
+                        <div x-show="open" @click.away="open = false" 
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 animate__animated animate__fadeIn">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i>Profile
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-2"></i>Settings
+                            </a>
+                            <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="mb-8 animate__animated animate__fadeIn">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">📊 Research Review Dashboard</h1>
+            <p class="text-gray-600">Manage and review faculty research submissions</p>
+            
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                            <i class="fas fa-file-alt text-lg"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Total Submissions</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ submissions|length }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-lg bg-yellow-100 text-yellow-600 mr-4">
+                            <i class="fas fa-clock text-lg"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Pending Review</p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {% with pending=submissions|length %}{{ pending }}{% endwith %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-lg bg-green-100 text-green-600 mr-4">
+                            <i class="fas fa-check-circle text-lg"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Approved</p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {% with approved=0 %}{{ approved }}{% endwith %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-lg bg-red-100 text-red-600 mr-4">
+                            <i class="fas fa-times-circle text-lg"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Rejected</p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {% with rejected=0 %}{{ rejected }}{% endwith %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+            <div class="flex space-x-4">
+                <div class="relative">
+                    <select class="appearance-none bg-white border border-gray-300 rounded-lg pl-4 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-iilm-blue focus:border-transparent">
+                        <option>All Status</option>
+                        <option>Pending</option>
+                        <option>Approved</option>
+                        <option>Rejected</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <input type="text" placeholder="Search submissions..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-iilm-blue focus:border-transparent w-64">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                <i class="fas fa-sync-alt cursor-pointer hover:text-iilm-blue transition-colors"></i>
+                <span>Last updated: Just now</span>
+            </div>
+        </div>
+
+        <!-- Submissions Table -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden animate__animated animate__fadeInUp">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Faculty & Paper Details
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Journal
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Submitted
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for sub in submissions %}
+                        <tr class="hover:bg-gray-50 transition-colors duration-150" 
+                            x-data="{ hover: false }" 
+                            @mouseenter="hover = true" 
+                            @mouseleave="hover = false">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 bg-iilm-blue rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                        {{ sub.user.full_name|first|upper }}
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ sub.user.full_name }}
+                                        </div>
+                                        <div class="text-sm text-gray-500 truncate max-w-xs" title="{{ sub.title_of_paper }}">
+                                            {{ sub.title_of_paper }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ sub.journal_name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% with status=sub.get_status_display %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if status == 'Pending' %}status-pending
+                                    {% elif status == 'Approved' %}status-approved
+                                    {% elif status == 'Rejected' %}status-rejected
+                                    {% else %}status-under-review{% endif %}">
+                                    {{ status }}
+                                </span>
+                                {% endwith %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ sub.submitted_at|date:"d M Y, H:i" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="{% url 'review_submission' sub.id %}" 
+                                   class="review-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-iilm-blue transition-all duration-200 transform hover:scale-105">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center justify-center text-gray-500">
+                                    <i class="fas fa-inbox text-4xl mb-4 text-gray-300"></i>
+                                    <p class="text-lg font-medium">No submissions to review</p>
+                                    <p class="text-sm mt-1">When new research submissions arrive, they will appear here.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination (if needed in future) -->
+            {% if submissions.has_other_pages %}
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Previous
+                    </a>
+                    <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Next
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Analytics Section -->
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Submission Trends</h3>
+                <div class="h-64">
+                    <canvas id="submissionsChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Status Distribution</h3>
+                <div class="h-64">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-iilm-blue text-white mt-12">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-graduation-cap text-iilm-gold text-xl mr-2"></i>
+                    <span class="text-lg font-semibold">IILM University</span>
+                </div>
+                <div class="text-sm text-gray-300">
+                    © 2025 AIgnite Clubs Initiative. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Submissions Trend Chart
+            const submissionsCtx = document.getElementById('submissionsChart').getContext('2d');
+            const submissionsChart = new Chart(submissionsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Submissions',
+                        data: [12, 19, 8, 15, 12, 17],
+                        borderColor: '#003366',
+                        backgroundColor: 'rgba(0, 51, 102, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Status Distribution Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            const statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'Approved', 'Rejected', 'Under Review'],
+                    datasets: [{
+                        data: [{% with pending=submissions|length %}{{ pending }}{% endwith %}, 0, 0, 0],
+                        backgroundColor: [
+                            '#f59e0b',
+                            '#10b981',
+                            '#ef4444',
+                            '#3b82f6'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Add search functionality
+            const searchInput = document.querySelector('input[type="text"]');
+            const tableRows = document.querySelectorAll('tbody tr');
+            
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                tableRows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+            // Add filter functionality
+            const statusFilter = document.querySelector('select');
+            statusFilter.addEventListener('change', function(e) {
+                const selectedStatus = e.target.value.toLowerCase();
+                
+                tableRows.forEach(row => {
+                    if (selectedStatus === 'all status') {
+                        row.style.display = '';
+                        return;
+                    }
+                    
+                    const statusCell = row.querySelector('td:nth-child(3) span');
+                    if (statusCell) {
+                        const status = statusCell.textContent.toLowerCase();
+                        if (status.includes(selectedStatus)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Add refresh animation
+        document.querySelector('.fa-sync-alt').addEventListener('click', function() {
+            this.classList.add('animate-spin');
+            setTimeout(() => {
+                this.classList.remove('animate-spin');
+                // In a real app, you would reload data here
+                location.reload();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

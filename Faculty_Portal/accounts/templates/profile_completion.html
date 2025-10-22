@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complete Your Profile | IILM University Faculty Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/profile_completion.css' %}">
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>IILM</h1>
+                        <p>UNIVERSITY</p>
+                    </div>
+                </div>
+                
+                <div class="sidebar-content">
+                    <h2>Complete Your Academic Profile</h2>
+                    <p>Join our distinguished faculty community by completing your professional profile. Showcase your expertise and connect with the academic world.</p>
+                    
+                    <ul class="features">
+                        <li>
+                            <i class="fas fa-user-tie"></i>
+                            <span>Professional Identity</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Academic Credentials</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-flask"></i>
+                            <span>Research Excellence</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-network-wired"></i>
+                            <span>Global Connections</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Complete Your Profile</h1>
+                <p>Three simple steps to showcase your academic excellence</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span class="progress-label">Profile Completion</span>
+                    <span class="progress-percentage" id="progressPercentage">33%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div class="steps-indicator">
+                    <div class="step-marker active">1</div>
+                    <div class="step-marker">2</div>
+                    <div class="step-marker">3</div>
+                </div>
+            </div>
+
+            <form id="multiStepForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Step 1: Personal Details -->
+                <div class="step step1 active">
+                    <div class="step-header">
+                        <h3>Personal Identity</h3>
+                        <p>Let's start with your professional profile image</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ step1_form.profile_image.id_for_label }}">Profile Image</label>
+                        <div class="file-upload" id="fileUploadArea">
+                            <div class="file-upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="file-upload-text">
+                                <h4>Upload Profile Image</h4>
+                                <p>Drag & drop or click to upload</p>
+                                <p class="file-upload-btn">Choose File</p>
+                            </div>
+                            {{ step1_form.profile_image }}
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="imagePreview" class="image-preview" alt="Profile Preview">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <div></div>
+                        <button type="button" class="btn btn-next" onclick="nextStep(1)">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Professional Details -->
+                <div class="step step2">
+                    <div class="step-header">
+                        <h3>Professional Details</h3>
+                        <p>Tell us about your academic journey and expertise</p>
+                    </div>
+
+                    {% for field in step2_form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-prev" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-next" onclick="nextStep(2)">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Academic / Research IDs -->
+                <div class="step step3">
+                    <div class="step-header">
+                        <h3>Research Profiles</h3>
+                        <p>Connect your academic identities and research profiles</p>
+                    </div>
+
+                    {% for field in step3_form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-prev" onclick="prevStep(3)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-submit" onclick="submitForm(3)">
+                            Complete Profile <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/profile_completion.js' %}"></script>
+        
+   
+</body>
+</html> 

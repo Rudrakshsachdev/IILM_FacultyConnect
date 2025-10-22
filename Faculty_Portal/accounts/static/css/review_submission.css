@@ -1,0 +1,26 @@
+:root {
+            --iilm-blue: #003366;
+            --iilm-gold: #D4AF37;
+            --iilm-light-blue: #0055a5;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        #pdf-viewer {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .decision-approved { border-left-color: #10b981; }
+        .decision-rejected { border-left-color: #ef4444; }
+        .decision-revision { border-left-color: #f59e0b; }
