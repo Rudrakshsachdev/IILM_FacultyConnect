@@ -1,5 +1,6 @@
 :root {
-            --iilm-blue: #003366;
+            --iilm-blue: #234278;
+            --iilm-bluee: #003366;
             --iilm-gold: #D4AF37;
             --iilm-light-blue: #0055a5;
             --iilm-accent: #8B0000;
@@ -20,7 +21,7 @@
 
         /* Navbar Styling */
         .navbar {
-            background: linear-gradient(135deg, var(--iilm-blue) 0%, #002244 100%);
+            background: linear-gradient(135deg, var(--iilm-blue) 0%, #002244 100%); 
             box-shadow: var(--shadow);
             padding: 12px 0;
         }
@@ -453,3 +454,97 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
+
+
+
+/* Fix for existing footer */
+.bg-iilm-blue {
+    background: var(--iilm-blue) !important;
+}
+
+.text-iilm-gold {
+    color: #D4AF37 !important;
+}
+
+.mt-12 {
+    margin-top: 3rem !important;
+}
+
+.max-w-7xl {
+    max-width: 80rem !important;
+}
+
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.py-6 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}
+
+.px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Responsive padding */
+.sm\:px-6 {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+
+.lg\:px-8 {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* Flex utilities */
+.flex {
+    display: flex !important;
+}
+
+.flex-col {
+    flex-direction: column !important;
+}
+
+.md\:flex-row {
+    flex-direction: row !important;
+}
+
+.justify-between {
+    justify-content: space-between !important;
+}
+
+.items-center {
+    align-items: center !important;
+}
+
+.mb-4 {
+    margin-bottom: 1rem !important;
+}
+
+.md\:mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.text-lg {
+    font-size: 1.125rem !important;
+}
+
+.text-xl {
+    font-size: 1.25rem !important;
+}
+
+.font-semibold {
+    font-weight: 600 !important;
+}
+
+.text-sm {
+    font-size: 0.875rem !important;
+}
+
+.text-gray-300 {
+    color: #d1d5db !important;
+}

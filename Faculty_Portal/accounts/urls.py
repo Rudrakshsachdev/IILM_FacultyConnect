@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import path
 from accounts import views  
 
-
+# URL patterns for the faculty portal application
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),  # ✅ handles empty path
     path('dashboard/', views.dashboard, name='dashboard'),  # ✅ handles empty path
@@ -22,4 +22,7 @@ urlpatterns = [
     path('journal-publication/', views.journal_publication, name='journal_publication'),
     path('cluster-head/dashboard/', views.cluster_head_dashboard, name='cluster_head_dashboard'),
     path('cluster-head/review/<int:submission_id>/', views.review_submission, name='review_submission'),
+    path('my-submissions/', views.my_submissions, name='my_submissions'),
+    path('dean-dashboard/', views.dean_dashboard, name='dean_dashboard'),
+    path('dean-review/<int:pk>/', views.dean_review, name='dean_review'),
 ]

@@ -1,89 +1,127 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Faculty Portal - IILM University</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'css/login.css' %}">
-</head>
-<body>
-  <div class="container">
-    <div class="welcome-section">
-      <div class="welcome-content">
-        <h1>Welcome Back</h1>
-        <p>Access your faculty dashboard to manage courses, track student progress, and collaborate with colleagues.</p>
-        
-        <ul class="features">
-          <li><i class="fas fa-check-circle"></i> Secure access to your courses and materials</li>
-          <li><i class="fas fa-check-circle"></i> Real-time student performance analytics</li>
-          <li><i class="fas fa-check-circle"></i> Communication tools for student engagement</li>
-          <li><i class="fas fa-check-circle"></i> Research and collaboration resources</li>
-        </ul>
-      </div>
-    </div>
-    
-    <div class="login-section">
-      <div class="logo-container">
-        <div class="logo-placeholder">
-          {% comment %} <div class="logo-text">
-            <h2>IILM</h2>
-            <p>UNIVERSITY</p>
-          </div> {% endcomment %}
-          <img src="{% static 'images/iilm.png' %}" alt="IILM University Logo" style="width: 100px; height: auto; position: relative; z-index: 1;">
-        </div>
-      </div>
-      
-      <div class="login-container">
-        <h2>Faculty Login</h2>
-        
-        <div class="message-container">
-          {% if messages %}
-            {% for message in messages %}
-              <p class="msg {% if message.tags %}{{ message.tags }}{% else %}error{% endif %}">
-                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
-                {{ message }}
-              </p>
-            {% endfor %}
-          {% endif %}
-        </div>
-        
-        <form method="POST" id="loginForm">
-          {% csrf_token %}
-          
-          <div class="form-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" name="email" placeholder="Email Address" required>
-          </div>
-          
-          <div class="form-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" name="password" id="password" placeholder="Password" required>
-            <button type="button" class="password-toggle" id="togglePassword">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
-          
-          <div class="forgot-password">
-            <a href="{% url 'reset_password' %}">Forgot Password?</a>
-          </div>
-          
-          <button type="submit" class="btn" id="submitBtn">
-            <span>Login</span>
-          </button>
-        </form>
-        
-        <p class="signup-link">
-          Don't have an account? <a href="{% url 'signup' %}">Sign Up here</a>
-        </p>
-      </div>
-    </div>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faculty Portal - IILM University</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="welcome-section">
+        <div class="welcome-content">
+          <h1>Welcome Back</h1>
+          <p>
+            Access your faculty dashboard to manage courses, track student
+            progress, and collaborate with colleagues.
+          </p>
 
-  <script src="{% static 'js/login.js' %}"></script>
-    
-  
-</body>
+          <ul class="features">
+            <li>
+              <i class="fas fa-check-circle"></i> Secure access to your courses
+              and materials
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i> Real-time student performance
+              analytics
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i> Communication tools for
+              student engagement
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i> Research and collaboration
+              resources
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="login-section">
+        <div class="logo-container">
+          <div class="logo-placeholder">
+            {% comment %}
+            <div class="logo-text">
+              <h2>IILM</h2>
+              <p>UNIVERSITY</p>
+            </div>
+            {% endcomment %}
+            <img
+              src="{% static 'images/iilm.png' %}"
+              alt="IILM University Logo"
+              style="width: 100px; height: auto; position: relative; z-index: 1"
+            />
+          </div>
+        </div>
+
+        <div class="login-container">
+          <h2>Faculty Login</h2>
+
+          <div class="message-container">
+            {% if messages %} {% for message in messages %}
+            <p
+              class="msg {% if message.tags %}{{ message.tags }}{% else %}error{% endif %}"
+            >
+              <i
+                class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"
+              ></i>
+              {{ message }}
+            </p>
+            {% endfor %} {% endif %}
+          </div>
+
+          <form method="POST" id="loginForm">
+            {% csrf_token %}
+
+            <div class="form-group">
+              <i class="fas fa-envelope"></i>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <i class="fas fa-lock"></i>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Password"
+                required
+              />
+              <button type="button" class="password-toggle" id="togglePassword">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+
+            <div class="forgot-password">
+              <a href="{% url 'reset_password' %}">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">
+              <span>Login</span>
+            </button>
+          </form>
+
+          <p class="signup-link">
+            Don't have an account? <a href="{% url 'signup' %}">Sign Up here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/login.js' %}"></script>
+  </body>
 </html>

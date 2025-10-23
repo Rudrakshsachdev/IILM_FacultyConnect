@@ -25,7 +25,7 @@ class Step3Form(forms.ModelForm):
 class JournalPublicationForm(forms.ModelForm):
     class Meta:
         model = JournalPublication
-        exclude = ['user', 'status', 'remarks', 'submitted_at', 'reviewed_at']
+        exclude = ['user', 'status', 'remarks', 'submitted_at', 'reviewed_at', 'cluster_head_status', 'cluster_head_remarks', 'dean_status', 'dean_remarks']
         widgets = {
             'month_of_publication': forms.TextInput(attrs={'placeholder': 'e.g. March'}),
             'year_of_publication': forms.NumberInput(attrs={'min': 1900, 'max': 2100}),

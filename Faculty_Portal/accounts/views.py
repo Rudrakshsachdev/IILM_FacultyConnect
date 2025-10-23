@@ -9,10 +9,19 @@ from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.hashers import check_password
 from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+
+
 
 otp_storage = {}  # Temporary dictionary to hold OTPs (use Redis in production)
 
 def signup(request):
+
+    """
+    In the signup function, when a user submits the signup form, it collects their full name, email, and password, then checks if the email is already registered and whether the passwords match. If valid, it generates a 6-digit OTP using Python’s random.randint() and stores it temporarily in a dictionary called otp_storage (which acts like a cache). The OTP is then emailed to the user using Django’s send_mail() function. Meanwhile, the user’s information (except OTP) is stored in the session as temp_user so it can be retrieved later for verification. After sending the OTP, the user is redirected to the OTP verification page.
+    """
+
     if request.method == "POST":
         full_name = request.POST['full_name']
         email = request.POST['email']
@@ -53,6 +62,12 @@ def signup(request):
 
 
 def verify_otp(request):
+
+    """
+    In the verify_otp function, when the user submits the OTP form, the entered OTP is compared with the one stored in otp_storage. If they match, a new FacultyUser record is created with the user’s details, marking the account as verified (is_verified=True). The temporary OTP and session data are then deleted, and a success message is shown before redirecting the user to the login page. If the OTP is incorrect or the session has expired, appropriate error messages are displayed, prompting the user to retry.
+    """
+
+
     if request.method == "POST":
         entered_otp = request.POST['otp']
         temp_user = request.session.get('temp_user')
@@ -81,6 +96,11 @@ def verify_otp(request):
 
 
 def login_view(request):
+
+    """
+    In the login_view function, when a POST request is made (i.e., the user submits the login form), it retrieves the entered email and password. It then tries to find a matching user in the FacultyUser model using the provided email. If the email doesn’t exist, an error message is shown. If the user exists but hasn’t verified their email yet (is_verified is False), the user is prompted to verify it first. Otherwise, the entered password is checked against the stored one — either directly or using Django’s check_password() for hashed passwords. If the password matches, the user’s ID is stored in the session (request.session['user_id']), effectively logging them in, and they are redirected to the dashboard with a success message. If the password doesn’t match, an “Invalid password” error appears. If the request method is not POST, the login page is simply rendered.
+    """
+
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
@@ -112,6 +132,11 @@ def login_view(request):
 
 
 def logout_view(request):
+
+    """
+    The logout_view function is simpler — it checks if there’s an active session containing user_id, and if so, deletes it to log the user out. Afterward, a success message is displayed, and the user is redirected back to the login page.
+    """
+
     if 'user_id' in request.session:
         del request.session['user_id']
     messages.success(request, "Logged out successfully!")
@@ -119,6 +144,12 @@ def logout_view(request):
 
 
 def dashboard(request):
+
+
+    """
+    The dashboard function first checks whether the user is logged in by verifying the presence of 'user_id' in the session. If not, it redirects to the login page. Once verified, it retrieves the logged-in user’s data from the FacultyUser model and fetches their associated profile from the FacultyProfile model. To enhance user experience, it calculates the profile completion percentage by checking how many profile fields (such as department, designation, or ORCID ID) are filled out of the total available. This completion percentage, along with user and profile details, is then passed to the dashboard.html template for rendering.
+    """
+
     # ✅ Check if user is logged in
     if 'user_id' not in request.session:
         return redirect('login')
@@ -151,6 +182,12 @@ def dashboard(request):
 reset_otp_storage = {}  # Store OTPs temporarily (use Redis in production)
 
 def reset_password_request(request):
+
+
+    """
+    The reset_password_request function handles the first step of the password recovery process. When the user submits their registered email, it checks if that email exists in the FacultyUser model. If it does, a 6-digit OTP is generated using random.randint() and temporarily stored in the reset_otp_storage dictionary (a placeholder for caching, ideally replaced with Redis in production). This OTP is then sent to the user’s email using Django’s send_mail() function. The email address is also saved in the session (reset_email) for later verification, and a success message is shown before redirecting the user to the OTP verification page. If the email isn’t registered, an error message is displayed.
+    """
+
     if request.method == 'POST':
         email = request.POST.get('email')
         try:
@@ -176,6 +213,12 @@ def reset_password_request(request):
 
 
 def verify_reset_otp(request):
+
+
+    """
+    The verify_reset_otp function verifies the OTP entered by a user during password recovery. It retrieves the stored OTP using the email from the session and checks its validity. If valid and the new password fields match, it updates the user’s password in the database, removes temporary data, and redirects to the login page with a success message. If the OTP is incorrect, the passwords don’t match, or the session has expired, appropriate error messages are displayed, prompting the user to retry.
+    """
+
     if request.method == 'POST':
         email = request.session.get('reset_email')
         entered_otp = request.POST.get('otp')
@@ -209,6 +252,12 @@ def verify_reset_otp(request):
 
 
 def profile_completion(request):
+
+
+    """
+    The profile_completion function ensures a logged-in user can complete their profile in multiple steps. It retrieves or creates a FacultyProfile linked to the user, loads three form sections (Step1Form, Step2Form, and Step3Form), and passes them to the profile_completion.html page. This allows users to fill out their profile information in a structured manner.
+    """
+
     user_id = request.session.get('user_id')
     if not user_id:
         return redirect('login')
@@ -228,6 +277,13 @@ def profile_completion(request):
 
 
 def save_step(request, step):
+
+
+    """
+    The save_step function saves data from each step of the profile completion form. Depending on which step is being saved (1, 2, or 3), it processes the corresponding form. If the form data is valid, it saves the progress. Once the third step is completed, the user’s is_first_login flag is set to False, indicating the profile is complete. Responses are sent as JSON objects to support asynchronous updates (AJAX).
+    """
+
+
     user_id = request.session.get('user_id')
     user = FacultyUser.objects.get(user_id=user_id)
     profile, created = FacultyProfile.objects.get_or_create(user=user)
@@ -252,6 +308,11 @@ def save_step(request, step):
 
 
 def journal_publication(request):
+    
+
+    """
+    The journal_publication function allows logged-in users to submit details about their journal publications. It checks for user authentication, processes the submitted form data, and saves a new JournalPublication record linked to the user. Upon successful submission, a success message is displayed, and the user is redirected to the dashboard. If there are form errors, they are communicated back to the user for correction."""
+
     if 'user_id' not in request.session:
         return redirect('login')
 
@@ -272,13 +333,14 @@ def journal_publication(request):
     return render(request, 'journal_publication_form.html', {'form': form})
 
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .models import JournalPublication
-
 
 def cluster_head_dashboard(request):
+
+
+    """
+    The cluster_head_dashboard function displays all journal publication submissions that are pending or need review by the cluster head. It retrieves these submissions from the database and renders them in the cluster_head_dashboard.html template.
+    """
+
     # Show all submissions that are still pending or need review
     submissions = JournalPublication.objects.filter(status='submitted').order_by('-submitted_at')
     return render(request, 'cluster_head_dashboard.html', {'submissions': submissions})
@@ -286,21 +348,99 @@ def cluster_head_dashboard(request):
 
 
 def review_submission(request, submission_id):
+
+
+    """
+    The review_submission function allows a cluster head to review individual journal publication submissions. It retrieves the specific submission by its ID and processes the review form submitted by the cluster head. Depending on the selected status (approved, rejected, or revision), it updates the submission’s cluster_head_status and overall status accordingly, along with any remarks provided. After saving the changes, it redirects back to the cluster head dashboard with a success message. If the request method is not POST, it simply renders the review_submission.html template with the submission details.
+    """
+
     submission = get_object_or_404(JournalPublication, id=submission_id)
 
     if request.method == 'POST':
-        status = request.POST.get('status')
+        status = request.POST.get('status')  # 'approved_by_cluster', 'rejected_by_cluster', 'revision'
         remarks = request.POST.get('remarks')
 
         if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
             messages.error(request, 'Invalid status.')
             return redirect('review_submission', submission_id=submission.id)
 
-        submission.status = status
-        submission.remarks = remarks
+        # Map status to cluster_head_status
+        if status == 'approved_by_cluster':
+            submission.cluster_head_status = 'approved'
+            submission.status = 'approved_by_cluster'
+        elif status == 'rejected_by_cluster':
+            submission.cluster_head_status = 'rejected'
+            submission.status = 'rejected_by_cluster'
+        elif status == 'revision':
+            submission.cluster_head_status = 'revision'
+            submission.status = 'revision'
+
+        submission.cluster_head_remarks = remarks
         submission.save()
 
         messages.success(request, f"Submission '{submission.title_of_paper}' reviewed successfully.")
         return redirect('cluster_head_dashboard')
 
     return render(request, 'review_submission.html', {'submission': submission})
+
+
+
+def my_submissions(request):
+
+    """
+    The my_submissions function retrieves and displays all journal publication submissions made by the logged-in user. It first checks if the user is authenticated by verifying the presence of 'user_id' in the session. If not authenticated, it redirects to the login page. Once authenticated, it fetches the user’s submissions from the JournalPublication model and renders them in the my_submissions.html template.
+    """
+
+    if 'user_id' not in request.session:
+        return redirect('login')
+
+    user_uuid = request.session['user_id']
+    user = FacultyUser.objects.get(user_id=user_uuid)
+    submissions = JournalPublication.objects.filter(user=user)
+
+    return render(request, 'my_submissions.html', {'submissions': submissions})
+
+
+def dean_dashboard(request):
+
+    """
+    The dean_dashboard function displays all journal publication submissions that were approved by the cluster head. It retrieves these submissions from the database and renders them in the dean_dashboard.html template.
+    """
+    # Show only submissions that were approved by Cluster Head
+    approved_by_cluster = JournalPublication.objects.filter(status='approved_by_cluster').order_by('-reviewed_at')
+
+    return render(request, 'dean_dashboard.html', {'approved_by_cluster': approved_by_cluster})
+
+
+def dean_review(request, pk):
+
+
+    """
+    The dean_review function allows the dean to review individual journal publication submissions. It retrieves the specific submission by its ID and processes the review form submitted by the dean. Depending on the selected action (approve or reject), it updates the submission’s dean_status and overall status accordingly, along with any remarks provided. After saving the changes, it redirects back to the dean dashboard with a success message. If the request method is not POST, it simply renders the dean_review.html template with the submission details.
+    """
+
+    submission = get_object_or_404(JournalPublication, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        remarks = request.POST.get('remarks')
+
+        # Validate and set dean review status
+        if action == 'approve':
+            submission.dean_status = 'approved'
+            submission.status = 'approved_by_dean'
+        elif action == 'reject':
+            submission.dean_status = 'rejected'
+            submission.status = 'rejected_by_dean'
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('dean_review', pk=pk)
+
+        # Save remarks separately for dean
+        submission.dean_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.title_of_paper}' reviewed by Dean successfully.")
+        return redirect('dean_dashboard')
+
+    return render(request, 'dean_review.html', {'submission': submission})

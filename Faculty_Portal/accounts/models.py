@@ -1,40 +1,3 @@
-# # faculty/models.py
-# from django.db import models
-# from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-# import uuid
-
-# class FacultyUser(models.Model):
-#     user_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-#     full_name = models.CharField(max_length=100)
-#     email = models.EmailField(unique=True)
-#     password = models.CharField(max_length=200)
-#     is_verified = models.BooleanField(default=False)
-#     is_first_login = models.BooleanField(default=True)
-
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = ['full_name']  # 👈 Must be a list or tuple
-
-#     def __str__(self):
-#         return self.email
-    
-
-# class FacultyProfile(models.Model):
-#     user = models.OneToOneField(FacultyUser, on_delete=models.CASCADE)
-#     profile_image = models.ImageField(upload_to='profile_images/')
-#     school_faculty = models.CharField(max_length=255)
-#     department = models.CharField(max_length=255)
-#     designation = models.CharField(max_length=255)
-#     highest_qualification = models.CharField(max_length=255)
-#     area_of_specialization = models.CharField(max_length=255)
-#     orcid_id = models.CharField(max_length=100)
-#     scopus_id = models.CharField(max_length=100)
-#     google_scholar = models.URLField()
-#     vidwaan_id = models.CharField(max_length=100)
-
-#     def __str__(self):
-#         return self.user.full_name
-
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
@@ -134,7 +97,32 @@ class JournalPublication(models.Model):
     pdf_upload = models.FileField(upload_to='journal_papers/')
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
-    # Tracking & Review
+    # 🟢 CLUSTER HEAD REVIEW
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # 🟢 DEAN REVIEW
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    # 🟢 (Optional) — Overall consolidated status for quick filtering
     status_choices = [
         ('submitted', 'Submitted'),
         ('approved_by_cluster', 'Approved by Cluster Head'),
@@ -144,6 +132,7 @@ class JournalPublication(models.Model):
         ('revision', 'Sent for Revision'),
     ]
     status = models.CharField(max_length=30, choices=status_choices, default='submitted')
+
     remarks = models.TextField(blank=True, null=True)
     submitted_at = models.DateTimeField(auto_now_add=True)
     reviewed_at = models.DateTimeField(auto_now=True)
