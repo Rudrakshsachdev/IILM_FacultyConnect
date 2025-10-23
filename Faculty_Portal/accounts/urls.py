@@ -25,4 +25,5 @@ urlpatterns = [
     path('my-submissions/', views.my_submissions, name='my_submissions'),
     path('dean-dashboard/', views.dean_dashboard, name='dean_dashboard'),
     path('dean-review/<int:pk>/', views.dean_review, name='dean_review'),
+    path('research-form/', views.research_form, name='research_form'),
 ]

@@ -444,3 +444,6 @@ def dean_review(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review.html', {'submission': submission})
+
+def research_form(request):
+    return render(request, 'research_forms.html')
