@@ -56,7 +56,7 @@ class ResearchProjectForm(forms.ModelForm):
             'duration_to',
             'status',
             'outcome',
-            'sanctioned_letter',
+            'pdf_upload',
             'no_of_other_authors_from_iilm'
         ]
         widgets = {

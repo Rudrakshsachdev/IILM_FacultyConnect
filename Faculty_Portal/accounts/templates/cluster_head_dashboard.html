@@ -133,10 +133,10 @@
       <!-- Header Section -->
       <div class="mb-8 animate__animated animate__fadeIn">
         <h1 class="text-3xl font-bold text-gray-900 mb-2">
-          📊 Research Review Dashboard
+          📊 Form Review Dashboard
         </h1>
         <p class="text-gray-600">
-          Manage and review faculty research submissions
+          Manage and review faculty form submissions
         </p>
 
         <!-- Stats Cards -->
@@ -324,6 +324,8 @@
       {{ sub.journal_name }}
     {% elif sub.submission_type == 'Conference Publication' %}
       {{ sub.conference_name }}
+    {% elif sub.submission_type == 'Research Project' %}
+      {{ sub.project_title }}
     {% else %}
       N/A
     {% endif %}
@@ -332,12 +334,26 @@
     <td class="px-6 py-4 whitespace-nowrap">
       <span
         class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
-        {% if sub.status == 'submitted' %}status-pending
-        {% elif sub.status == 'approved' %}status-approved
-        {% elif sub.status == 'rejected' %}status-rejected
-        {% else %}status-under-review{% endif %}"
-      >
-        {{ sub.get_status_display }}
+        {% if sub.submission_type == 'Research Project' %}
+        {% if sub.overall_status == 'submitted' %}status-pending
+        {% elif sub.overall_status == 'approved_by_cluster' or sub.overall_status == 'approved_by_dean' %}status-approved
+        {% elif sub.overall_status == 'rejected_by_cluster' or sub.overall_status == 'rejected_by_dean' %}status-rejected
+        {% elif sub.overall_status == 'revision' %}status-under-review
+        {% else %}status-under-review{% endif %}
+    {% else %}
+        {% if sub.status|lower == 'submitted' %}status-pending
+        {% elif sub.status|lower == 'approved' %}status-approved
+        {% elif sub.status|lower == 'rejected' %}status-rejected
+        {% else %}status-under-review{% endif %}
+    {% endif %}"
+  >
+    {% if sub.submission_type == 'Research Project' %}
+      {{ sub.get_overall_status_display }}
+    {% else %}
+      {{ sub.get_status_display }}
+    {% endif %}
+      
+        
       </span>
     </td>
     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
