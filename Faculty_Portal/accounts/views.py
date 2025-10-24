@@ -488,9 +488,15 @@ def dean_dashboard(request):
     for sub in patent_submissions:
         sub.review_url = reverse('dean_review_patent', args=[sub.id])
         sub.submission_type = 'Patent Submission'
+    
+    copyright_submissions = Copyright.objects.filter(status='approved_by_cluster').order_by('-submitted_at')
+
+    for sub in copyright_submissions:
+        sub.review_url = reverse('dean_review_copyright', args=[sub.id])
+        sub.submission_type = 'Copyright Submission'
 
     all_submissions = sorted(
-        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions),
+        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -805,3 +811,31 @@ def review_submission_copyright(request, submission_id):
         messages.success(request, f"Submission '{submission.title_of_work}' reviewed successfully.")
         return redirect('cluster_head_dashboard')
     return render(request, 'review_submission_copyright.html', {'submission': submission})
+
+
+def dean_review_copyright(request, pk):
+    submission = get_object_or_404(Copyright, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        remarks = request.POST.get('remarks')
+
+        # Validate and set dean review status
+        if action == 'approve':
+            submission.dean_status = 'approved'
+            submission.status = 'approved_by_dean'
+        elif action == 'reject':
+            submission.dean_status = 'rejected'
+            submission.status = 'rejected_by_dean'
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('dean_review_copyright', pk=pk)
+
+        # Save remarks separately for dean
+        submission.dean_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.title_of_work}' reviewed by Dean successfully.")
+        return redirect('dean_dashboard')
+
+    return render(request, 'dean_review_copyright.html', {'submission': submission})

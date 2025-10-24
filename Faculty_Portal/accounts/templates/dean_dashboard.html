@@ -261,6 +261,8 @@
                             title="{{ submission.conference_name }}"
                           {% elif submission.submission_type == 'Research Project' %}
                             title="{{ submission.project_title }}"
+                          {% elif submission.submission_type == 'Copyright Submission' %}
+                            title="{{ submission.title_of_work }}"
                         {% endif %}>
 
                       <div class="text-sm text-gray-500 truncate max-w-xs">
@@ -272,6 +274,8 @@
                           {{ submission.conference_name }}
                           {% elif submission.submission_type == 'Research Project' %}
                             {{ submission.project_title }}
+                          {% elif submission.submission_type == 'Copyright Submission' %}
+                            {{ submission.title_of_work }}
                         {% endif %}
                       </div>
                     </div>
@@ -287,6 +291,8 @@
       {{ submission.project_title }}
     {% elif submission.submission_type == 'Patent Submission' %}
       {{ submission.title_of_patent }}
+    {% elif submission.submission_type == 'Copyright Submission' %}
+      {{ submission.title_of_work }}
     {% else %}
       N/A
     {% endif %}
