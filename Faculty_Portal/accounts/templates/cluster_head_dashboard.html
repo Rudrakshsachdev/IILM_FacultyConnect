@@ -325,6 +325,8 @@
               {{ sub.project_title }}
             {% elif sub.submission_type == 'Patent Submission' %}
               {{ sub.title_of_patent }}
+            {% elif sub.submission_type == 'Copyright Submission' %}
+              {{ sub.title_of_work }}
             {% else %}
               N/A
             {% endif %}
@@ -342,6 +344,8 @@
       {{ sub.project_title }}
     {% elif sub.submission_type == 'Patent Submission' %}
       {{ sub.title_of_patent }}
+    {% elif sub.submission_type == 'Copyright Submission' %}
+      {{ sub.title_of_work }}
     {% else %}
       N/A
     {% endif %}
