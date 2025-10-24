@@ -376,3 +376,61 @@ class Patents(models.Model):
 
     def __str__(self):
         return f"{self.title_of_patent} ({self.user.full_name})"
+
+
+class Copyright(models.Model):
+    TYPE_OF_WORK_CHOICES = [
+        ('software', 'Software'),
+        ('manual', 'Manual'),
+        ('course_material', 'Course Material'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title_of_work = models.CharField(max_length=255)
+    type_of_work = models.CharField(max_length=50, choices=TYPE_OF_WORK_CHOICES)
+    authors = models.TextField()
+    registration_number = models.CharField(max_length=100)
+    date_of_grant = models.DateField()
+    pdf_upload = models.FileField(upload_to='copyrights/')
+    no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
+
+    # 🟢 CLUSTER HEAD REVIEW
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # 🟢 DEAN REVIEW
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='submitted')
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title_of_work} ({self.user.full_name})"

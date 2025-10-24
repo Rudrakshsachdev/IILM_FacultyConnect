@@ -2,8 +2,8 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright
+from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm
 import random
 from django.conf import settings
 from django.contrib.auth import login
@@ -751,3 +751,22 @@ def dean_review_patent(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review_patent.html', {'submission': submission})
+
+
+def copyright_submission(request):
+
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = CopyrightForm(request.POST, request.FILES)
+        if form.is_valid():
+            copyright = form.save(commit=False)
+            user = FacultyUser.objects.get(user_id=request.session['user_id'])
+            copyright.user = user
+            copyright.save()
+            messages.success(request, "Copyright submitted successfully.")
+            return redirect('my_submissions')
+    else:
+        form = CopyrightForm()
+    return render(request, 'copyright_submission.html', {'form': form})
