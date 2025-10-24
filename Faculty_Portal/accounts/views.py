@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from itertools import chain
 
 
 
@@ -409,9 +410,26 @@ def my_submissions(request):
 
     user_uuid = request.session['user_id']
     user = FacultyUser.objects.get(user_id=user_uuid)
-    submissions = JournalPublication.objects.filter(user=user)
+    
+    journal_submissions = JournalPublication.objects.filter(user=user).order_by('-submitted_at')
 
-    return render(request, 'my_submissions.html', {'submissions': submissions})
+    conference_submissions = ConferencePublication.objects.filter(user=user).order_by('-submitted_at')
+
+    for sub in journal_submissions:
+        sub.submission_type = 'Journal Publication'
+
+    for sub in conference_submissions:
+        sub.submission_type = 'Conference Publication'
+    
+    submissions = sorted(
+        chain(journal_submissions, conference_submissions),
+        key=lambda x: x.submitted_at,
+        reverse=True
+    )
+
+    approved_count = sum(1 for sub in submissions if sub.status == 'approved_by_dean')
+    pending_count = sum(1 for sub in submissions if sub.status == 'submitted')
+    return render(request, 'my_submissions.html', {'submissions': submissions, 'approved_count': approved_count, 'pending_count': pending_count})
 
 
 def dean_dashboard(request):
