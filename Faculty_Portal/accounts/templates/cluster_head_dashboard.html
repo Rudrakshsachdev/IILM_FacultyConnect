@@ -311,9 +311,23 @@
           </div>
           <div
             class="text-sm text-gray-500 truncate max-w-xs"
+            {% if sub.submission_type == 'Patent Submission' %}
+            title="{{ sub.title_of_patent }}"
+            {% else %}
             title="{{ sub.title_of_paper }}"
+            {% endif %}
           >
-            {{ sub.title_of_paper }}
+            {% if sub.submission_type == 'Journal Publication' %}
+              {{ sub.title_of_paper }}
+            {% elif sub.submission_type == 'Conference Publication' %}
+              {{ sub.title_of_paper }}
+            {% elif sub.submission_type == 'Research Project' %}
+              {{ sub.project_title }}
+            {% elif sub.submission_type == 'Patent Submission' %}
+              {{ sub.title_of_patent }}
+            {% else %}
+              N/A
+            {% endif %}
           </div>
         </div>
       </div>
@@ -326,6 +340,8 @@
       {{ sub.conference_name }}
     {% elif sub.submission_type == 'Research Project' %}
       {{ sub.project_title }}
+    {% elif sub.submission_type == 'Patent Submission' %}
+      {{ sub.title_of_patent }}
     {% else %}
       N/A
     {% endif %}

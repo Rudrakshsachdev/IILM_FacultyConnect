@@ -345,6 +345,7 @@ def cluster_head_dashboard(request):
     journal_publications = JournalPublication.objects.filter(status='submitted').order_by('-submitted_at')
     conference_publications = ConferencePublication.objects.filter(status='submitted').order_by('-submitted_at')
     research_projects = ResearchProject.objects.filter(overall_status='submitted').order_by('-submitted_at')
+    patent_submissions = Patents.objects.filter(status='submitted').order_by('-submitted_at')
 
     for sub in journal_publications:
         sub.submission_type = 'Journal Publication'
@@ -357,8 +358,12 @@ def cluster_head_dashboard(request):
         sub.submission_type = 'Research Project'
         sub.review_url = reverse('review_submission_research', args=[sub.id])
 
+    for sub in patent_submissions:
+        sub.submission_type = 'Patent Submission'
+        sub.review_url = reverse('review_submission_patent', args=[sub.id])
+
     all_submissions = sorted(
-        list(journal_publications) + list(conference_publications) + list(research_projects),
+        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -678,3 +683,33 @@ def patent_submission(request):
     else:
         form = PatentForm()
     return render(request, 'patent_submission.html', {'form': form})
+
+
+def review_submission_patent(request, submission_id):
+    submission = get_object_or_404(Patents, id=submission_id)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')  # 'approved_by_cluster', 'rejected_by_cluster', 'revision'
+        remarks = request.POST.get('remarks')
+
+        if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
+            messages.error(request, 'Invalid status.')
+            return redirect('review_submission_patent', submission_id=submission.id)
+
+        # Map status to cluster_head_status
+        if status == 'approved_by_cluster':
+            submission.cluster_head_status = 'approved'
+            submission.status = 'approved_by_cluster'
+        elif status == 'rejected_by_cluster':
+            submission.cluster_head_status = 'rejected'
+            submission.status = 'rejected_by_cluster'
+        elif status == 'revision':
+            submission.cluster_head_status = 'revision'
+            submission.status = 'revision'
+
+        submission.cluster_head_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.title_of_patent}' reviewed successfully.")
+        return redirect('cluster_head_dashboard')
+    return render(request, 'review_submission_patent.html', {'submission': submission})
