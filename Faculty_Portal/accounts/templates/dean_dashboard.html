@@ -266,6 +266,8 @@
       {{ submission.journal_name }}
     {% elif submission.submission_type == 'Conference Publication' %}
       {{ submission.conference_name }}
+    {% elif submission.submission_type == 'Research Project' %}
+      {{ submission.project_title }}
     {% else %}
       N/A
     {% endif %}

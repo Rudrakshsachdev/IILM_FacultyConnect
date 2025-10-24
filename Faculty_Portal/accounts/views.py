@@ -453,9 +453,15 @@ def dean_dashboard(request):
     for sub in conference_submissions:
         sub.review_url = reverse('dean_review_conference', args=[sub.id])
         sub.submission_type = 'Conference Publication'
+    
+    research_submissions = ResearchProject.objects.filter(overall_status='approved_by_cluster').order_by('-submitted_at')
+
+    for sub in research_submissions:
+        sub.review_url = reverse('dean_review_research', args=[sub.id])
+        sub.submission_type = 'Research Project'
 
     all_submissions = sorted(
-        list(journal_submissions) + list(conference_submissions),
+        list(journal_submissions) + list(conference_submissions) + list(research_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -619,3 +625,30 @@ def review_submission_research(request, submission_id):
         messages.success(request, f"Submission '{submission.project_title}' reviewed successfully.")
         return redirect('cluster_head_dashboard')
     return render(request, 'review_submission_research.html', {'submission': submission})
+
+def dean_review_research(request, pk):
+    submission = get_object_or_404(ResearchProject, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        remarks = request.POST.get('remarks')
+
+        # Validate and set dean review status
+        if action == 'approve':
+            submission.dean_status = 'approved'
+            submission.overall_status = 'approved_by_dean'
+        elif action == 'reject':
+            submission.dean_status = 'rejected'
+            submission.overall_status = 'rejected_by_dean'
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('dean_review_research', pk=pk)
+
+        # Save remarks separately for dean
+        submission.dean_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.project_title}' reviewed by Dean successfully.")
+        return redirect('dean_dashboard')
+
+    return render(request, 'dean_review_research.html', {'submission': submission})
