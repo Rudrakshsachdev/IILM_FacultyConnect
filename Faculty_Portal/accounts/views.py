@@ -2,8 +2,8 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject
+from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm
 import random
 from django.conf import settings
 from django.contrib.auth import login
@@ -568,3 +568,21 @@ def dean_review_conference(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review_conference.html', {'submission': submission})
+
+def research_project(request):
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = ResearchProjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            project = form.save(commit=False)
+            user = FacultyUser.objects.get(user_id=request.session['user_id'])
+            project.user = user
+            project.save()
+            messages.success(request, "Research project submitted successfully.")
+            return redirect('my_submissions')
+    else:
+        form = ResearchProjectForm()
+    return render(request, 'research_project.html', {'form': form})
+

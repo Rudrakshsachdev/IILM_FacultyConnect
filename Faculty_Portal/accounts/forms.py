@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject
 
 
 
@@ -40,4 +40,28 @@ class ConferencePublicationForm(forms.ModelForm):
             'month_of_conference': forms.TextInput(attrs={'placeholder': 'e.g. July'}),
             'year_of_conference': forms.NumberInput(attrs={'min': 1900, 'max': 2100}),
             'first_author': forms.TextInput(attrs={'placeholder': 'Enter the first author\'s name'}),
+        }
+
+class ResearchProjectForm(forms.ModelForm):
+    class Meta:
+        model = ResearchProject
+        exclude = ['user', 'status', 'remarks', 'submitted_at', 'reviewed_at', 'cluster_head_status', 'cluster_head_remarks', 'dean_status', 'dean_remarks']
+        fields = [
+            'project_title',
+            'funding_agency',
+            'principal_investigator',
+            'co_pi',
+            'amount_sanctioned',
+            'duration_from',
+            'duration_to',
+            'status',
+            'outcome',
+            'sanctioned_letter',
+            'no_of_other_authors_from_iilm'
+        ]
+        widgets = {
+            'duration_from': forms.DateInput(attrs={'type': 'date'}),
+            'duration_to': forms.DateInput(attrs={'type': 'date'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'outcome': forms.Select(attrs={'class': 'form-select'}),
         }

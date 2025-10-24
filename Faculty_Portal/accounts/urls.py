@@ -47,4 +47,6 @@ urlpatterns = [
     path('cluster-head/review-conference/<int:submission_id>/', views.review_submission_conference, name='review_submission_conference'),
 
     path('dean-review-conference/<int:pk>/', views.dean_review_conference, name='dean_review_conference'),
+
+    path('research-project/', views.research_project, name='research_project'),
 ]
