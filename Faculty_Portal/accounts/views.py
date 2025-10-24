@@ -420,20 +420,28 @@ def my_submissions(request):
 
     conference_submissions = ConferencePublication.objects.filter(user=user).order_by('-submitted_at')
 
+    research_submissions = ResearchProject.objects.filter(user=user).order_by('-submitted_at')
+
     for sub in journal_submissions:
         sub.submission_type = 'Journal Publication'
-
+        
     for sub in conference_submissions:
         sub.submission_type = 'Conference Publication'
-    
+        
+
+    for sub in research_submissions:
+        sub.submission_type = 'Research Project'
+        
+
     submissions = sorted(
-        chain(journal_submissions, conference_submissions),
+        chain(journal_submissions, conference_submissions, research_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
 
-    approved_count = sum(1 for sub in submissions if sub.status == 'approved_by_dean')
-    pending_count = sum(1 for sub in submissions if sub.status == 'submitted')
+    approved_count = sum(1 for sub in submissions if sub.dean_status == 'approved_by_dean')
+    pending_count = sum(1 for sub in submissions if sub.dean_status in ['submitted', 'pending'])
+
     return render(request, 'my_submissions.html', {'submissions': submissions, 'approved_count': approved_count, 'pending_count': pending_count})
 
 

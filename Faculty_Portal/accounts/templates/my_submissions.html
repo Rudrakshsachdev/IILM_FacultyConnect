@@ -156,7 +156,21 @@
               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors"
             >
               <i class="fas fa-plus mr-2"></i>
-              New Submission
+              New Journal Submission
+            </a>
+            <a
+              href="{% url 'conference_publication' %}"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              New Conference Submission
+            </a>
+            <a
+              href="{% url 'research_project' %}"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              New Research Project Submission
             </a>
           </div>
         </div>
@@ -316,6 +330,7 @@
                 <td class="px-6 py-4 whitespace-nowrap border-b">
                   <div class="text-sm font-medium text-gray-900 max-w-xs">
                     {{ submission.title_of_paper }}
+                    {{ submission.project_title }}
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap border-b">
@@ -328,8 +343,10 @@
     <div class="text-sm text-gray-900">
         {% if submission.submission_type == 'Journal Publication' %}
             {{ submission.journal_name }}
-        {% else %}
+        {% elif submission.submission_type == 'Conference Publication' %}
             {{ submission.conference_name }}
+        {% elif submission.submission_type == 'Research Project' %}
+            {{ submission.project_title }}
         {% endif %}
     </div>
 </td>
