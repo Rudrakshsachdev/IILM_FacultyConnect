@@ -427,6 +427,8 @@ def my_submissions(request):
 
     research_submissions = ResearchProject.objects.filter(user=user).order_by('-submitted_at')
 
+    patent_submissions = Patents.objects.filter(user=user).order_by('-submitted_at')
+
     for sub in journal_submissions:
         sub.submission_type = 'Journal Publication'
         
@@ -436,10 +438,13 @@ def my_submissions(request):
 
     for sub in research_submissions:
         sub.submission_type = 'Research Project'
+    
+    for sub in patent_submissions:
+        sub.submission_type = 'Patent Submission'
         
 
     submissions = sorted(
-        chain(journal_submissions, conference_submissions, research_submissions),
+        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )

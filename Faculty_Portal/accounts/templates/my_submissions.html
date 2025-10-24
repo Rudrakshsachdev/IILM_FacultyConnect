@@ -172,6 +172,13 @@
               <i class="fas fa-plus mr-2"></i>
               New Research Project Submission
             </a>
+            <a
+              href="{% url 'patent_submission' %}"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              New Patent Submission
+            </a>
           </div>
         </div>
 
@@ -329,8 +336,15 @@
               <tr class="hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4 whitespace-nowrap border-b">
                   <div class="text-sm font-medium text-gray-900 max-w-xs">
-                    {{ submission.title_of_paper }}
-                    {{ submission.project_title }}
+                    {% if submission.submission_type == 'Journal Publication' %}
+                      {{ submission.title_of_paper }}
+                    {% elif submission.submission_type == 'Conference Publication' %}
+                      {{ submission.title_of_paper }}
+                    {% elif submission.submission_type == 'Research Project' %}
+                      {{ submission.project_title }}
+                    {% elif submission.submission_type == 'Patent Submission' %}
+                      {{ submission.title_of_patent }}
+                    {% endif %}
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap border-b">
@@ -347,6 +361,8 @@
             {{ submission.conference_name }}
         {% elif submission.submission_type == 'Research Project' %}
             {{ submission.project_title }}
+        {% elif submission.submission_type == 'Patent Submission' %}
+            {{ submission.title_of_patent }}
         {% endif %}
     </div>
 </td>
@@ -604,6 +620,21 @@
         <i class="fas fa-plus mr-2"></i>
         New Conference Submission
     </a>
+
+            <a
+                href="{% url 'research_project' %}"
+                class="inline-flex items-center px-6 py-3 bg-iilm-blue text-white font-medium rounded-lg hover:bg-iilm-light-blue transition-colors shadow-sm ml-4"
+            >
+                <i class="fas fa-plus mr-2"></i>
+                New Research Project Submission
+            </a>
+            <a
+                href="{% url 'patent_submission' %}"
+                class="inline-flex items-center px-6 py-3 bg-iilm-blue text-white font-medium rounded-lg hover:bg-iilm-light-blue transition-colors shadow-sm ml-4"
+            >
+                <i class="fas fa-plus mr-2"></i>
+                New Patent Submission
+            </a>
         </div>
       </div>
       {% endif %}
