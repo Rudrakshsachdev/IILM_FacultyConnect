@@ -434,6 +434,8 @@ def my_submissions(request):
 
     patent_submissions = Patents.objects.filter(user=user).order_by('-submitted_at')
 
+    copyright_submissions = Copyright.objects.filter(user=user).order_by('-submitted_at')
+
     for sub in journal_submissions:
         sub.submission_type = 'Journal Publication'
         
@@ -446,10 +448,13 @@ def my_submissions(request):
     
     for sub in patent_submissions:
         sub.submission_type = 'Patent Submission'
+    
+    for sub in copyright_submissions:
+        sub.submission_type = 'Copyright Submission'
         
 
     submissions = sorted(
-        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions),
+        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )

@@ -179,6 +179,13 @@
               <i class="fas fa-plus mr-2"></i>
               New Patent Submission
             </a>
+            <a
+              href="{% url 'copyright_submission' %}"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              New Copyright Submission
+            </a>
           </div>
         </div>
 
@@ -344,6 +351,8 @@
                       {{ submission.project_title }}
                     {% elif submission.submission_type == 'Patent Submission' %}
                       {{ submission.title_of_patent }}
+                    {% elif submission.submission_type == 'Copyright Submission' %}
+                      {{ submission.title_of_work }}
                     {% endif %}
                   </div>
                 </td>
@@ -363,6 +372,8 @@
             {{ submission.project_title }}
         {% elif submission.submission_type == 'Patent Submission' %}
             {{ submission.title_of_patent }}
+        {% elif submission.submission_type == 'Copyright Submission' %}
+            {{ submission.title_of_work }}
         {% endif %}
     </div>
 </td>
