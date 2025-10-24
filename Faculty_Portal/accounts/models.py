@@ -306,3 +306,73 @@ class ResearchProject(models.Model):
 
     def __str__(self):
         return f"{self.project_title} ({self.user.full_name})"
+    
+
+class Patents(models.Model):
+    PATENT_STATUS_CHOICES = [
+        ('filed', 'Filed'),
+        ('published', 'Published'),
+        ('granted', 'Granted')
+    ]
+
+    JURISDICTION_CHOICES = [
+        ('india', 'India'),
+        ('international', 'International')
+    ]
+
+    PATENT_TYPE_CHOICES = [
+        ('utility', 'Utility'),
+        ('design', 'Design'),
+        ('process', 'Process')
+    ]
+
+    REVIEW_STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+
+    CLUSTER_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('revision', 'Sent for Revision'),
+    ]
+
+    DEAN_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(FacultyUser, on_delete=models.CASCADE)
+    title_of_patent = models.CharField(max_length=255)
+    inventors = models.TextField()
+    patent_number = models.CharField(max_length=100)
+    patent_status = models.CharField(max_length=20, choices=PATENT_STATUS_CHOICES)
+    date_published = models.DateField(blank=True, null=True)
+    date_granted = models.DateField(blank=True, null=True)
+    jurisdiction = models.CharField(max_length=20, choices=JURISDICTION_CHOICES)
+    patent_type = models.CharField(max_length=20, choices=PATENT_TYPE_CHOICES)
+    pdf_upload = models.FileField(upload_to='patents/')
+    no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    remarks = models.TextField(blank=True, null=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    # Cluster Head Review
+    cluster_head_status = models.CharField(max_length=30, choices=CLUSTER_STATUS_CHOICES, default='pending')
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # Dean Review
+    dean_status = models.CharField(max_length=30, choices=DEAN_STATUS_CHOICES, default='pending')
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    # Overall status
+    status = models.CharField(max_length=30, choices=REVIEW_STATUS_CHOICES, default='submitted')
+
+    def __str__(self):
+        return f"{self.title_of_patent} ({self.user.full_name})"

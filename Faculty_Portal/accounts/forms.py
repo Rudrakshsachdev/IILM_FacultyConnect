@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents
 
 
 
@@ -64,4 +64,27 @@ class ResearchProjectForm(forms.ModelForm):
             'duration_to': forms.DateInput(attrs={'type': 'date'}),
             'status': forms.Select(attrs={'class': 'form-select'}),
             'outcome': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+class PatentForm(forms.ModelForm):
+    class Meta:
+        model = Patents
+        exclude = [
+            'user',
+            'status',
+            'remarks',
+            'submitted_at',
+            'reviewed_at',
+            'cluster_head_status',
+            'cluster_head_remarks',
+            'dean_status',
+            'dean_remarks'
+        ]
+        widgets = {
+            'date_published': forms.DateInput(attrs={'type': 'date'}),
+            'date_granted': forms.DateInput(attrs={'type': 'date'}),
+            'inventors': forms.TextInput(attrs={'placeholder': "Enter inventor(s) names"}),
+            'title_of_patent': forms.TextInput(attrs={'placeholder': "Enter patent title"}),
+            'patent_number': forms.TextInput(attrs={'placeholder': "Enter patent/application number"}),
+            'no_of_other_authors_from_iilm': forms.NumberInput(attrs={'min': 0}),
         }
