@@ -139,3 +139,93 @@ class JournalPublication(models.Model):
 
     def __str__(self):
         return f"{self.title_of_paper} ({self.user.full_name})"
+
+
+
+class ConferencePublication(models.Model):
+    INDEX_CHOICES = [
+        ('SCI', 'SCI'),
+        ('SCIE', 'SCIE'),
+        ('Scopus', 'Scopus'),
+        ('WoS', 'Web of Science'),
+        ('ESCI', 'ESCI'),
+        ('UGC', 'UGC'),
+        ('Other', 'Other'),
+    ]
+
+    FUNDING_CHOICES = [
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ]
+
+    TYPE_CHOICES = [
+        ('National', 'National'),
+        ('International', 'International'),
+    ]
+
+    MODE_CHOICES = [
+        ('Online', 'Online'),
+        ('Offline', 'Offline'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title_of_paper = models.CharField(max_length=255)
+    author_position = models.CharField(max_length=255)
+    first_author = models.CharField(max_length=255)
+    corresponding_author = models.CharField(max_length=255)
+    conference_name = models.CharField(max_length=255)
+    organizing_body = models.CharField(max_length=255)
+    isbn = models.CharField(max_length=50, blank=True, null=True)
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES)
+    mode = models.CharField(max_length=50, choices=MODE_CHOICES)
+    location = models.CharField(max_length=255)
+    date_of_presentation = models.DateField()
+    doi_link = models.URLField(blank=True, null=True)
+    indexed_in = models.CharField(max_length=20, choices=INDEX_CHOICES)
+    other_index = models.CharField(max_length=255, blank=True, null=True)
+    funding_acknowledged = models.CharField(max_length=3, choices=FUNDING_CHOICES)
+    pdf_upload = models.FileField(upload_to='conference_papers/')
+    no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
+
+    # 🟢 CLUSTER HEAD REVIEW
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # 🟢 DEAN REVIEW
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    # 🟢 OVERALL CONSOLIDATED STATUS
+    status_choices = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+    status = models.CharField(max_length=30, choices=status_choices, default='submitted')
+
+    remarks = models.TextField(blank=True, null=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title_of_paper} ({self.user.full_name})"

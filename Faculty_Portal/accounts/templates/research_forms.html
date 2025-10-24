@@ -13,95 +13,183 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="{% static 'css/research_forms.css' %}">
 </head>
 <body>
-    <!-- Toast Notifications Container -->
-    <div class="toast-container" id="toastContainer"></div>
-
     <!-- Header Section - Matching Journal Form -->
     <div class="form-header">
         <h1><i class="fas fa-flask me-2"></i>Research Section</h1>
         <p>Manage and submit all your research-related documents here</p>
-        <div class="notification-badge" id="notificationBadge" title="Click for notifications">
-            <i class="fas fa-bell"></i>
-        </div>
     </div>
 
     <!-- Main Content Container - Matching Journal Form -->
     <div class="form-container">
-        <!-- Search and Filter Bar -->
-        <div class="search-filter-bar">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search research forms...">
-                <div class="search-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-            </div>
-            <div class="filter-dropdown">
-                <select id="categoryFilter">
-                    <option value="all">All Categories</option>
-                    <option value="publication">Publications</option>
-                    <option value="project">Projects</option>
-                    <option value="recognition">Recognitions</option>
-                    <option value="collaboration">Collaborations</option>
-                </select>
-            </div>
-            <div class="filter-dropdown">
-                <select id="statusFilter">
-                    <option value="all">All Statuses</option>
-                    <option value="active">Active</option>
-                    <option value="popular">Most Used</option>
-                    <option value="recent">Recently Added</option>
-                </select>
-            </div>
-        </div>
-
         <!-- Stats Section -->
-        <div class="stats-container" id="statsContainer">
-            <div class="stat-card" data-stat="submissions">
-                <div class="stat-number" id="totalSubmissions">12</div>
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">12</div>
                 <div class="stat-label">Total Submissions</div>
-                <div class="stat-trend trend-up">
-                    <i class="fas fa-arrow-up"></i> 2 this week
-                </div>
             </div>
-            <div class="stat-card" data-stat="pending">
-                <div class="stat-number" id="pendingReviews">5</div>
+            <div class="stat-card">
+                <div class="stat-number">5</div>
                 <div class="stat-label">Pending Review</div>
-                <div class="stat-trend trend-down">
-                    <i class="fas fa-arrow-down"></i> 1 resolved
-                </div>
             </div>
-            <div class="stat-card" data-stat="approved">
-                <div class="stat-number" id="approvedSubmissions">7</div>
+            <div class="stat-card">
+                <div class="stat-number">7</div>
                 <div class="stat-label">Approved</div>
-                <div class="stat-trend trend-up">
-                    <i class="fas fa-arrow-up"></i> 3 this month
-                </div>
             </div>
-            <div class="stat-card" data-stat="monthly">
-                <div class="stat-number" id="monthlySubmissions">3</div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
                 <div class="stat-label">This Month</div>
-                <div class="stat-trend trend-up">
-                    <i class="fas fa-arrow-up"></i> 50% increase
-                </div>
             </div>
         </div>
 
         <!-- Forms Grid -->
-        <div class="card-grid" id="cardGrid">
-            <!-- Cards will be dynamically filtered -->
-        </div>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3>Journal Publication</h3>
+                <p>Submit your journal publication details for review and approval.</p>
+                <a href="{% url 'journal_publication' %}">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
 
-        <!-- Recent Activity Panel -->
-        <div class="activity-panel">
-            <h3><i class="fas fa-history"></i> Recent Activity</h3>
-            <ul class="activity-list" id="activityList">
-                <!-- Activity items will be dynamically loaded -->
-            </ul>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3>Book Publication</h3>
+                <p>Provide information about published books and monographs.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3>Book Chapter</h3>
+                <p>Submit details of book chapters authored or co-authored.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <h3>Conference Publication</h3>
+                <p>Enter details for your conference papers and presentations.</p>
+                <a href="{% url 'conference_publication' %}">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3>Patent</h3>
+                <p>Submit information about patents filed or granted.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3>Consultancy Project</h3>
+                <p>Fill details about consultancy and funded projects.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h3>Research Grant</h3>
+                <p>Record grants or research funding obtained.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h3>PhD Guidance</h3>
+                <p>Provide details of PhD guidance or supervision.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h3>Workshops & FDPs</h3>
+                <p>Submit info about workshops or FDPs attended or conducted.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3>Awards & Recognitions</h3>
+                <p>Record any research awards or recognitions received.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3>MOUs & Collaborations</h3>
+                <p>Submit details about research MOUs or collaborations.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-copyright"></i>
+                </div>
+                <h3>Copyright</h3>
+                <p>Provide information about copyright registrations.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <h3>Research Projects</h3>
+                <p>Enter details of ongoing or completed research projects.</p>
+                <a href="#">
+                    <i class="fas fa-external-link-alt"></i> Open Form
+                </a>
+            </div>
         </div>
     </div>
 
@@ -115,8 +203,5 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src = "{% static 'js/research_forms.js' %}">
-        
-    </script>
 </body>
 </html>

@@ -1,143 +1,3 @@
-{% comment %} {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Review Submission</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f8f9fa;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin: auto;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .info {
-            background: #f1f5f9;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .info p {
-            margin: 8px 0;
-            line-height: 1.5;
-        }
-        .info strong {
-            color: #007bff;
-        }
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-        }
-        select, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-        button {
-            margin-top: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-            color: #007bff;
-            text-decoration: none;
-        }
-        iframe {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>📝 Review Submission</h2>
-
-        <div class="info">
-            <h3>📄 Journal Publication Details</h3>
-            <p><strong>Faculty:</strong> {{ submission.user.full_name }}</p>
-            <p><strong>Title of Paper:</strong> {{ submission.title_of_paper }}</p>
-            <p><strong>Author Position:</strong> {{ submission.author_position }}</p>
-            <p><strong>Corresponding Author:</strong> {{ submission.corresponding_author }}</p>
-            <p><strong>Journal Name:</strong> {{ submission.journal_name }}</p>
-            <p><strong>Publisher:</strong> {{ submission.publisher }}</p>
-            <p><strong>ISSN:</strong> {{ submission.issn }}</p>
-            <p><strong>Volume:</strong> {{ submission.volume }}</p>
-            <p><strong>Issue:</strong> {{ submission.issue }}</p>
-            <p><strong>Page No.:</strong> {{ submission.page_no }}</p>
-            <p><strong>Month of Publication:</strong> {{ submission.month_of_publication }}</p>
-            <p><strong>Year of Publication:</strong> {{ submission.year_of_publication }}</p>
-            <p><strong>Indexed In:</strong> {{ submission.indexed_in }}</p>
-            {% if submission.indexed_in == "Other" %}
-                <p><strong>Other Index:</strong> {{ submission.other_index }}</p>
-            {% endif %}
-            <p><strong>Impact Factor:</strong> {{ submission.impact_factor }}</p>
-            <p><strong>DOI / Link:</strong> 
-                {% if submission.doi_link %}
-                    <a href="{{ submission.doi_link }}" target="_blank">{{ submission.doi_link }}</a>
-                {% else %}
-                    N/A
-                {% endif %}
-            </p>
-            <p><strong>Funding Acknowledged:</strong> {{ submission.funding_acknowledged }}</p>
-            <p><strong>No. of Other Authors from IILM:</strong> {{ submission.no_of_other_authors_from_iilm }}</p>
-
-            <p><strong>📎 Uploaded Paper (PDF):</strong></p>
-            {% if submission.pdf_upload %}
-                <iframe src="{{ submission.pdf_upload.url }}"></iframe>
-                <p><a href="{{ submission.pdf_upload.url }}" target="_blank" style="color:#007bff;">🔗 Open Full PDF</a></p>
-            {% else %}
-                <p>No PDF uploaded.</p>
-            {% endif %}
-        </div>
-
-        <form method="post">
-            {% csrf_token %}
-            <label for="status">Select Review Decision</label>
-            <select name="status" id="status" required>
-                <option value="approved_by_cluster">✅ Approve</option>
-                <option value="rejected_by_cluster">❌ Reject</option>
-                <option value="revision">✏️ Send for Revision</option>
-            </select>
-
-            <label for="remarks">Remarks</label>
-            <textarea name="remarks" id="remarks" rows="4" placeholder="Add your remarks here..."></textarea>
-
-            <button type="submit">Submit Review</button>
-        </form>
-
-        <a href="{% url 'cluster_head_dashboard' %}" class="back">← Back to Dashboard</a>
-    </div>
-</body>
-</html> {% endcomment %}
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -170,7 +30,7 @@
             theme: {
                 extend: {
                     colors: {
-                        'iilm-blue': '#003366',
+                        'iilm-blue': '#234278',
                         'iilm-gold': '#D4AF37',
                         'iilm-light-blue': '#0055a5',
                     },
@@ -194,8 +54,8 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
                         {% comment %} <i class="fas fa-graduation-cap text-iilm-gold text-2xl mr-3"></i> {% endcomment %}
-                         <img src="{% static 'images/blue_iilm.jpeg' %}" alt="IILM Logo" class="h-8 w-8 mr-3">
-                        <span class="text-white text-xl font-bold">IILM University</span>
+                         <img src="{% static 'images/blue_iilm.jpeg' %}" alt="IILM Logo" style="height:60px;">
+                        <span class="text-white text-xl font-bold"></span>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -516,8 +376,8 @@
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center mb-4 md:mb-0">
-                    <i class="fas fa-graduation-cap text-iilm-gold text-xl mr-2"></i>
-                    <span class="text-lg font-semibold">IILM University</span>
+                    <img src="{% static 'images/blue_iilm.jpeg' %}" alt="IILM Logo" style="height:60px;">
+                    <span class="text-lg font-semibold"></span>
                 </div>
                 <div class="text-sm text-gray-300">
                     © 2025 AIgnite Clubs Initiative. All rights reserved.

@@ -71,10 +71,10 @@
               <i class="fas fa-graduation-cap text-iilm-gold text-2xl mr-3"></i>
               {% endcomment %}
               <img
-            src="{% static 'images/blue_iilm.jpeg' %}"
-            alt="IILM Logo"
-            style="height: 60px; width: auto"
-          />
+                src="{% static 'images/blue_iilm.jpeg' %}"
+                alt="IILM Logo"
+                style="height: 60px; width: auto"
+              />
               <span class="text-white text-xl font-bold"></span>
             </div>
           </div>
@@ -268,7 +268,7 @@
                   scope="col"
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Journal
+                  Forms
                 </th>
                 <th
                   scope="col"
@@ -291,77 +291,80 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              {% for sub in submissions %}
-              <tr
-                class="hover:bg-gray-50 transition-colors duration-150"
-                x-data="{ hover: false }"
-                @mouseenter="hover = true"
-                @mouseleave="hover = false"
-              >
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center">
-                    <div
-                      class="flex-shrink-0 h-10 w-10 bg-iilm-blue rounded-full flex items-center justify-center text-white font-bold text-sm"
-                    >
-                      {{ sub.user.full_name|first|upper }}
-                    </div>
-                    <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900">
-                        {{ sub.user.full_name }}
-                      </div>
-                      <div
-                        class="text-sm text-gray-500 truncate max-w-xs"
-                        title="{{ sub.title_of_paper }}"
-                      >
-                        {{ sub.title_of_paper }}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">
-                    {{ sub.journal_name }}
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  {% with status=sub.get_status_display %}
-                  <span
-                    class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {% if status == 'Pending' %}status-pending {% elif status == 'Approved' %}status-approved {% elif status == 'Rejected' %}status-rejected {% else %}status-under-review{% endif %}"
-                  >
-                    {{ status }}
-                  </span>
-                  {% endwith %}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ sub.submitted_at|date:"d M Y, H:i" }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <a
-                    href="{% url 'review_submission' sub.id %}"
-                    class="review-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-iilm-blue transition-all duration-200 transform hover:scale-105"
-                  >
-                    <i class="fas fa-eye mr-2"></i>
-                    Review
-                  </a>
-                </td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="5" class="px-6 py-12 text-center">
-                  <div
-                    class="flex flex-col items-center justify-center text-gray-500"
-                  >
-                    <i class="fas fa-inbox text-4xl mb-4 text-gray-300"></i>
-                    <p class="text-lg font-medium">No submissions to review</p>
-                    <p class="text-sm mt-1">
-                      When new research submissions arrive, they will appear
-                      here.
-                    </p>
-                  </div>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
+  {% for sub in submissions %}
+  <tr
+    class="hover:bg-gray-50 transition-colors duration-150"
+    x-data="{ hover: false }"
+    @mouseenter="hover = true"
+    @mouseleave="hover = false"
+  >
+    <td class="px-6 py-4 whitespace-nowrap">
+      <div class="flex items-center">
+        <div
+          class="flex-shrink-0 h-10 w-10 bg-iilm-blue rounded-full flex items-center justify-center text-white font-bold text-sm"
+        >
+          {{ sub.user.full_name|first|upper }}
+        </div>
+        <div class="ml-4">
+          <div class="text-sm font-medium text-gray-900">
+            {{ sub.user.full_name }}
+          </div>
+          <div
+            class="text-sm text-gray-500 truncate max-w-xs"
+            title="{{ sub.title_of_paper }}"
+          >
+            {{ sub.title_of_paper }}
+          </div>
+        </div>
+      </div>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+      <div class="text-sm text-gray-900">
+        {% if sub.submission_type == 'Journal Publication' %}
+      {{ sub.journal_name }}
+    {% elif sub.submission_type == 'Conference Publication' %}
+      {{ sub.conference_name }}
+    {% else %}
+      N/A
+    {% endif %}
+      </div>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+      <span
+        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+        {% if sub.status == 'submitted' %}status-pending
+        {% elif sub.status == 'approved' %}status-approved
+        {% elif sub.status == 'rejected' %}status-rejected
+        {% else %}status-under-review{% endif %}"
+      >
+        {{ sub.get_status_display }}
+      </span>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      {{ sub.submitted_at|date:"d M Y, H:i" }}
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+      <a href="{{ sub.review_url }}" class="review-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-iilm-blue transition-all duration-200 transform hover:scale-105">
+        <i class="fas fa-eye mr-2"></i> Review
+      </a>
+    </td>
+  </tr>
+
+  {% empty %}
+  <tr>
+    <td colspan="5" class="px-6 py-12 text-center">
+      <div class="flex flex-col items-center justify-center text-gray-500">
+        <i class="fas fa-inbox text-4xl mb-4 text-gray-300"></i>
+        <p class="text-lg font-medium">No submissions to review</p>
+        <p class="text-sm mt-1">
+          When new research submissions arrive, they will appear here.
+        </p>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+
           </table>
         </div>
 
@@ -416,10 +419,10 @@
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="flex items-center mb-4 md:mb-0">
             <img
-            src="{% static 'images/blue_iilm.jpeg' %}"
-            alt="IILM Logo"
-            style="height: 60px; width: auto"
-          />
+              src="{% static 'images/blue_iilm.jpeg' %}"
+              alt="IILM Logo"
+              style="height: 60px; width: auto"
+            />
             <span class="text-lg font-semibold"></span>
           </div>
           <div class="text-sm text-gray-300">

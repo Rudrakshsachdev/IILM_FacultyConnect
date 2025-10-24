@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication
+from .models import FacultyProfile, JournalPublication, ConferencePublication
 
 
 
@@ -29,5 +29,15 @@ class JournalPublicationForm(forms.ModelForm):
         widgets = {
             'month_of_publication': forms.TextInput(attrs={'placeholder': 'e.g. March'}),
             'year_of_publication': forms.NumberInput(attrs={'min': 1900, 'max': 2100}),
+            'first_author': forms.TextInput(attrs={'placeholder': 'Enter the first author\'s name'}),
+        }
+
+class ConferencePublicationForm(forms.ModelForm):
+    class Meta:
+        model = ConferencePublication
+        exclude = ['user', 'status', 'remarks', 'submitted_at', 'reviewed_at', 'cluster_head_status', 'cluster_head_remarks', 'dean_status', 'dean_remarks']
+        widgets = {
+            'month_of_conference': forms.TextInput(attrs={'placeholder': 'e.g. July'}),
+            'year_of_conference': forms.NumberInput(attrs={'min': 1900, 'max': 2100}),
             'first_author': forms.TextInput(attrs={'placeholder': 'Enter the first author\'s name'}),
         }

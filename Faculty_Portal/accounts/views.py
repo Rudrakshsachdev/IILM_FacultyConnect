@@ -2,8 +2,8 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import FacultyUser, FacultyProfile, JournalPublication
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication
+from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm
 import random
 from django.conf import settings
 from django.contrib.auth import login
@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import check_password
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 
 
@@ -340,14 +341,26 @@ def cluster_head_dashboard(request):
     """
     The cluster_head_dashboard function displays all journal publication submissions that are pending or need review by the cluster head. It retrieves these submissions from the database and renders them in the cluster_head_dashboard.html template.
     """
+    journal_publications = JournalPublication.objects.filter(status='submitted').order_by('-submitted_at')
+    conference_publications = ConferencePublication.objects.filter(status='submitted').order_by('-submitted_at')
 
-    # Show all submissions that are still pending or need review
-    submissions = JournalPublication.objects.filter(status='submitted').order_by('-submitted_at')
-    return render(request, 'cluster_head_dashboard.html', {'submissions': submissions})
+    for sub in journal_publications:
+        sub.submission_type = 'Journal Publication'
+        sub.review_url = reverse('review_submission_journal', args=[sub.id])
+    for sub in conference_publications:
+        sub.submission_type = 'Conference Publication'
+        sub.review_url = reverse('review_submission_conference', args=[sub.id])
+
+    all_submissions = sorted(
+        list(journal_publications) + list(conference_publications),
+        key=lambda x: x.submitted_at,
+        reverse=True
+    )
+    return render(request, 'cluster_head_dashboard.html', {'submissions': all_submissions})
 
 
 
-def review_submission(request, submission_id):
+def review_submission_journal(request, submission_id):
 
 
     """
@@ -362,7 +375,7 @@ def review_submission(request, submission_id):
 
         if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
             messages.error(request, 'Invalid status.')
-            return redirect('review_submission', submission_id=submission.id)
+            return redirect('review_submission_journal', submission_id=submission.id)
 
         # Map status to cluster_head_status
         if status == 'approved_by_cluster':
@@ -381,7 +394,7 @@ def review_submission(request, submission_id):
         messages.success(request, f"Submission '{submission.title_of_paper}' reviewed successfully.")
         return redirect('cluster_head_dashboard')
 
-    return render(request, 'review_submission.html', {'submission': submission})
+    return render(request, 'review_submission_journal.html', {'submission': submission})
 
 
 
@@ -406,17 +419,32 @@ def dean_dashboard(request):
     """
     The dean_dashboard function displays all journal publication submissions that were approved by the cluster head. It retrieves these submissions from the database and renders them in the dean_dashboard.html template.
     """
-    # Show only submissions that were approved by Cluster Head
-    approved_by_cluster = JournalPublication.objects.filter(status='approved_by_cluster').order_by('-reviewed_at')
+    journal_submissions = JournalPublication.objects.filter(status='approved_by_cluster').order_by('-submitted_at')
 
-    return render(request, 'dean_dashboard.html', {'approved_by_cluster': approved_by_cluster})
+    for sub in journal_submissions:
+        sub.review_url = reverse('dean_review_journal', args=[sub.id])
+        sub.submission_type = 'Journal Publication'
+    
+    conference_submissions = ConferencePublication.objects.filter(status='approved_by_cluster').order_by('-submitted_at')
+
+    for sub in conference_submissions:
+        sub.review_url = reverse('dean_review_conference', args=[sub.id])
+        sub.submission_type = 'Conference Publication'
+
+    all_submissions = sorted(
+        list(journal_submissions) + list(conference_submissions),
+        key=lambda x: x.submitted_at,
+        reverse=True
+    )
+
+    return render(request, 'dean_dashboard.html', {'submissions': all_submissions})
 
 
-def dean_review(request, pk):
+def dean_review_journal(request, pk):
 
 
     """
-    The dean_review function allows the dean to review individual journal publication submissions. It retrieves the specific submission by its ID and processes the review form submitted by the dean. Depending on the selected action (approve or reject), it updates the submission’s dean_status and overall status accordingly, along with any remarks provided. After saving the changes, it redirects back to the dean dashboard with a success message. If the request method is not POST, it simply renders the dean_review.html template with the submission details.
+    The dean_review_journal function allows the dean to review individual journal publication submissions. It retrieves the specific submission by its ID and processes the review form submitted by the dean. Depending on the selected action (approve or reject), it updates the submission’s dean_status and overall status accordingly, along with any remarks provided. After saving the changes, it redirects back to the dean dashboard with a success message. If the request method is not POST, it simply renders the dean_review.html template with the submission details.
     """
 
     submission = get_object_or_404(JournalPublication, pk=pk)
@@ -443,7 +471,82 @@ def dean_review(request, pk):
         messages.success(request, f"Submission '{submission.title_of_paper}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
 
-    return render(request, 'dean_review.html', {'submission': submission})
+    return render(request, 'dean_review_journal.html', {'submission': submission})
 
 def research_form(request):
     return render(request, 'research_forms.html')
+
+def conference_publication(request):
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = ConferencePublicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            publication = form.save(commit=False)
+            user = FacultyUser.objects.get(user_id=request.session['user_id'])
+            publication.user = user
+            publication.save()
+            messages.success(request, "Conference publication submitted successfully.")
+            return redirect('my_submissions')
+    else:
+        form = ConferencePublicationForm()
+    return render(request, 'conference_publication.html', {'form': form})
+
+
+def review_submission_conference(request, submission_id):
+    submission = get_object_or_404(ConferencePublication, id=submission_id)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')  # 'approved_by_cluster', 'rejected_by_cluster', 'revision'
+        remarks = request.POST.get('remarks')
+
+        if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
+            messages.error(request, 'Invalid status.')
+            return redirect('review_submission_conference', submission_id=submission.id)
+
+        # Map status to cluster_head_status
+        if status == 'approved_by_cluster':
+            submission.cluster_head_status = 'approved'
+            submission.status = 'approved_by_cluster'
+        elif status == 'rejected_by_cluster':
+            submission.cluster_head_status = 'rejected'
+            submission.status = 'rejected_by_cluster'
+        elif status == 'revision':
+            submission.cluster_head_status = 'revision'
+            submission.status = 'revision'
+
+        submission.cluster_head_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.title_of_paper}' reviewed successfully.")
+        return redirect('cluster_head_dashboard')
+    return render(request, 'review_submission_conference.html', {'submission': submission})
+
+
+def dean_review_conference(request, pk):
+    submission = get_object_or_404(ConferencePublication, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        remarks = request.POST.get('remarks')
+
+        # Validate and set dean review status
+        if action == 'approve':
+            submission.dean_status = 'approved'
+            submission.status = 'approved_by_dean'
+        elif action == 'reject':
+            submission.dean_status = 'rejected'
+            submission.status = 'rejected_by_dean'
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('dean_review_conference', pk=pk)
+
+        # Save remarks separately for dean
+        submission.dean_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.title_of_paper}' reviewed by Dean successfully.")
+        return redirect('dean_dashboard')
+
+    return render(request, 'dean_review_conference.html', {'submission': submission})

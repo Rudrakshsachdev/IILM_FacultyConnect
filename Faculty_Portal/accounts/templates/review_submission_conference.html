@@ -1,0 +1,400 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Submission | IILM University</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- PDF.js for enhanced PDF viewing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/review_submission.css' %}">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'iilm-blue': '#234278',
+                        'iilm-gold': '#D4AF37',
+                        'iilm-light-blue': '#0055a5',
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-in': 'slideIn 0.3s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-poppins min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-iilm-blue shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        {% comment %} <i class="fas fa-graduation-cap text-iilm-gold text-2xl mr-3"></i> {% endcomment %}
+                         <img src="{% static 'images/blue_iilm.jpeg' %}" alt="IILM Logo" style="height:60px;">
+                        <span class="text-white text-xl font-bold"></span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-white text-sm bg-iilm-light-blue px-3 py-1 rounded-full">
+                        Cluster Head Review
+                    </span>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center text-sm text-white focus:outline-none">
+                            <div class="h-8 w-8 rounded-full bg-iilm-gold flex items-center justify-center text-white font-bold">
+                                {{ user.full_name|first|upper }}
+                            </div>
+                            <span class="ml-2">{{ user.full_name }}</span>
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        
+                        <div x-show="open" @click.away="open = false" 
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 animate__animated animate__fadeIn">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i>Profile
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-2"></i>Settings
+                            </a>
+                            <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="mb-8 animate__animated animate__fadeIn">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">📝 Conference Publication Review</h1>
+                    <p class="text-gray-600">Evaluate and provide feedback on faculty conference submissions</p>
+                </div>
+                <a href="{% url 'cluster_head_dashboard' %}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+            
+            <!-- Submission Overview Card -->
+            <div class="bg-white rounded-xl shadow-md p-6 mt-6 border-l-4 border-iilm-blue">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900">{{ submission.title_of_paper }}</h2>
+                        <p class="text-gray-600 mt-1">by {{ submission.user.full_name }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">Submitted</p>
+                        <p class="text-sm font-medium text-gray-900">{{ submission.submitted_at|date:"d M Y, H:i" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Submission Details -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Publication Details Card -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden animate__animated animate__fadeInUp">
+                    <div class="bg-iilm-blue px-6 py-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fas fa-file-alt mr-2"></i>
+                            Conference Publication Details
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Faculty Member</label>
+                                    <p class="text-sm text-gray-900 font-semibold">{{ submission.user.full_name }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Author Position</label>
+                                    <p class="text-sm text-gray-900">{{ submission.author_position }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">First Author</label>
+                                    <p class="text-sm text-gray-900">{{ submission.first_author }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Corresponding Author</label>
+                                    <p class="text-sm text-gray-900">{{ submission.corresponding_author }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Conference Name</label>
+                                    <p class="text-sm text-gray-900">{{ submission.conference_name }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Organizing Body</label>
+                                    <p class="text-sm text-gray-900">{{ submission.organizing_body }}</p>
+                                </div>
+                                {% comment %} <div>
+                                    <label class="text-sm font-medium text-gray-500">Publisher</label>
+                                    <p class="text-sm text-gray-900">{{ submission.publisher }}</p>
+                                </div> {% endcomment %}
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">ISSN</label>
+                                    <p class="text-sm text-gray-900">{{ submission.issn }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Type</label>
+                                    <p class="text-sm text-gray-900">{{ submission.type }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Mode</label>
+                                    <p class="text-sm text-gray-900">{{ submission.mode }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Location</label>
+                                    <p class="text-sm text-gray-900">{{ submission.location }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Date of Presentation</label>
+                                    <p class="text-sm text-gray-900">{{ submission.date_of_presentation }}</p>
+                                    {% if submission.date_of_presentation == "Other" %}
+                                        <p class="text-sm text-gray-600 mt-1">Other: {{ submission.other_date }}</p>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">Indexed In</label>
+                                    <p class="text-sm text-gray-900">{{ submission.indexed_in }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500">DOI / Link</label>
+                                    {% if submission.doi_link %}
+                                        <a href="{{ submission.doi_link }}" target="_blank" 
+                                           class="text-sm text-iilm-blue hover:text-iilm-light-blue break-all">
+                                            <i class="fas fa-external-link-alt mr-1"></i>{{ submission.doi_link }}
+                                        </a>
+                                    {% else %}
+                                        <p class="text-sm text-gray-500">N/A</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">Funding Acknowledged</label>
+                                <p class="text-sm text-gray-900">{{ submission.funding_acknowledged }}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-500">Other IILM Authors</label>
+                                <p class="text-sm text-gray-900">{{ submission.no_of_other_authors_from_iilm }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF Viewer Card -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden animate__animated animate__fadeInUp">
+                    <div class="bg-iilm-blue px-6 py-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fas fa-file-pdf mr-2"></i>
+                            Research Paper
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        {% if submission.pdf_upload %}
+                            <div class="mb-4 flex justify-between items-center">
+                                <p class="text-sm text-gray-600">Uploaded PDF Document</p>
+                                <a href="{{ submission.pdf_upload.url }}" target="_blank" 
+                                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors">
+                                    <i class="fas fa-download mr-2"></i>
+                                    Download PDF
+                                </a>
+                            </div>
+                            
+                            <!-- Enhanced PDF Viewer -->
+                            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                <div class="bg-gray-50 px-4 py-2 flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-700">PDF Preview</span>
+                                    <div class="flex space-x-2">
+                                        <button id="zoom-out" class="p-1 text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-search-minus"></i>
+                                        </button>
+                                        <span id="zoom-level" class="text-sm text-gray-600">100%</span>
+                                        <button id="zoom-in" class="p-1 text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-search-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="pdf-viewer" class="h-96 bg-gray-100 flex items-center justify-center">
+                                    <iframe src="{{ submission.pdf_upload.url }}" class="w-full h-full" frameborder="0"></iframe>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <i class="fas fa-file-pdf text-4xl text-gray-300 mb-4"></i>
+                                <p class="text-gray-500">No PDF document uploaded</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Review Form -->
+            <div class="space-y-6">
+                <!-- Review Decision Card -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden animate__animated animate__fadeInUp">
+                    <div class="bg-iilm-blue px-6 py-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fas fa-clipboard-check mr-2"></i>
+                            Review Decision
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <form method="post" id="reviewForm">
+                            {% csrf_token %}
+                            
+                            <!-- Decision Options -->
+                            <div class="space-y-4 mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-3">Select Review Decision</label>
+                                
+                                <div x-data="{ selected: 'approved_by_cluster' }">
+                                    <!-- Approve Option -->
+                                    <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 decision-approved"
+                                           :class="selected === 'approved_by_cluster' ? 'border-green-500 bg-green-50' : 'border-gray-200'">
+                                        <input type="radio" name="status" value="approved_by_cluster" 
+                                               x-model="selected" class="text-green-600 focus:ring-green-500">
+                                        <div class="ml-3 flex items-center">
+                                            <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">Approve</p>
+                                                <p class="text-xs text-gray-500">Paper meets all quality standards</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    
+                                    <!-- Reject Option -->
+                                    <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 decision-rejected mt-3"
+                                           :class="selected === 'rejected_by_cluster' ? 'border-red-500 bg-red-50' : 'border-gray-200'">
+                                        <input type="radio" name="status" value="rejected_by_cluster" 
+                                               x-model="selected" class="text-red-600 focus:ring-red-500">
+                                        <div class="ml-3 flex items-center">
+                                            <i class="fas fa-times-circle text-red-600 text-xl mr-3"></i>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">Reject</p>
+                                                <p class="text-xs text-gray-500">Paper does not meet requirements</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    
+                                    <!-- Revision Option -->
+                                    <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 decision-revision mt-3"
+                                           :class="selected === 'revision' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'">
+                                        <input type="radio" name="status" value="revision" 
+                                               x-model="selected" class="text-yellow-600 focus:ring-yellow-500">
+                                        <div class="ml-3 flex items-center">
+                                            <i class="fas fa-edit text-yellow-600 text-xl mr-3"></i>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">Send for Revision</p>
+                                                <p class="text-xs text-gray-500">Paper needs modifications</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Remarks -->
+                            <div class="mb-6">
+                                <label for="remarks" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Review Remarks
+                                </label>
+                                <textarea name="remarks" id="remarks" rows="6" 
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-iilm-blue focus:border-iilm-blue"
+                                          placeholder="Provide detailed feedback and reasoning for your decision..."></textarea>
+                                <p class="text-xs text-gray-500 mt-1">Character count: <span id="charCount">0</span></p>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <button type="submit" 
+                                    class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-iilm-blue hover:bg-iilm-light-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-iilm-blue transition-colors duration-200 transform hover:scale-105">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Review Guidelines Card -->
+                <div class="bg-blue-50 rounded-xl shadow-md p-6 border border-blue-200">
+                    <h4 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Review Guidelines
+                    </h4>
+                    <ul class="text-xs text-blue-800 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 mr-2 mt-0.5"></i>
+                            Check for originality and plagiarism concerns
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 mr-2 mt-0.5"></i>
+                            Verify conference credibility and indexing
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 mr-2 mt-0.5"></i>
+                            Assess research methodology and findings
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 mr-2 mt-0.5"></i>
+                            Ensure proper citation and references
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-iilm-blue text-white mt-12">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <img src="{% static 'images/blue_iilm.jpeg' %}" alt="IILM Logo" style="height:60px;">
+                    <span class="text-lg font-semibold"></span>
+                </div>
+                <div class="text-sm text-gray-300">
+                    © 2025 AIgnite Clubs Initiative. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/review_submission.js' %}"></script>
+</body>
+</html>
