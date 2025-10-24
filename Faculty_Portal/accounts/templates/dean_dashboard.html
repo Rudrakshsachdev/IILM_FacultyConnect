@@ -253,9 +253,26 @@
                       </div>
                       <div
                         class="text-sm text-gray-500 truncate max-w-xs"
-                        title="{{ submission.title_of_paper }}"
-                      >
-                        {{ submission.title_of_paper }}
+                        {% if submission.submission_type == 'Patent Submission' %}
+                          title="{{ submission.title_of_patent }}"
+                          {% elif submission.submission_type == 'Journal Publication' %}
+                            title="{{ submission.journal_name }}"
+                          {% elif submission.submission_type == 'Conference Publication' %}
+                            title="{{ submission.conference_name }}"
+                          {% elif submission.submission_type == 'Research Project' %}
+                            title="{{ submission.project_title }}"
+                        {% endif %}>
+
+                      <div class="text-sm text-gray-500 truncate max-w-xs">
+                        {% if submission.submission_type == 'Patent Submission' %}
+                          {{ submission.title_of_patent }}
+                          {% elif submission.submission_type == 'Journal Publication' %}
+                            {{ submission.journal_name }}
+                          {% elif submission.submission_type == 'Conference Publication' %}
+                          {{ submission.conference_name }}
+                          {% elif submission.submission_type == 'Research Project' %}
+                            {{ submission.project_title }}
+                        {% endif %}
                       </div>
                     </div>
                   </div>
@@ -268,6 +285,8 @@
       {{ submission.conference_name }}
     {% elif submission.submission_type == 'Research Project' %}
       {{ submission.project_title }}
+    {% elif submission.submission_type == 'Patent Submission' %}
+      {{ submission.title_of_patent }}
     {% else %}
       N/A
     {% endif %}
