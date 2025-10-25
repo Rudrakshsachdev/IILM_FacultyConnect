@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored
 
 
 
@@ -231,4 +231,20 @@ class BookChapterForm(forms.ModelForm):
             'corresponding_author': 'Corresponding Author',
             'pdf_upload': 'Upload Copy (PDF)',
             'no_of_other_authors_from_iilm': 'No. of Other Authors from IILM',
+        }
+
+class BooksAuthoredForm(forms.ModelForm):
+    class Meta:
+        model = BooksAuthored
+        exclude = [
+            'user', 'status', 'cluster_head_status', 'cluster_head_remarks',
+            'dean_status', 'dean_remarks', 'submitted_at', 'reviewed_at'
+        ]
+        widgets = {
+            'book_title': forms.TextInput(attrs={'placeholder': 'Enter book title'}),
+            'publisher': forms.TextInput(attrs={'placeholder': 'Enter publisher name'}),
+            'isbn': forms.TextInput(attrs={'placeholder': 'Enter ISBN number'}),
+            'publication_year': forms.NumberInput(attrs={'placeholder': 'Enter publication year'}),
+            'authors_or_editors': forms.Textarea(attrs={'rows': 3, 'placeholder': 'List all authors/editors'}),
+            'no_of_other_authors_from_iilm': forms.NumberInput(attrs={'min': 0}),
         }

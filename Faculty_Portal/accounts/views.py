@@ -2,8 +2,8 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored
+from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm
 import random
 from django.conf import settings
 from django.contrib.auth import login
@@ -1026,3 +1026,21 @@ def dean_review_book_chapter(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review_book_chapter.html', {'submission': submission})
+
+
+def books_authored_submission(request):
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = BooksAuthoredForm(request.POST, request.FILES)
+        if form.is_valid():
+            book = form.save(commit=False)
+            user = FacultyUser.objects.get(user_id=request.session['user_id'])
+            book.user = user
+            book.save()
+            messages.success(request, "Book Authored details submitted successfully.")
+            return redirect('my_submissions')
+    else:
+        form = BooksAuthoredForm()
+    return render(request, 'books_authored_submission.html', {'form': form})

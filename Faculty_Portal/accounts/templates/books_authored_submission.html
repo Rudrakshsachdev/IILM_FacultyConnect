@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books (Authored/Edited) Submission | IILM University</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/books_authored.css' %}">
+</head>
+<body>
+    <!-- Header Section - Matching Ph.D. Form -->
+    <div class="form-header">
+        <h1><i class="fas fa-book me-2"></i>Books (Authored/Edited) Submission</h1>
+        <p>Submit your authored or edited book details and documentation</p>
+    </div>
+
+    <!-- Main Form Container - Matching Ph.D. Form -->
+    <div class="form-container">
+        <!-- Success Message Display -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success">
+                    <i class="fas fa-check-circle me-2"></i>{{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" id="booksForm">
+            {% csrf_token %}
+            
+            <!-- Book Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-book"></i>
+                    Book Information
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.book_title.id_for_label }}" class="form-label required">
+                                <i class="fas fa-heading"></i>
+                                Book Title
+                            </label>
+                            {{ form.book_title }}
+                            {% if form.book_title.help_text %}
+                                <div class="form-text">{{ form.book_title.help_text }}</div>
+                            {% endif %}
+                            {% if form.book_title.errors %}
+                                <div class="text-danger mt-1">{{ form.book_title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.authored_or_edited.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-edit"></i>
+                                Authored / Edited
+                            </label>
+                            {{ form.authored_or_edited }}
+                            {% if form.authored_or_edited.help_text %}
+                                <div class="form-text">{{ form.authored_or_edited.help_text }}</div>
+                            {% endif %}
+                            {% if form.authored_or_edited.errors %}
+                                <div class="text-danger mt-1">{{ form.authored_or_edited.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.publisher.id_for_label }}" class="form-label required">
+                                <i class="fas fa-building"></i>
+                                Publisher
+                            </label>
+                            {{ form.publisher }}
+                            {% if form.publisher.help_text %}
+                                <div class="form-text">{{ form.publisher.help_text }}</div>
+                            {% endif %}
+                            {% if form.publisher.errors %}
+                                <div class="text-danger mt-1">{{ form.publisher.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.isbn.id_for_label }}" class="form-label required">
+                                <i class="fas fa-barcode"></i>
+                                ISBN
+                            </label>
+                            {{ form.isbn }}
+                            {% if form.isbn.help_text %}
+                                <div class="form-text">{{ form.isbn.help_text }}</div>
+                            {% endif %}
+                            {% if form.isbn.errors %}
+                                <div class="text-danger mt-1">{{ form.isbn.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.publication_year.id_for_label }}" class="form-label required">
+                                <i class="fas fa-calendar"></i>
+                                Publication Year
+                            </label>
+                            {{ form.publication_year }}
+                            {% if form.publication_year.help_text %}
+                                <div class="form-text">{{ form.publication_year.help_text }}</div>
+                            {% endif %}
+                            {% if form.publication_year.errors %}
+                                <div class="text-danger mt-1">{{ form.publication_year.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.indexed.id_for_label }}" class="form-label required">
+                                <i class="fas fa-search"></i>
+                                Indexed
+                            </label>
+                            {{ form.indexed }}
+                            {% if form.indexed.help_text %}
+                                <div class="form-text">{{ form.indexed.help_text }}</div>
+                            {% endif %}
+                            {% if form.indexed.errors %}
+                                <div class="text-danger mt-1">{{ form.indexed.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Author/Editor Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-users"></i>
+                    Author/Editor Information
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.authors_or_editors.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-friends"></i>
+                                Author(s)/Editor(s)
+                            </label>
+                            {{ form.authors_or_editors }}
+                            {% if form.authors_or_editors.help_text %}
+                                <div class="form-text">{{ form.authors_or_editors.help_text }}</div>
+                            {% endif %}
+                            {% if form.authors_or_editors.errors %}
+                                <div class="text-danger mt-1">{{ form.authors_or_editors.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.no_of_other_authors_from_iilm.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-plus"></i>
+                                Other IILM Authors/Editors
+                            </label>
+                            {{ form.no_of_other_authors_from_iilm }}
+                            {% if form.no_of_other_authors_from_iilm.help_text %}
+                                <div class="form-text">{{ form.no_of_other_authors_from_iilm.help_text }}</div>
+                            {% endif %}
+                            {% if form.no_of_other_authors_from_iilm.errors %}
+                                <div class="text-danger mt-1">{{ form.no_of_other_authors_from_iilm.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Upload Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-upload"></i>
+                    Document Upload
+                </h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.pdf_upload.id_for_label }}" class="form-label required">
+                        <i class="fas fa-file-pdf"></i>
+                        Upload Proof (PDF)
+                    </label>
+                    
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-upload-text">
+                            <h4>Upload Proof Document (PDF)</h4>
+                            <p>Drag & drop your PDF file here or click to browse</p>
+                            <p class="file-upload-btn">Choose File</p>
+                        </div>
+                        {{ form.pdf_upload }}
+                    </div>
+                    
+                    <div id="filePreview" class="mt-3" style="display: none;">
+                        <div class="alert alert-success d-flex align-items-center">
+                            <i class="fas fa-check-circle me-2 text-success"></i>
+                            <span id="fileName">File selected</span>
+                            <button type="button" id="removeFile" class="btn-close ms-auto" aria-label="Remove"></button>
+                        </div>
+                    </div>
+                    
+                    {% if form.pdf_upload.help_text %}
+                        <div class="form-text">{{ form.pdf_upload.help_text }}</div>
+                    {% endif %}
+                    {% if form.pdf_upload.errors %}
+                        <div class="text-danger mt-1">{{ form.pdf_upload.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Book Details
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Back Link -->
+    <div class="back-link">
+        <a href="{% url 'dashboard' %}">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/books_authored.js' %}"></script>
+</body>
+</html>

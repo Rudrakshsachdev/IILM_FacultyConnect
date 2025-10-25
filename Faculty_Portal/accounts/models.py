@@ -569,3 +569,68 @@ class BookChapter(models.Model):
 
     def __str__(self):
         return f"{self.chapter_title} ({self.user.username})"
+
+
+class BooksAuthored(models.Model):
+    BOOK_TYPE_CHOICES = [
+        ('authored', 'Authored'),
+        ('edited', 'Edited'),
+    ]
+
+    YES_NO_CHOICES = [
+        ('yes', 'Yes'),
+        ('no', 'No'),
+    ]
+
+    REVIEW_STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book_title = models.CharField(max_length=255)
+    authored_or_edited = models.CharField(max_length=10, choices=BOOK_TYPE_CHOICES)
+    publisher = models.CharField(max_length=255)
+    isbn = models.CharField(max_length=50)
+    publication_year = models.PositiveIntegerField()
+    indexed = models.CharField(max_length=3, choices=YES_NO_CHOICES)
+    authors_or_editors = models.TextField()
+    no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
+    pdf_upload = models.FileField(upload_to='books/')
+
+    # Cluster Head Review
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # Dean Review
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    status = models.CharField(max_length=30, choices=REVIEW_STATUS_CHOICES, default='submitted')
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.book_title} ({self.user.username})"
