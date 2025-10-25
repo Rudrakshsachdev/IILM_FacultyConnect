@@ -347,10 +347,12 @@ def cluster_head_dashboard(request):
     research_projects = ResearchProject.objects.filter(overall_status='submitted').order_by('-submitted_at')
     patent_submissions = Patents.objects.filter(status='submitted').order_by('-submitted_at')
     copyright_submissions = Copyright.objects.filter(status='submitted').order_by('-submitted_at')
+    phd_guidance_submissions = PhdGuidance.objects.filter(status='submitted').order_by('-submitted_at')
 
     for sub in journal_publications:
         sub.submission_type = 'Journal Publication'
         sub.review_url = reverse('review_submission_journal', args=[sub.id])
+    
     for sub in conference_publications:
         sub.submission_type = 'Conference Publication'
         sub.review_url = reverse('review_submission_conference', args=[sub.id])
@@ -366,9 +368,13 @@ def cluster_head_dashboard(request):
     for sub in copyright_submissions:
         sub.submission_type = 'Copyright Submission'
         sub.review_url = reverse('review_submission_copyright', args=[sub.id])
+    
+    for sub in phd_guidance_submissions:
+        sub.submission_type = 'PhD Guidance'
+        sub.review_url = reverse('review_submission_phd_guidance', args=[sub.id])
 
     all_submissions = sorted(
-        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions),
+        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -862,3 +868,33 @@ def phd_guidance_submission(request):
     else:
         form = PhdGuidanceForm()
     return render(request, 'phd_guidance_submission.html', {'form': form})
+
+
+def review_submission_phd_guidance(request, submission_id):
+    submission = get_object_or_404(PhdGuidance, id=submission_id)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')  # 'approved_by_cluster', 'rejected_by_cluster', 'revision'
+        remarks = request.POST.get('remarks')
+
+        if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
+            messages.error(request, 'Invalid status.')
+            return redirect('review_submission_phd_guidance', submission_id=submission.id)
+
+        # Map status to cluster_head_status
+        if status == 'approved_by_cluster':
+            submission.cluster_head_status = 'approved'
+            submission.status = 'approved_by_cluster'
+        elif status == 'rejected_by_cluster':
+            submission.cluster_head_status = 'rejected'
+            submission.status = 'rejected_by_cluster'
+        elif status == 'revision':
+            submission.cluster_head_status = 'revision'
+            submission.status = 'revision'
+
+        submission.cluster_head_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.thesis_title}' reviewed successfully.")
+        return redirect('cluster_head_dashboard')
+    return render(request, 'review_submission_phd_guidance.html', {'submission': submission})

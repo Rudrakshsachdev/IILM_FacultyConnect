@@ -327,6 +327,8 @@
               {{ sub.title_of_patent }}
             {% elif sub.submission_type == 'Copyright Submission' %}
               {{ sub.title_of_work }}
+            {% elif sub.submission_type == 'PhD Guidance' %}
+              {{ sub.thesis_title }}
             {% else %}
               N/A
             {% endif %}
@@ -346,6 +348,8 @@
       {{ sub.title_of_patent }}
     {% elif sub.submission_type == 'Copyright Submission' %}
       {{ sub.title_of_work }}
+    {% elif sub.submission_type == 'PhD Guidance' %}
+      {{ sub.thesis_title }}
     {% else %}
       N/A
     {% endif %}
