@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Chapter Submission | IILM University</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/book_chapter.css' %}">
+</head>
+<body>
+    <!-- Header Section - Matching Ph.D. Form -->
+    <div class="form-header">
+        <h1><i class="fas fa-book me-2"></i>Book Chapter Submission</h1>
+        <p>Submit your book chapter details and documentation</p>
+    </div>
+
+    <!-- Main Form Container - Matching Ph.D. Form -->
+    <div class="form-container">
+        <!-- Success Message Display -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success">
+                    <i class="fas fa-check-circle me-2"></i>{{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" id="bookChapterForm">
+            {% csrf_token %}
+            
+            <!-- Chapter Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-book"></i>
+                    Chapter Information
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.chapter_title.id_for_label }}" class="form-label required">
+                                <i class="fas fa-heading"></i>
+                                Chapter Title
+                            </label>
+                            {{ form.chapter_title }}
+                            {% if form.chapter_title.help_text %}
+                                <div class="form-text">{{ form.chapter_title.help_text }}</div>
+                            {% endif %}
+                            {% if form.chapter_title.errors %}
+                                <div class="text-danger mt-1">{{ form.chapter_title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.book_title.id_for_label }}" class="form-label required">
+                                <i class="fas fa-book-open"></i>
+                                Book Title
+                            </label>
+                            {{ form.book_title }}
+                            {% if form.book_title.help_text %}
+                                <div class="form-text">{{ form.book_title.help_text }}</div>
+                            {% endif %}
+                            {% if form.book_title.errors %}
+                                <div class="text-danger mt-1">{{ form.book_title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.publisher.id_for_label }}" class="form-label required">
+                                <i class="fas fa-building"></i>
+                                Publisher
+                            </label>
+                            {{ form.publisher }}
+                            {% if form.publisher.help_text %}
+                                <div class="form-text">{{ form.publisher.help_text }}</div>
+                            {% endif %}
+                            {% if form.publisher.errors %}
+                                <div class="text-danger mt-1">{{ form.publisher.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.isbn.id_for_label }}" class="form-label required">
+                                <i class="fas fa-barcode"></i>
+                                ISBN
+                            </label>
+                            {{ form.isbn }}
+                            {% if form.isbn.help_text %}
+                                <div class="form-text">{{ form.isbn.help_text }}</div>
+                            {% endif %}
+                            {% if form.isbn.errors %}
+                                <div class="text-danger mt-1">{{ form.isbn.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publication Details Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Publication Details
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.publication_year.id_for_label }}" class="form-label required">
+                                <i class="fas fa-calendar"></i>
+                                Publication Year
+                            </label>
+                            {{ form.publication_year }}
+                            {% if form.publication_year.help_text %}
+                                <div class="form-text">{{ form.publication_year.help_text }}</div>
+                            {% endif %}
+                            {% if form.publication_year.errors %}
+                                <div class="text-danger mt-1">{{ form.publication_year.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.indexed.id_for_label }}" class="form-label required">
+                                <i class="fas fa-search"></i>
+                                Indexed
+                            </label>
+                            {{ form.indexed }}
+                            {% if form.indexed.help_text %}
+                                <div class="form-text">{{ form.indexed.help_text }}</div>
+                            {% endif %}
+                            {% if form.indexed.errors %}
+                                <div class="text-danger mt-1">{{ form.indexed.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Author Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-users"></i>
+                    Author Information
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.author_position.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-tag"></i>
+                                Author Position
+                            </label>
+                            {{ form.author_position }}
+                            {% if form.author_position.help_text %}
+                                <div class="form-text">{{ form.author_position.help_text }}</div>
+                            {% endif %}
+                            {% if form.author_position.errors %}
+                                <div class="text-danger mt-1">{{ form.author_position.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.corresponding_author.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-check"></i>
+                                Corresponding Author
+                            </label>
+                            {{ form.corresponding_author }}
+                            {% if form.corresponding_author.help_text %}
+                                <div class="form-text">{{ form.corresponding_author.help_text }}</div>
+                            {% endif %}
+                            {% if form.corresponding_author.errors %}
+                                <div class="text-danger mt-1">{{ form.corresponding_author.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.no_of_other_authors_from_iilm.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-plus"></i>
+                                Other IILM Authors
+                            </label>
+                            {{ form.no_of_other_authors_from_iilm }}
+                            {% if form.no_of_other_authors_from_iilm.help_text %}
+                                <div class="form-text">{{ form.no_of_other_authors_from_iilm.help_text }}</div>
+                            {% endif %}
+                            {% if form.no_of_other_authors_from_iilm.errors %}
+                                <div class="text-danger mt-1">{{ form.no_of_other_authors_from_iilm.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Upload Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-upload"></i>
+                    Document Upload
+                </h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.pdf_upload.id_for_label }}" class="form-label required">
+                        <i class="fas fa-file-pdf"></i>
+                        Upload Chapter Copy
+                    </label>
+                    
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-upload-text">
+                            <h4>Upload Chapter Copy (PDF)</h4>
+                            <p>Drag & drop your PDF file here or click to browse</p>
+                            <p class="file-upload-btn">Choose File</p>
+                        </div>
+                        {{ form.pdf_upload }}
+                    </div>
+                    
+                    <div id="filePreview" class="mt-3" style="display: none;">
+                        <div class="alert alert-success d-flex align-items-center">
+                            <i class="fas fa-check-circle me-2 text-success"></i>
+                            <span id="fileName">File selected</span>
+                            <button type="button" id="removeFile" class="btn-close ms-auto" aria-label="Remove"></button>
+                        </div>
+                    </div>
+                    
+                    {% if form.pdf_upload.help_text %}
+                        <div class="form-text">{{ form.pdf_upload.help_text }}</div>
+                    {% endif %}
+                    {% if form.pdf_upload.errors %}
+                        <div class="text-danger mt-1">{{ form.pdf_upload.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Book Chapter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Back Link -->
+    <div class="back-link">
+        <a href="{% url 'dashboard' %}">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/book_chapter.js' %}"></script>
+</body>
+</html>

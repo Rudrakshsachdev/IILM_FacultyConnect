@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter
 
 
 
@@ -159,4 +159,76 @@ class PhdGuidanceForm(forms.ModelForm):
             'pdf_upload': forms.ClearableFileInput(attrs={
                 'class': 'form-control-file'
             }),
+        }
+
+
+class BookChapterForm(forms.ModelForm):
+    class Meta:
+        model = BookChapter
+        fields = [
+            'chapter_title',
+            'book_title',
+            'publisher',
+            'isbn',
+            'publication_year',
+            'indexed',
+            'author_position',
+            'corresponding_author',
+            'pdf_upload',
+            'no_of_other_authors_from_iilm',
+        ]
+        widgets = {
+            'chapter_title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter chapter title'
+            }),
+            'book_title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter book title'
+            }),
+            'publisher': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter publisher name'
+            }),
+            'isbn': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter ISBN number'
+            }),
+            'publication_year': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter publication year',
+                'min': 1900,
+                'max': 2100
+            }),
+            'indexed': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'author_position': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., First Author, Second Author'
+            }),
+            'corresponding_author': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter corresponding author name'
+            }),
+            'pdf_upload': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
+            }),
+            'no_of_other_authors_from_iilm': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 0,
+                'placeholder': 'Enter number of other IILM authors'
+            }),
+        }
+        labels = {
+            'chapter_title': 'Chapter Title',
+            'book_title': 'Book Title',
+            'publisher': 'Publisher',
+            'isbn': 'ISBN',
+            'publication_year': 'Publication Year',
+            'indexed': 'Indexed (Yes/No)',
+            'author_position': 'Author Position',
+            'corresponding_author': 'Corresponding Author',
+            'pdf_upload': 'Upload Copy (PDF)',
+            'no_of_other_authors_from_iilm': 'No. of Other Authors from IILM',
         }

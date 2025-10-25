@@ -2,8 +2,8 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter
+from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm
 import random
 from django.conf import settings
 from django.contrib.auth import login
@@ -937,3 +937,22 @@ def dean_review_phd_guidance(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review_phd_guidance.html', {'submission': submission})
+
+
+def book_chapter_submission(request):
+
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = BookChapterForm(request.POST, request.FILES)
+        if form.is_valid():
+            book_chapter = form.save(commit=False)
+            user = FacultyUser.objects.get(user_id=request.session['user_id'])
+            book_chapter.user = user
+            book_chapter.save()
+            messages.success(request, "Book Chapter submitted successfully.")
+            return redirect('my_submissions')
+    else:
+        form = BookChapterForm()
+    return render(request, 'book_chapter_submission.html', {'form': form})

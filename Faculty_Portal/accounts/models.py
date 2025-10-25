@@ -508,3 +508,64 @@ class PhdGuidance(models.Model):
     reviewed_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f"{self.name_of_scholar} ({self.user.full_name})"
+    
+class BookChapter(models.Model):
+    YES_NO_CHOICES = [
+        ('yes', 'Yes'),
+        ('no', 'No'),
+    ]
+
+    REVIEW_STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chapter_title = models.CharField(max_length=255)
+    book_title = models.CharField(max_length=255)
+    publisher = models.CharField(max_length=255)
+    isbn = models.CharField(max_length=20)
+    publication_year = models.PositiveIntegerField()
+    indexed = models.CharField(max_length=3, choices=YES_NO_CHOICES)
+    author_position = models.CharField(max_length=100)
+    corresponding_author = models.CharField(max_length=255)
+    pdf_upload = models.FileField(upload_to='book_chapters/')
+    no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
+
+
+    # 🟢 CLUSTER HEAD REVIEW
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # 🟢 DEAN REVIEW
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    status = models.CharField(max_length=30, choices=REVIEW_STATUS_CHOICES, default='submitted')
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.chapter_title} ({self.user.username})"
