@@ -263,6 +263,8 @@
                             title="{{ submission.project_title }}"
                           {% elif submission.submission_type == 'Copyright Submission' %}
                             title="{{ submission.title_of_work }}"
+                          {% elif submission.submission_type == 'PhD Guidance' %}
+                            title="{{ submission.thesis_title }}"
                         {% endif %}>
 
                       <div class="text-sm text-gray-500 truncate max-w-xs">
@@ -276,6 +278,8 @@
                             {{ submission.project_title }}
                           {% elif submission.submission_type == 'Copyright Submission' %}
                             {{ submission.title_of_work }}
+                          {% elif submission.submission_type == 'PhD Guidance' %}
+                            {{ submission.thesis_title }}
                         {% endif %}
                       </div>
                     </div>
@@ -293,6 +297,8 @@
       {{ submission.title_of_patent }}
     {% elif submission.submission_type == 'Copyright Submission' %}
       {{ submission.title_of_work }}
+    {% elif submission.submission_type == 'PhD Guidance' %}
+      {{ submission.thesis_title }}
     {% else %}
       N/A
     {% endif %}

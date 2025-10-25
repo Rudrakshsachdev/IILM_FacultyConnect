@@ -69,4 +69,6 @@ urlpatterns = [
     path('phd-guidance-submission/', views.phd_guidance_submission, name='phd_guidance_submission'),
 
     path('cluster-head/review-phd-guidance/<int:submission_id>/', views.review_submission_phd_guidance, name='review_submission_phd_guidance'),
+
+    path('dean-review-phd-guidance/<int:pk>/', views.dean_review_phd_guidance, name='dean_review_phd_guidance'),
 ]
