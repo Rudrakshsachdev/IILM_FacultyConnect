@@ -151,7 +151,7 @@
               <i class="fas fa-sync-alt mr-2"></i>
               Refresh
             </button>
-            <a
+            {% comment %} <a
               href="{% url 'journal_publication' %}"
               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors"
             >
@@ -193,6 +193,19 @@
               <i class="fas fa-plus mr-2"></i>
               New PhD Guidance Submission
             </a>
+            <a href="{% url 'book_chapter_submission' %}"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              New Book Chapter Submission
+            </a>
+            <a
+                href="{% url 'books_authored_submission' %}"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-blue hover:bg-iilm-light-blue transition-colors"
+            >
+                <i class="fas fa-plus mr-2"></i>
+                New Books Authored Submission
+            </a> {% endcomment %}
           </div>
         </div>
 
@@ -362,6 +375,10 @@
                       {{ submission.title_of_work }}
                     {% elif submission.submission_type == 'PhD Guidance' %}
                       {{ submission.thesis_title }}
+                    {% elif submission.submission_type == 'Book Chapter' %}
+                      {{ submission.chapter_title }}
+                    {% elif submission.submission_type == 'Books Authored' %}
+                      {{ submission.book_title }}
                     {% endif %}
                   </div>
                 </td>
@@ -385,6 +402,10 @@
             {{ submission.title_of_work }}
         {% elif submission.submission_type == 'PhD Guidance' %}
             {{ submission.thesis_title }}
+        {% elif submission.submission_type == 'Book Chapter' %}
+            {{ submission.chapter_title }}
+        {% elif submission.submission_type == 'Books Authored' %}
+            {{ submission.book_title }}
         {% endif %}
     </div>
 </td>

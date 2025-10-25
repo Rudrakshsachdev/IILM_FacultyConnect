@@ -349,6 +349,7 @@ def cluster_head_dashboard(request):
     copyright_submissions = Copyright.objects.filter(status='submitted').order_by('-submitted_at')
     phd_guidance_submissions = PhdGuidance.objects.filter(status='submitted').order_by('-submitted_at')
     book_chapter_submissions = BookChapter.objects.filter(status='submitted').order_by('-submitted_at')
+    books_authored_submissions = BooksAuthored.objects.filter(status='submitted').order_by('-submitted_at')
 
     for sub in journal_publications:
         sub.submission_type = 'Journal Publication'
@@ -377,9 +378,13 @@ def cluster_head_dashboard(request):
     for sub in book_chapter_submissions:
         sub.submission_type = 'Book Chapter'
         sub.review_url = reverse('review_submission_book_chapter', args=[sub.id])
+    
+    for sub in books_authored_submissions:
+        sub.submission_type = 'Books Authored'
+        sub.review_url = reverse('review_submission_books_authored', args=[sub.id])
 
     all_submissions = sorted(
-        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions),
+        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -449,6 +454,10 @@ def my_submissions(request):
 
     phd_guidance_submissions = PhdGuidance.objects.filter(user=user).order_by('-submitted_at')
 
+    book_chapter_submissions = BookChapter.objects.filter(user=user).order_by('-submitted_at')
+
+    books_authored_submissions = BooksAuthored.objects.filter(user=user).order_by('-submitted_at')
+
     for sub in journal_submissions:
         sub.submission_type = 'Journal Publication'
         
@@ -467,10 +476,16 @@ def my_submissions(request):
     
     for sub in phd_guidance_submissions:
         sub.submission_type = 'PhD Guidance'
+    
+    for sub in book_chapter_submissions:
+        sub.submission_type = 'Book Chapter'
+    
+    for sub in books_authored_submissions:
+        sub.submission_type = 'Books Authored'
         
 
     submissions = sorted(
-        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions),
+        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions, book_chapter_submissions, books_authored_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -528,8 +543,14 @@ def dean_dashboard(request):
         sub.review_url = reverse('dean_review_book_chapter', args=[sub.id])
         sub.submission_type = 'Book Chapter'
 
+    books_authored_submissions = BooksAuthored.objects.filter(status='approved_by_cluster').order_by('-submitted_at')
+
+    for sub in books_authored_submissions:
+        sub.review_url = reverse('dean_review_books_authored', args=[sub.id])
+        sub.submission_type = 'Books Authored'
+
     all_submissions = sorted(
-        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions),
+        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -1044,3 +1065,61 @@ def books_authored_submission(request):
     else:
         form = BooksAuthoredForm()
     return render(request, 'books_authored_submission.html', {'form': form})
+
+
+def review_submission_books_authored(request, submission_id):
+    submission = get_object_or_404(BooksAuthored, id=submission_id)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')  # 'approved_by_cluster', 'rejected_by_cluster', 'revision'
+        remarks = request.POST.get('remarks')
+
+        if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
+            messages.error(request, 'Invalid status.')
+            return redirect('review_submission_books_authored', submission_id=submission.id)
+
+        # Map status to cluster_head_status
+        if status == 'approved_by_cluster':
+            submission.cluster_head_status = 'approved'
+            submission.status = 'approved_by_cluster'
+        elif status == 'rejected_by_cluster':
+            submission.cluster_head_status = 'rejected'
+            submission.status = 'rejected_by_cluster'
+        elif status == 'revision':
+            submission.cluster_head_status = 'revision'
+            submission.status = 'revision'
+
+        submission.cluster_head_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.book_title}' reviewed successfully.")
+        return redirect('cluster_head_dashboard')
+    return render(request, 'review_submission_books_authored.html', {'submission': submission})
+
+
+def dean_review_books_authored(request, pk):
+    submission = get_object_or_404(BooksAuthored, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        remarks = request.POST.get('remarks')
+
+        # Validate and set dean review status
+        if action == 'approve':
+            submission.dean_status = 'approved'
+            submission.status = 'approved_by_dean'
+        elif action == 'reject':
+            submission.dean_status = 'rejected'
+            submission.status = 'rejected_by_dean'
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('dean_review_books_authored', pk=pk)
+
+        # Save remarks separately for dean
+        submission.dean_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.book_title}' reviewed by Dean successfully.")
+        return redirect('dean_dashboard')
+
+    return render(request, 'dean_review_books_authored.html', {'submission': submission})

@@ -79,4 +79,8 @@ urlpatterns = [
     path('dean-review-book-chapter/<int:pk>/', views.dean_review_book_chapter, name='dean_review_book_chapter'),
 
     path('books-authored-submission/', views.books_authored_submission, name='books_authored_submission'),
+
+    path('cluster-head/review-books-authored/<int:submission_id>/', views.review_submission_books_authored, name='review_submission_books_authored'),
+
+    path('dean-review-books-authored/<int:pk>/', views.dean_review_books_authored, name='dean_review_books_authored'),
 ]

@@ -331,6 +331,8 @@
               {{ sub.thesis_title }}
             {% elif sub.submission_type == 'Book Chapter' %}
               {{ sub.chapter_title }}
+            {% elif sub.submission_type == 'Books Authored' %}
+              {{ sub.book_title }}
             {% else %}
               N/A
             {% endif %}
@@ -354,6 +356,8 @@
       {{ sub.thesis_title }}
     {% elif sub.submission_type == 'Book Chapter' %}
       {{ sub.chapter_title }}
+    {% elif sub.submission_type == 'Books Authored' %}
+      {{ sub.book_title }}
     {% else %}
       N/A
     {% endif %}
