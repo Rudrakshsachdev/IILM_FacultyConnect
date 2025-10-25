@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance
 
 
 
@@ -109,4 +109,54 @@ class CopyrightForm(forms.ModelForm):
             'registration_number': forms.TextInput(attrs={'placeholder': 'Enter registration number'}),
             'date_of_grant': forms.DateInput(attrs={'type': 'date'}),
             'no_of_other_authors_from_iilm': forms.NumberInput(attrs={'min': 0}),
+        }
+
+
+class PhdGuidanceForm(forms.ModelForm):
+    class Meta:
+        model = PhdGuidance
+        exclude = [
+            'user',
+            'status',
+            'submitted_at',
+            'reviewed_at',
+            'cluster_head_status',
+            'cluster_head_remarks',
+            'dean_status',
+            'dean_remarks'
+        ]
+        widgets = {
+            'name_of_scholar': forms.TextInput(attrs={
+                'placeholder': 'Enter scholar name',
+                'class': 'form-control'
+            }),
+            'outside_iilm': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'thesis_title': forms.TextInput(attrs={
+                'placeholder': 'Enter thesis title',
+                'class': 'form-control'
+            }),
+            'role': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'phd_status': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'date_of_completion': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control'
+            }),
+            'other_supervisors': forms.Textarea(attrs={
+                'placeholder': 'Enter other supervisors/co-supervisors from IILM',
+                'class': 'form-control',
+                'rows': 2
+            }),
+            'no_of_other_authors_from_iilm': forms.NumberInput(attrs={
+                'min': 0,
+                'class': 'form-control'
+            }),
+            'pdf_upload': forms.ClearableFileInput(attrs={
+                'class': 'form-control-file'
+            }),
         }

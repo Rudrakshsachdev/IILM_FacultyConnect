@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ph.D. Guidance Submission | IILM University</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/phd_guidance.css' %}">
+</head>
+<body>
+    <!-- Header Section - Matching Journal Form -->
+    <div class="form-header">
+        <h1><i class="fas fa-user-graduate me-2"></i>Ph.D. Guidance Submission</h1>
+        <p>Submit your Ph.D. supervision details and documentation</p>
+    </div>
+
+    <!-- Main Form Container - Matching Journal Form -->
+    <div class="form-container">
+        <form method="POST" enctype="multipart/form-data" id="phdGuidanceForm">
+            {% csrf_token %}
+            
+            <!-- Scholar Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user-graduate"></i>
+                    Scholar Information
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.name_of_scholar.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user"></i>
+                                Name of Scholar
+                            </label>
+                            {{ form.name_of_scholar }}
+                            {% if form.name_of_scholar.help_text %}
+                                <div class="form-text">{{ form.name_of_scholar.help_text }}</div>
+                            {% endif %}
+                            {% if form.name_of_scholar.errors %}
+                                <div class="text-danger mt-1">{{ form.name_of_scholar.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.outside_iilm.id_for_label }}" class="form-label required">
+                                <i class="fas fa-university"></i>
+                                Outside IILM University
+                            </label>
+                            {{ form.outside_iilm }}
+                            {% if form.outside_iilm.help_text %}
+                                <div class="form-text">{{ form.outside_iilm.help_text }}</div>
+                            {% endif %}
+                            {% if form.outside_iilm.errors %}
+                                <div class="text-danger mt-1">{{ form.outside_iilm.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.role.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-tie"></i>
+                                Your Role
+                            </label>
+                            {{ form.role }}
+                            {% if form.role.help_text %}
+                                <div class="form-text">{{ form.role.help_text }}</div>
+                            {% endif %}
+                            {% if form.role.errors %}
+                                <div class="text-danger mt-1">{{ form.role.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thesis Details Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-book"></i>
+                    Thesis Details
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.thesis_title.id_for_label }}" class="form-label required">
+                                <i class="fas fa-heading"></i>
+                                Thesis Title
+                            </label>
+                            {{ form.thesis_title }}
+                            {% if form.thesis_title.help_text %}
+                                <div class="form-text">{{ form.thesis_title.help_text }}</div>
+                            {% endif %}
+                            {% if form.thesis_title.errors %}
+                                <div class="text-danger mt-1">{{ form.thesis_title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.phd_status.id_for_label }}" class="form-label required">
+                                <i class="fas fa-tasks"></i>
+                                Ph.D. Status
+                            </label>
+                            {{ form.phd_status }}
+                            {% if form.phd_status.help_text %}
+                                <div class="form-text">{{ form.phd_status.help_text }}</div>
+                            {% endif %}
+                            {% if form.phd_status.errors %}
+                                <div class="text-danger mt-1">{{ form.phd_status.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.date_of_completion.id_for_label }}" class="form-label">
+                                <i class="fas fa-calendar-check"></i>
+                                Date of Completion/Award
+                            </label>
+                            {{ form.date_of_completion }}
+                            {% if form.date_of_completion.help_text %}
+                                <div class="form-text">{{ form.date_of_completion.help_text }}</div>
+                            {% endif %}
+                            {% if form.date_of_completion.errors %}
+                                <div class="text-danger mt-1">{{ form.date_of_completion.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supervision Team Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-users"></i>
+                    Supervision Team
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.other_supervisors.id_for_label }}" class="form-label">
+                                <i class="fas fa-user-friends"></i>
+                                Other Supervisors
+                            </label>
+                            {{ form.other_supervisors }}
+                            {% if form.other_supervisors.help_text %}
+                                <div class="form-text">{{ form.other_supervisors.help_text }}</div>
+                            {% endif %}
+                            {% if form.other_supervisors.errors %}
+                                <div class="text-danger mt-1">{{ form.other_supervisors.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.no_of_other_authors_from_iilm.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-plus"></i>
+                                Other IILM Faculty Involved
+                            </label>
+                            {{ form.no_of_other_authors_from_iilm }}
+                            {% if form.no_of_other_authors_from_iilm.help_text %}
+                                <div class="form-text">{{ form.no_of_other_authors_from_iilm.help_text }}</div>
+                            {% endif %}
+                            {% if form.no_of_other_authors_from_iilm.errors %}
+                                <div class="text-danger mt-1">{{ form.no_of_other_authors_from_iilm.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Upload Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-upload"></i>
+                    Document Upload
+                </h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.pdf_upload.id_for_label }}" class="form-label required">
+                        <i class="fas fa-file-pdf"></i>
+                        Supporting Document
+                    </label>
+                    
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-upload-text">
+                            <h4>Upload Supporting Document</h4>
+                            <p>Drag & drop your PDF file here or click to browse</p>
+                            <p class="file-upload-btn">Choose File</p>
+                        </div>
+                        {{ form.pdf_upload }}
+                    </div>
+                    
+                    <div id="filePreview" class="mt-3" style="display: none;">
+                        <div class="alert alert-success d-flex align-items-center">
+                            <i class="fas fa-check-circle me-2 text-success"></i>
+                            <span id="fileName">File selected</span>
+                            <button type="button" id="removeFile" class="btn-close ms-auto" aria-label="Remove"></button>
+                        </div>
+                    </div>
+                    
+                    {% if form.pdf_upload.help_text %}
+                        <div class="form-text">{{ form.pdf_upload.help_text }}</div>
+                    {% endif %}
+                    {% if form.pdf_upload.errors %}
+                        <div class="text-danger mt-1">{{ form.pdf_upload.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Ph.D. Guidance
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Back Link -->
+    <div class="back-link">
+        <a href="{% url 'dashboard' %}">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/phd_guidance.js' %}"></script>
+</body>
+</html>
