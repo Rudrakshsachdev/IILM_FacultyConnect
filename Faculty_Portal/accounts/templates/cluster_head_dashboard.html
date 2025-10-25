@@ -335,6 +335,8 @@
               {{ sub.book_title }}
             {% elif sub.submission_type == 'Consultancy Project' %}
               {{ sub.project_title }}
+            {% elif sub.submission_type == 'Editorial Roles' %}
+              {{ sub.journal_name }}
             {% else %}
               N/A
             {% endif %}
@@ -362,6 +364,8 @@
       {{ sub.book_title }}
     {% elif sub.submission_type == 'Consultancy Project' %}
       {{ sub.project_title }}
+    {% elif sub.submission_type == 'Editorial Roles' %}
+      {{ sub.journal_name }}
     {% else %}
       N/A
     {% endif %}

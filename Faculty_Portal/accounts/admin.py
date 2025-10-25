@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import FacultyUser, FacultyProfile, JournalPublication,ConferencePublication, ResearchProject, Copyright, Patents, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects
+from .models import FacultyUser, FacultyProfile, JournalPublication,ConferencePublication, ResearchProject, Copyright, Patents, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles
 
 # Register your models here.
 
@@ -14,3 +14,4 @@ admin.site.register(PhdGuidance)
 admin.site.register(BookChapter)
 admin.site.register(BooksAuthored)
 admin.site.register(ConsultancyProjects)
+admin.site.register(EditorialRoles)

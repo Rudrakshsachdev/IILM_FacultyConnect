@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles
 
 
 
@@ -267,4 +267,45 @@ class ConsultancyProjectsForm(forms.ModelForm):
             'outcomes': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe outcomes or deliverables'}),
             'mou_signed': forms.Select(choices=[('yes', 'Yes'), ('no', 'No')]),
             'no_of_other_authors_from_iilm': forms.NumberInput(attrs={'min': 0}),
+        }
+
+
+
+class EditorialRolesForm(forms.ModelForm):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        label="Start Date"
+    )
+    end_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        label="End Date"
+    )
+
+    class Meta:
+        model = EditorialRoles
+        fields = [
+            'journal_name',
+            'publisher',
+            'editorial_role',
+            'start_date',
+            'end_date',
+            'pdf_upload',
+            'no_of_other_editors_from_iilm',
+        ]
+
+        labels = {
+            'journal_name': 'Journal Name',
+            'publisher': 'Publisher',
+            'editorial_role': 'Editorial Board Role',
+            'pdf_upload': 'Upload Proof',
+            'no_of_other_editors_from_iilm': 'No. of Other Editors from IILM',
+        }
+
+        widgets = {
+            'journal_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'publisher': forms.TextInput(attrs={'class': 'form-control'}),
+            'editorial_role': forms.Select(attrs={'class': 'form-control'}),
+            'pdf_upload': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'no_of_other_editors_from_iilm': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
         }

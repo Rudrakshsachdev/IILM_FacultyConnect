@@ -89,4 +89,10 @@ urlpatterns = [
     path('cluster-head/review-consultancy-project/<int:submission_id>/', views.review_submission_consultancy_project, name='review_submission_consultancy_project'),
 
     path('dean-review-consultancy-project/<int:pk>/', views.dean_review_consultancy_project, name='dean_review_consultancy_project'),
+
+    path('editorial-roles/', views.editorial_roles, name='editorial_roles'),
+
+    path('cluster-head/review-editorial-roles/<int:submission_id>/', views.review_submission_editorial_roles, name='review_submission_editorial_roles'),
+
+    path('dean-review-editorial-roles/<int:pk>/', views.dean_review_editorial_roles, name='dean_review_editorial_roles'),
 ]

@@ -381,6 +381,8 @@
                       {{ submission.book_title }}
                     {% elif submission.submission_type == 'Consultancy Project' %}
                       {{ submission.project_title }}
+                    {% elif submission.submission_type == 'Editorial Roles' %}
+                      {{ submission.journal_name }}
                     {% endif %}
                   </div>
                 </td>
@@ -410,6 +412,8 @@
             {{ submission.book_title }}
         {% elif submission.submission_type == 'Consultancy Project' %}
             {{ submission.project_title }}
+        {% elif submission.submission_type == 'Editorial Roles' %}
+            {{ submission.journal_name }}
         {% endif %}
     </div>
 </td>

@@ -1,0 +1,230 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editorial Roles Submission | IILM University</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/editorial_roles.css' %}">
+</head>
+<body>
+    <!-- Header Section - Matching Ph.D. Form -->
+    <div class="form-header">
+        <h1><i class="fas fa-edit me-2"></i>Editorial Roles Submission</h1>
+        <p>Submit your editorial role details and documentation</p>
+    </div>
+
+    <!-- Main Form Container - Matching Ph.D. Form -->
+    <div class="form-container">
+        <!-- Success Message Display -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success">
+                    <i class="fas fa-check-circle me-2"></i>{{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" id="editorialForm">
+            {% csrf_token %}
+            
+            <!-- Non-field Errors -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger mb-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <!-- Journal Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-newspaper"></i>
+                    Journal Information
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.journal_name.id_for_label }}" class="form-label required">
+                                <i class="fas fa-book"></i>
+                                Journal Name
+                            </label>
+                            {{ form.journal_name }}
+                            {% if form.journal_name.help_text %}
+                                <div class="form-text">{{ form.journal_name.help_text }}</div>
+                            {% endif %}
+                            {% if form.journal_name.errors %}
+                                <div class="text-danger mt-1">{{ form.journal_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.publisher.id_for_label }}" class="form-label required">
+                                <i class="fas fa-building"></i>
+                                Publisher
+                            </label>
+                            {{ form.publisher }}
+                            {% if form.publisher.help_text %}
+                                <div class="form-text">{{ form.publisher.help_text }}</div>
+                            {% endif %}
+                            {% if form.publisher.errors %}
+                                <div class="text-danger mt-1">{{ form.publisher.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role and Duration Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user-tie"></i>
+                    Role and Duration
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.editorial_role.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-edit"></i>
+                                Editorial Board Role
+                            </label>
+                            {{ form.editorial_role }}
+                            {% if form.editorial_role.help_text %}
+                                <div class="form-text">{{ form.editorial_role.help_text }}</div>
+                            {% endif %}
+                            {% if form.editorial_role.errors %}
+                                <div class="text-danger mt-1">{{ form.editorial_role.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group date-input-group">
+                            <label for="{{ form.start_date.id_for_label }}" class="form-label required">
+                                <i class="fas fa-calendar-plus"></i>
+                                Start Date
+                            </label>
+                            {{ form.start_date }}
+                            {% comment %} <i class="fas fa-calendar-alt date-icon"></i> {% endcomment %}
+                            {% if form.start_date.help_text %}
+                                <div class="form-text">{{ form.start_date.help_text }}</div>
+                            {% endif %}
+                            {% if form.start_date.errors %}
+                                <div class="text-danger mt-1">{{ form.start_date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group date-input-group">
+                            <label for="{{ form.end_date.id_for_label }}" class="form-label">
+                                <i class="fas fa-calendar-minus"></i>
+                                End Date
+                            </label>
+                            {{ form.end_date }}
+                            {% comment %} <i class="fas fa-calendar-alt date-icon"></i> {% endcomment %}
+                            {% if form.end_date.help_text %}
+                                <div class="form-text">{{ form.end_date.help_text }}</div>
+                            {% endif %}
+                            {% if form.end_date.errors %}
+                                <div class="text-danger mt-1">{{ form.end_date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Upload and Team Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-upload"></i>
+                    Documentation and Team
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.no_of_other_editors_from_iilm.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-plus"></i>
+                                Other IILM Editors
+                            </label>
+                            {{ form.no_of_other_editors_from_iilm }}
+                            {% if form.no_of_other_editors_from_iilm.help_text %}
+                                <div class="form-text">{{ form.no_of_other_editors_from_iilm.help_text }}</div>
+                            {% endif %}
+                            {% if form.no_of_other_editors_from_iilm.errors %}
+                                <div class="text-danger mt-1">{{ form.no_of_other_editors_from_iilm.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.pdf_upload.id_for_label }}" class="form-label required">
+                                <i class="fas fa-file-pdf"></i>
+                                Upload Proof (PDF)
+                            </label>
+                            
+                            <div class="file-upload-area" id="fileUploadArea">
+                                <div class="file-upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="file-upload-text">
+                                    <h4>Upload Proof Document</h4>
+                                    <p>Drag & drop your PDF file here or click to browse</p>
+                                    <p class="file-upload-btn">Choose File</p>
+                                </div>
+                                {{ form.pdf_upload }}
+                            </div>
+                            
+                            <div id="filePreview" class="mt-3" style="display: none;">
+                                <div class="alert alert-success d-flex align-items-center">
+                                    <i class="fas fa-check-circle me-2 text-success"></i>
+                                    <span id="fileName">File selected</span>
+                                    <button type="button" id="removeFile" class="btn-close ms-auto" aria-label="Remove"></button>
+                                </div>
+                            </div>
+                            
+                            {% if form.pdf_upload.help_text %}
+                                <div class="form-text">{{ form.pdf_upload.help_text }}</div>
+                            {% endif %}
+                            {% if form.pdf_upload.errors %}
+                                <div class="text-danger mt-1">{{ form.pdf_upload.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Editorial Role
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Back Link -->
+    <div class="back-link">
+        <a href="{% url 'dashboard' %}">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/editorial_roles.js' %}"></script>
+</body>
+</html>

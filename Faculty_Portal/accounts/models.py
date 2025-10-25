@@ -699,3 +699,64 @@ class ConsultancyProjects(models.Model):
 
     def __str__(self):
         return f"{self.project_title} ({self.user.username})"
+
+
+class EditorialRoles(models.Model):
+    ROLE_CHOICES = [
+        ('editor_in_chief', 'Editor-in-Chief'),
+        ('associate_editor', 'Associate Editor'),
+        ('section_editor', 'Section Editor'),
+        ('review_editor', 'Review Editor'),
+        ('guest_editor', 'Guest Editor'),
+    ]
+
+    REVIEW_STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    journal_name = models.CharField(max_length=255)
+    publisher = models.CharField(max_length=255)
+    editorial_role = models.CharField(max_length=50, choices=ROLE_CHOICES)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+    pdf_upload = models.FileField(upload_to='editorial_roles/')
+    no_of_other_editors_from_iilm = models.PositiveIntegerField(default=0)
+
+    # Cluster Head Review
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # Dean Review
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    status = models.CharField(max_length=30, choices=REVIEW_STATUS_CHOICES, default='submitted')
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.journal_name} ({self.user.username})"
