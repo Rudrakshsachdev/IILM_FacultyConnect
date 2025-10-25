@@ -269,6 +269,8 @@
                               title="{{ submission.chapter_title }}"
                             {% elif submission.submission_type == 'Books Authored' %}
                               title="{{ submission.book_title }}"
+                            {% elif submission.submission_type == 'Consultancy Project' %}
+                              title="{{ submission.project_title }}"
                         {% endif %}>
 
                       <div class="text-sm text-gray-500 truncate max-w-xs">
@@ -288,6 +290,8 @@
                             {{ submission.chapter_title }}
                           {% elif submission.submission_type == 'Books Authored' %}
                             {{ submission.book_title }}
+                          {% elif submission.submission_type == 'Consultancy Project' %}
+                            {{ submission.project_title }}
                         {% endif %}
                       </div>
                     </div>
@@ -311,6 +315,8 @@
       {{ submission.chapter_title }}
     {% elif submission.submission_type == 'Books Authored' %}
       {{ submission.book_title }}
+    {% elif submission.submission_type == 'Consultancy Project' %}
+      {{ submission.project_title }}
     {% else %}
       N/A
     {% endif %}

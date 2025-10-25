@@ -83,4 +83,10 @@ urlpatterns = [
     path('cluster-head/review-books-authored/<int:submission_id>/', views.review_submission_books_authored, name='review_submission_books_authored'),
 
     path('dean-review-books-authored/<int:pk>/', views.dean_review_books_authored, name='dean_review_books_authored'),
+
+    path('consultancy-project/', views.consultancy_project, name='consultancy_project'),
+
+    path('cluster-head/review-consultancy-project/<int:submission_id>/', views.review_submission_consultancy_project, name='review_submission_consultancy_project'),
+
+    path('dean-review-consultancy-project/<int:pk>/', views.dean_review_consultancy_project, name='dean_review_consultancy_project'),
 ]

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects
 
 
 
@@ -246,5 +246,25 @@ class BooksAuthoredForm(forms.ModelForm):
             'isbn': forms.TextInput(attrs={'placeholder': 'Enter ISBN number'}),
             'publication_year': forms.NumberInput(attrs={'placeholder': 'Enter publication year'}),
             'authors_or_editors': forms.Textarea(attrs={'rows': 3, 'placeholder': 'List all authors/editors'}),
+            'no_of_other_authors_from_iilm': forms.NumberInput(attrs={'min': 0}),
+        }
+
+
+
+class ConsultancyProjectsForm(forms.ModelForm):
+    class Meta:
+        model = ConsultancyProjects
+        exclude = [
+            'user', 'status', 'cluster_head_status', 'cluster_head_remarks',
+            'dean_status', 'dean_remarks', 'submitted_at', 'reviewed_at'
+        ]
+        widgets = {
+            'project_title': forms.TextInput(attrs={'placeholder': 'Enter project title'}),
+            'industry_partner': forms.TextInput(attrs={'placeholder': 'Enter industry partner / client name'}),
+            'duration': forms.TextInput(attrs={'placeholder': 'e.g. Jan 2024 – Dec 2024'}),
+            'amount_received': forms.NumberInput(attrs={'placeholder': 'Enter amount received'}),
+            'role': forms.TextInput(attrs={'placeholder': 'Enter your role in the project'}),
+            'outcomes': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe outcomes or deliverables'}),
+            'mou_signed': forms.Select(choices=[('yes', 'Yes'), ('no', 'No')]),
             'no_of_other_authors_from_iilm': forms.NumberInput(attrs={'min': 0}),
         }

@@ -333,6 +333,8 @@
               {{ sub.chapter_title }}
             {% elif sub.submission_type == 'Books Authored' %}
               {{ sub.book_title }}
+            {% elif sub.submission_type == 'Consultancy Project' %}
+              {{ sub.project_title }}
             {% else %}
               N/A
             {% endif %}
@@ -358,6 +360,8 @@
       {{ sub.chapter_title }}
     {% elif sub.submission_type == 'Books Authored' %}
       {{ sub.book_title }}
+    {% elif sub.submission_type == 'Consultancy Project' %}
+      {{ sub.project_title }}
     {% else %}
       N/A
     {% endif %}
@@ -405,7 +409,7 @@
         <i class="fas fa-inbox text-4xl mb-4 text-gray-300"></i>
         <p class="text-lg font-medium">No submissions to review</p>
         <p class="text-sm mt-1">
-          When new research submissions arrive, they will appear here.
+          When new forms arrive, they will appear here.
         </p>
       </div>
     </td>
