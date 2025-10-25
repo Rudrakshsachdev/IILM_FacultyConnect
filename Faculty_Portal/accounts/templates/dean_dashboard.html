@@ -265,6 +265,8 @@
                             title="{{ submission.title_of_work }}"
                           {% elif submission.submission_type == 'PhD Guidance' %}
                             title="{{ submission.thesis_title }}"
+                            {% elif submission.submission_type == 'Book Chapter' %}
+                              title="{{ submission.chapter_title }}"
                         {% endif %}>
 
                       <div class="text-sm text-gray-500 truncate max-w-xs">
@@ -280,6 +282,8 @@
                             {{ submission.title_of_work }}
                           {% elif submission.submission_type == 'PhD Guidance' %}
                             {{ submission.thesis_title }}
+                          {% elif submission.submission_type == 'Book Chapter' %}
+                            {{ submission.chapter_title }}
                         {% endif %}
                       </div>
                     </div>
@@ -299,6 +303,8 @@
       {{ submission.title_of_work }}
     {% elif submission.submission_type == 'PhD Guidance' %}
       {{ submission.thesis_title }}
+    {% elif submission.submission_type == 'Book Chapter' %}
+      {{ submission.chapter_title }}
     {% else %}
       N/A
     {% endif %}

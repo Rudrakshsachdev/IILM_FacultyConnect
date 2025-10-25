@@ -329,6 +329,8 @@
               {{ sub.title_of_work }}
             {% elif sub.submission_type == 'PhD Guidance' %}
               {{ sub.thesis_title }}
+            {% elif sub.submission_type == 'Book Chapter' %}
+              {{ sub.chapter_title }}
             {% else %}
               N/A
             {% endif %}
@@ -350,6 +352,8 @@
       {{ sub.title_of_work }}
     {% elif sub.submission_type == 'PhD Guidance' %}
       {{ sub.thesis_title }}
+    {% elif sub.submission_type == 'Book Chapter' %}
+      {{ sub.chapter_title }}
     {% else %}
       N/A
     {% endif %}
