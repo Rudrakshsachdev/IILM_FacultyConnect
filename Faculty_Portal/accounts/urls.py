@@ -95,4 +95,6 @@ urlpatterns = [
     path('cluster-head/review-editorial-roles/<int:submission_id>/', views.review_submission_editorial_roles, name='review_submission_editorial_roles'),
 
     path('dean-review-editorial-roles/<int:pk>/', views.dean_review_editorial_roles, name='dean_review_editorial_roles'),
+
+    path('reviewer-roles/', views.reviewer_roles, name='reviewer_roles'),
 ]

@@ -760,3 +760,61 @@ class EditorialRoles(models.Model):
 
     def __str__(self):
         return f"{self.journal_name} ({self.user.username})"
+    
+
+class ReviewerRoles(models.Model):
+    INDEXING_CHOICES = [
+        ('sci', 'SCI'),
+        ('scopus', 'Scopus'),
+        ('other', 'Other'),
+    ]
+
+    REVIEW_STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    journal_or_conference_name = models.CharField(max_length=255)
+    publisher_or_organizer = models.CharField(max_length=255)
+    frequency_of_review = models.CharField(max_length=100)
+    indexing_of_journal = models.CharField(max_length=20, choices=INDEXING_CHOICES)
+    pdf_upload = models.FileField(upload_to='reviewer_roles/')
+
+    # Cluster Head Review
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # Dean Review
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    status = models.CharField(max_length=30, choices=REVIEW_STATUS_CHOICES, default='submitted')
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.journal_or_conference_name} ({self.user.username})"
+

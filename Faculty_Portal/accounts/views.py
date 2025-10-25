@@ -2,8 +2,8 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles
+from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm, ReviewerRolesForm
 import random
 from django.conf import settings
 from django.contrib.auth import login
@@ -1320,3 +1320,21 @@ def dean_review_editorial_roles(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review_editorial_roles.html', {'submission': submission})
+
+
+def reviewer_roles(request):
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = ReviewerRolesForm(request.POST, request.FILES)
+        if form.is_valid():
+            role = form.save(commit=False)
+            user = FacultyUser.objects.get(user_id=request.session['user_id'])
+            role.user = user
+            role.save()
+            messages.success(request, "Reviewer role submitted successfully.")
+            return redirect('my_submissions')
+    else:
+        form = ReviewerRolesForm()
+    return render(request, 'reviewer_roles.html', {'form': form})

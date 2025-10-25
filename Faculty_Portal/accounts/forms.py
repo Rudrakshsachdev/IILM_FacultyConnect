@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles
 
 
 
@@ -308,4 +308,19 @@ class EditorialRolesForm(forms.ModelForm):
             'editorial_role': forms.Select(attrs={'class': 'form-control'}),
             'pdf_upload': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'no_of_other_editors_from_iilm': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
+        }
+
+
+class ReviewerRolesForm(forms.ModelForm):
+    class Meta:
+        model = ReviewerRoles
+        exclude = [
+            'user', 'status', 'cluster_head_status', 'cluster_head_remarks',
+            'dean_status', 'dean_remarks', 'submitted_at', 'reviewed_at'
+        ]
+        widgets = {
+            'journal_or_conference_name': forms.TextInput(attrs={'placeholder': 'Enter journal or conference name'}),
+            'publisher_or_organizer': forms.TextInput(attrs={'placeholder': 'Enter publisher or organizer'}),
+            'frequency_of_review': forms.TextInput(attrs={'placeholder': 'Enter frequency of review'}),
+            'indexing_of_journal': forms.Select(attrs={'class': 'form-select'}),
         }
