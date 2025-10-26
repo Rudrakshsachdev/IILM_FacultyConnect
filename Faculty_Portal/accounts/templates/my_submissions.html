@@ -387,6 +387,8 @@
                       {{ submission.journal_or_conference_name }}
                     {% elif submission.submission_type == 'Awards & Achievements' %}
                       {{ submission.title_of_award }}
+                    {% elif submission.submission_type == 'Industry Collaboration' %}
+                      {{ submission.industry_name }}
                     {% endif %}
                   </div>
                 </td>
@@ -422,6 +424,8 @@
             {{ submission.journal_or_conference_name }}
         {% elif submission.submission_type == 'Awards & Achievements' %}
             {{ submission.title_of_award }}
+        {% elif submission.submission_type == 'Industry Collaboration' %}
+            {{ submission.industry_name }}
         {% endif %}
     </div>
 </td>

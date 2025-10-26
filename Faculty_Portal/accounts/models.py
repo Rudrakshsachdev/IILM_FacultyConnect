@@ -877,3 +877,62 @@ class AwardsAchievements(models.Model):
     def __str__(self):
         return f"{self.title_of_award} ({self.user.username})"
 
+
+
+
+class IndustryCollaboration(models.Model):
+    MOU_CHOICES = [
+        ('yes', 'Yes'),
+        ('no', 'No'),
+    ]
+
+    REVIEW_STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    industry_name = models.CharField(max_length=255, verbose_name="Industry / Organization Name")
+    nature_of_collaboration = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    outcomes = models.CharField(max_length=255, help_text="(e.g., Internship / Research / Product / Course Developed)")
+    mou_signed = models.CharField(max_length=10, choices=MOU_CHOICES)
+    pdf_upload = models.FileField(upload_to='industry_collaboration/')
+
+    # Cluster Head Review
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # Dean Review
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    status = models.CharField(max_length=30, choices=REVIEW_STATUS_CHOICES, default='submitted')
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.industry_name} ({self.user.username})"

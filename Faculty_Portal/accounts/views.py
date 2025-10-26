@@ -2,14 +2,21 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm, ReviewerRolesForm, AwardsAchievementsForm
+
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements, IndustryCollaboration
+
+
+from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm, ReviewerRolesForm, AwardsAchievementsForm, IndustryCollaborationForm
+
+
 import random
 from django.conf import settings
 from django.contrib.auth import login
+
 from django.contrib.auth.hashers import check_password
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from itertools import chain
@@ -366,6 +373,8 @@ def cluster_head_dashboard(request):
 
     awards_achievements_submissions = AwardsAchievements.objects.filter(status='submitted').order_by('-submitted_at')
 
+    industry_collaboration_submissions = IndustryCollaboration.objects.filter(status='submitted').order_by('-submitted_at')
+
     for sub in journal_publications:
         sub.submission_type = 'Journal Publication'
         sub.review_url = reverse('review_submission_journal', args=[sub.id])
@@ -413,9 +422,13 @@ def cluster_head_dashboard(request):
     for sub in awards_achievements_submissions:
         sub.submission_type = 'Awards & Achievements'
         sub.review_url = reverse('review_submission_awards_achievements', args=[sub.id])
+    
+    for sub in industry_collaboration_submissions:
+        sub.submission_type = 'Industry Collaboration'
+        sub.review_url = reverse('review_submission_industry_collaboration', args=[sub.id])
 
     all_submissions = sorted(
-        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_projects_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions) + list(awards_achievements_submissions),
+        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_projects_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions) + list(awards_achievements_submissions) + list(industry_collaboration_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -497,6 +510,8 @@ def my_submissions(request):
 
     awards_achievements_submissions = AwardsAchievements.objects.filter(user=user).order_by('-submitted_at')
 
+    industry_collaboration_submissions = IndustryCollaboration.objects.filter(user=user).order_by('-submitted_at')
+
     for sub in journal_submissions:
         sub.submission_type = 'Journal Publication'
         
@@ -533,10 +548,13 @@ def my_submissions(request):
     
     for sub in awards_achievements_submissions:
         sub.submission_type = 'Awards & Achievements'
+    
+    for sub in industry_collaboration_submissions:
+        sub.submission_type = 'Industry Collaboration'
         
 
     submissions = sorted(
-        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions, book_chapter_submissions, books_authored_submissions, consultancy_project_submissions, editorial_roles_submissions, reviewer_roles_submissions, awards_achievements_submissions),
+        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions, book_chapter_submissions, books_authored_submissions, consultancy_project_submissions, editorial_roles_submissions, reviewer_roles_submissions, awards_achievements_submissions, industry_collaboration_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -626,8 +644,14 @@ def dean_dashboard(request):
         sub.review_url = reverse('dean_review_awards_achievements', args=[sub.id])
         sub.submission_type = 'Awards & Achievements'
 
+    industry_collaboration_submissions = IndustryCollaboration.objects.filter(status='approved_by_cluster').order_by('-submitted_at')
+
+    for sub in industry_collaboration_submissions:
+        sub.review_url = reverse('dean_review_industry_collaboration', args=[sub.id])
+        sub.submission_type = 'Industry Collaboration'
+
     all_submissions = sorted(
-        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_project_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions) + list(awards_achievements_submissions),
+        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_project_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions) + list(awards_achievements_submissions) + list(industry_collaboration_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -1509,3 +1533,80 @@ def dean_review_awards_achievements(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review_awards_achievements.html', {'submission': submission})
+
+
+def industry_collaboration(request):
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = IndustryCollaborationForm(request.POST, request.FILES)
+        if form.is_valid():
+            collaboration = form.save(commit=False)
+            user = FacultyUser.objects.get(user_id=request.session['user_id'])
+            collaboration.user = user
+            collaboration.save()
+            messages.success(request, "Industry Collaboration details submitted successfully.")
+            return redirect('my_submissions')
+    else:
+        form = IndustryCollaborationForm()
+    return render(request, 'industry_collaboration.html', {'form': form})
+
+
+
+def review_submission_industry_collaboration(request, submission_id):
+    submission = get_object_or_404(IndustryCollaboration, id=submission_id)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')  # 'approved_by_cluster', 'rejected_by_cluster', 'revision'
+        remarks = request.POST.get('remarks')
+
+        if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
+            messages.error(request, 'Invalid status.')
+            return redirect('review_submission_industry_collaboration', submission_id=submission.id)
+
+        # Map status to cluster_head_status
+        if status == 'approved_by_cluster':
+            submission.cluster_head_status = 'approved'
+            submission.status = 'approved_by_cluster'
+        elif status == 'rejected_by_cluster':
+            submission.cluster_head_status = 'rejected'
+            submission.status = 'rejected_by_cluster'
+        elif status == 'revision':
+            submission.cluster_head_status = 'revision'
+            submission.status = 'revision'
+
+        submission.cluster_head_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.industry_name}' reviewed successfully.")
+        return redirect('cluster_head_dashboard')
+    return render(request, 'review_submission_industry_collaboration.html', {'submission': submission})
+
+
+def dean_review_industry_collaboration(request, pk):
+    submission = get_object_or_404(IndustryCollaboration, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        remarks = request.POST.get('remarks')
+
+        # Validate and set dean review status
+        if action == 'approve':
+            submission.dean_status = 'approved'
+            submission.status = 'approved_by_dean'
+        elif action == 'reject':
+            submission.dean_status = 'rejected'
+            submission.status = 'rejected_by_dean'
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('dean_review_industry_collaboration', pk=pk)
+
+        # Save remarks separately for dean
+        submission.dean_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.industry_name}' reviewed by Dean successfully.")
+        return redirect('dean_dashboard')
+
+    return render(request, 'dean_review_industry_collaboration.html', {'submission': submission})

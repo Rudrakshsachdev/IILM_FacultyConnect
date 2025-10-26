@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements, IndustryCollaboration
 
 
 
@@ -344,5 +344,29 @@ class AwardsAchievementsForm(forms.ModelForm):
             'awarding_body': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter awarding body'}),
             'level': forms.Select(attrs={'class': 'form-select'}),
             'nature_of_contribution': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Describe contribution recognized'}),
+            'pdf_upload': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+
+
+
+class IndustryCollaborationForm(forms.ModelForm):
+    class Meta:
+        model = IndustryCollaboration
+        fields = [
+            'industry_name',
+            'nature_of_collaboration',
+            'start_date',
+            'end_date',
+            'outcomes',
+            'mou_signed',
+            'pdf_upload',
+        ]
+        widgets = {
+            'industry_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter industry or organization name'}),
+            'nature_of_collaboration': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Describe the nature of collaboration'}),
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'outcomes': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Internship, Research, Product, Course Developed'}),
+            'mou_signed': forms.Select(attrs={'class': 'form-select'}),
             'pdf_upload': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }

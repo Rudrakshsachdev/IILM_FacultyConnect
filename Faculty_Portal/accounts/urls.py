@@ -107,4 +107,10 @@ urlpatterns = [
     path('cluster-head/review-awards-achievements/<int:submission_id>/', views.review_submission_awards_achievements, name='review_submission_awards_achievements'),
 
     path('dean-review-awards-achievements/<int:pk>/', views.dean_review_awards_achievements, name='dean_review_awards_achievements'),
+
+    path('industry-collaboration/', views.industry_collaboration, name='industry_collaboration'),
+
+    path('cluster-head/review-industry-collaboration/<int:submission_id>/', views.review_submission_industry_collaboration, name='review_submission_industry_collaboration'),
+
+    path('dean-review-industry-collaboration/<int:pk>/', views.dean_review_industry_collaboration, name='dean_review_industry_collaboration'),
 ]
