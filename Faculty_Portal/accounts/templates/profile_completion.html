@@ -3,164 +3,271 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Complete Your Profile | IILM University Faculty Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Profile Completion | IILM University</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="{% static 'css/profile_completion.css' %}">
 </head>
 <body>
-    <div class="profile-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div>
-                <div class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-graduation-cap"></i>
+    <!-- Header Section - Matching Ph.D. Form -->
+    <div class="form-header">
+        <h1><i class="fas fa-user-circle me-2"></i>Faculty Profile Completion</h1>
+        <p>Complete your faculty profile with accurate information</p>
+    </div>
+
+    <!-- Main Form Container - Matching Ph.D. Form -->
+    <div class="form-container">
+        <!-- Success Message Display -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success">
+                    <i class="fas fa-check-circle me-2"></i>{{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" id="facultyProfileForm">
+            {% csrf_token %}
+            
+            <!-- Profile Image Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Profile Image
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.profile_image.id_for_label }}" class="form-label">
+                                <i class="fas fa-camera"></i>
+                                Profile Image
+                            </label>
+                            
+                            <div class="profile-upload-area" id="profileUploadArea">
+                                <img id="profilePreview" class="profile-preview" alt="Profile preview">
+                                <div class="profile-upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="profile-upload-text">
+                                    <h4>Upload Profile Image</h4>
+                                    <p>Drag & drop your image here or click to browse</p>
+                                    <p class="profile-upload-btn">Choose Image</p>
+                                </div>
+                                {{ form.profile_image }}
+                            </div>
+                            
+                            {% if form.profile_image.help_text %}
+                                <div class="form-text">{{ form.profile_image.help_text }}</div>
+                            {% endif %}
+                            {% if form.profile_image.errors %}
+                                <div class="text-danger mt-1">{{ form.profile_image.errors.0 }}</div>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="logo-text">
-                        <h1>IILM</h1>
-                        <p>UNIVERSITY</p>
+                </div>
+            </div>
+
+            <!-- Academic Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    Academic Information
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.school_faculty.id_for_label }}" class="form-label required">
+                                <i class="fas fa-university"></i>
+                                School / Faculty
+                            </label>
+                            {{ form.school_faculty }}
+                            {% if form.school_faculty.help_text %}
+                                <div class="form-text">{{ form.school_faculty.help_text }}</div>
+                            {% endif %}
+                            {% if form.school_faculty.errors %}
+                                <div class="text-danger mt-1">{{ form.school_faculty.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.department.id_for_label }}" class="form-label required">
+                                <i class="fas fa-building"></i>
+                                Department
+                            </label>
+                            {{ form.department }}
+                            {% if form.department.help_text %}
+                                <div class="form-text">{{ form.department.help_text }}</div>
+                            {% endif %}
+                            {% if form.department.errors %}
+                                <div class="text-danger mt-1">{{ form.department.errors.0 }}</div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 
-                <div class="sidebar-content">
-                    <h2>Complete Your Academic Profile</h2>
-                    <p>Join our distinguished faculty community by completing your professional profile. Showcase your expertise and connect with the academic world.</p>
-                    
-                    <ul class="features">
-                        <li>
-                            <i class="fas fa-user-tie"></i>
-                            <span>Professional Identity</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Academic Credentials</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-flask"></i>
-                            <span>Research Excellence</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-network-wired"></i>
-                            <span>Global Connections</span>
-                        </li>
-                    </ul>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.designation.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-tie"></i>
+                                Designation
+                            </label>
+                            {{ form.designation }}
+                            {% if form.designation.help_text %}
+                                <div class="form-text">{{ form.designation.help_text }}</div>
+                            {% endif %}
+                            {% if form.designation.errors %}
+                                <div class="text-danger mt-1">{{ form.designation.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.highest_qualification.id_for_label }}" class="form-label required">
+                                <i class="fas fa-award"></i>
+                                Highest Qualification
+                            </label>
+                            {{ form.highest_qualification }}
+                            {% if form.highest_qualification.help_text %}
+                                <div class="form-text">{{ form.highest_qualification.help_text }}</div>
+                            {% endif %}
+                            {% if form.highest_qualification.errors %}
+                                <div class="text-danger mt-1">{{ form.highest_qualification.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1>Complete Your Profile</h1>
-                <p>Three simple steps to showcase your academic excellence</p>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="progress-container">
-                <div class="progress-header">
-                    <span class="progress-label">Profile Completion</span>
-                    <span class="progress-percentage" id="progressPercentage">33%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress" id="progress"></div>
-                </div>
-                <div class="steps-indicator">
-                    <div class="step-marker active">1</div>
-                    <div class="step-marker">2</div>
-                    <div class="step-marker">3</div>
-                </div>
-            </div>
-
-            <form id="multiStepForm" enctype="multipart/form-data">
-                {% csrf_token %}
                 
-                <!-- Step 1: Personal Details -->
-                <div class="step step1 active">
-                    <div class="step-header">
-                        <h3>Personal Identity</h3>
-                        <p>Let's start with your professional profile image</p>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="{{ step1_form.profile_image.id_for_label }}">Profile Image</label>
-                        <div class="file-upload" id="fileUploadArea">
-                            <div class="file-upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <div class="file-upload-text">
-                                <h4>Upload Profile Image</h4>
-                                <p>Drag & drop or click to upload</p>
-                                <p class="file-upload-btn">Choose File</p>
-                            </div>
-                            {{ step1_form.profile_image }}
-                        </div>
-                        <div class="image-preview-container">
-                            <img id="imagePreview" class="image-preview" alt="Profile Preview">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="{{ form.area_of_specialization.id_for_label }}" class="form-label required">
+                                <i class="fas fa-microscope"></i>
+                                Area of Specialization
+                            </label>
+                            {{ form.area_of_specialization }}
+                            {% if form.area_of_specialization.help_text %}
+                                <div class="form-text">{{ form.area_of_specialization.help_text }}</div>
+                            {% endif %}
+                            {% if form.area_of_specialization.errors %}
+                                <div class="text-danger mt-1">{{ form.area_of_specialization.errors.0 }}</div>
+                            {% endif %}
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="form-actions">
-                        <div></div>
-                        <button type="button" class="btn btn-next" onclick="nextStep(1)">
-                            Continue <i class="fas fa-arrow-right"></i>
-                        </button>
+            <!-- Research Profiles Section -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-id-card"></i>
+                    Research Profiles
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.orcid_id.id_for_label }}" class="form-label">
+                                <i class="fas fa-fingerprint"></i>
+                                ORCID ID
+                            </label>
+                            {{ form.orcid_id }}
+                            {% if form.orcid_id.help_text %}
+                                <div class="form-text">{{ form.orcid_id.help_text }}</div>
+                            {% endif %}
+                            {% if form.orcid_id.errors %}
+                                <div class="text-danger mt-1">{{ form.orcid_id.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.scopus_id.id_for_label }}" class="form-label">
+                                <i class="fas fa-book"></i>
+                                Scopus ID
+                            </label>
+                            {{ form.scopus_id }}
+                            {% if form.scopus_id.help_text %}
+                                <div class="form-text">{{ form.scopus_id.help_text }}</div>
+                            {% endif %}
+                            {% if form.scopus_id.errors %}
+                                <div class="text-danger mt-1">{{ form.scopus_id.errors.0 }}</div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-
-                <!-- Step 2: Professional Details -->
-                <div class="step step2">
-                    <div class="step-header">
-                        <h3>Professional Details</h3>
-                        <p>Tell us about your academic journey and expertise</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.google_scholar.id_for_label }}" class="form-label">
+                                <i class="fas fa-graduation-cap"></i>
+                                Google Scholar Link
+                            </label>
+                            {{ form.google_scholar }}
+                            {% if form.google_scholar.help_text %}
+                                <div class="form-text">{{ form.google_scholar.help_text }}</div>
+                            {% endif %}
+                            {% if form.google_scholar.errors %}
+                                <div class="text-danger mt-1">{{ form.google_scholar.errors.0 }}</div>
+                            {% endif %}
+                        </div>
                     </div>
-
-                    {% for field in step2_form %}
-                    <div class="form-group">
-                        {{ field.label_tag }}
-                        {{ field }}
-                    </div>
-                    {% endfor %}
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-prev" onclick="prevStep(2)">
-                            <i class="fas fa-arrow-left"></i> Previous
-                        </button>
-                        <button type="button" class="btn btn-next" onclick="nextStep(2)">
-                            Continue <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Step 3: Academic / Research IDs -->
-                <div class="step step3">
-                    <div class="step-header">
-                        <h3>Research Profiles</h3>
-                        <p>Connect your academic identities and research profiles</p>
-                    </div>
-
-                    {% for field in step3_form %}
-                    <div class="form-group">
-                        {{ field.label_tag }}
-                        {{ field }}
-                    </div>
-                    {% endfor %}
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-prev" onclick="prevStep(3)">
-                            <i class="fas fa-arrow-left"></i> Previous
-                        </button>
-                        <button type="button" class="btn btn-submit" onclick="submitForm(3)">
-                            Complete Profile <i class="fas fa-check"></i>
-                        </button>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.vidwaan_id.id_for_label }}" class="form-label">
+                                <i class="fas fa-user-graduate"></i>
+                                Vidwaan ID
+                            </label>
+                            {{ form.vidwaan_id }}
+                            {% if form.vidwaan_id.help_text %}
+                                <div class="form-text">{{ form.vidwaan_id.help_text }}</div>
+                            {% endif %}
+                            {% if form.vidwaan_id.errors %}
+                                <div class="text-danger mt-1">{{ form.vidwaan_id.errors.0 }}</div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </form>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-user-check"></i>
+                    Complete Profile
+                </button>
+            </div>
+        </form>
+
+        <!-- Note Section -->
+        <div class="note">
+            <i class="fas fa-info-circle me-2"></i>
+            Ensure all details are accurate before submission.
         </div>
     </div>
 
+    <!-- Back Link -->
+    <div class="back-link">
+        <a href="{% url 'dashboard' %}">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/profile_completion.js' %}"></script>
-        
-   
 </body>
-</html>  
+</html>

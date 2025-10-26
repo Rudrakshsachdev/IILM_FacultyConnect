@@ -6,7 +6,7 @@ from django.contrib import messages
 from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements, IndustryCollaboration
 
 
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm, ReviewerRolesForm, AwardsAchievementsForm, IndustryCollaborationForm
+from .forms import FacultyProfileForm, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm, ReviewerRolesForm, AwardsAchievementsForm, IndustryCollaborationForm
 
 
 import random
@@ -261,59 +261,28 @@ def verify_reset_otp(request):
 
 
 def profile_completion(request):
-
-
     """
-    The profile_completion function ensures a logged-in user can complete their profile in multiple steps. It retrieves or creates a FacultyProfile linked to the user, loads three form sections (Step1Form, Step2Form, and Step3Form), and passes them to the profile_completion.html page. This allows users to fill out their profile information in a structured manner.
+    The profile_completion function allows logged-in users to complete or update their faculty profile. It first checks if the user is authenticated by verifying the presence of 'user_id' in the session. If not authenticated, it redirects to the login page. Once authenticated, it retrieves the user’s existing profile or creates a new one if it doesn’t exist. When the user submits the profile form, it validates and saves the data, linking it to the logged-in user. A success message is displayed upon successful submission, and the user is redirected to the dashboard. If there are form errors, they are communicated back to the user for correction.
     """
 
-    user_id = request.session.get('user_id')
-    if not user_id:
+    if 'user_id' not in request.session:
         return redirect('login')
 
-    user = FacultyUser.objects.get(user_id=user_id)
+    user = FacultyUser.objects.get(user_id=request.session['user_id'])
     profile, created = FacultyProfile.objects.get_or_create(user=user)
 
-    step1_form = Step1Form(instance=profile)
-    step2_form = Step2Form(instance=profile)
-    step3_form = Step3Form(instance=profile)
-
-    return render(request, 'profile_completion.html', {
-        'step1_form': step1_form,
-        'step2_form': step2_form,
-        'step3_form': step3_form,
-    })
-
-
-def save_step(request, step):
-
-
-    """
-    The save_step function saves data from each step of the profile completion form. Depending on which step is being saved (1, 2, or 3), it processes the corresponding form. If the form data is valid, it saves the progress. Once the third step is completed, the user’s is_first_login flag is set to False, indicating the profile is complete. Responses are sent as JSON objects to support asynchronous updates (AJAX).
-    """
-
-
-    user_id = request.session.get('user_id')
-    user = FacultyUser.objects.get(user_id=user_id)
-    profile, created = FacultyProfile.objects.get_or_create(user=user)
-
-    if step == '1':
-        form = Step1Form(request.POST, request.FILES, instance=profile)
-    elif step == '2':
-        form = Step2Form(request.POST, instance=profile)
-    elif step == '3':
-        form = Step3Form(request.POST, instance=profile)
+    if request.method == 'POST':
+        form = FacultyProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('dashboard')
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid step'})
+        form = FacultyProfileForm(instance=profile)
 
-    if form.is_valid():
-        form.save()
-        if step == '3':
-            user.is_first_login = False
-            user.save()
-        return JsonResponse({'status': 'success'})
-    else:
-        return JsonResponse({'status': 'error', 'errors': form.errors})
+    return render(request, 'profile_completion.html', {'form': form})
 
 
 def journal_publication(request):

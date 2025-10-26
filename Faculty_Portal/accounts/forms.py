@@ -4,21 +4,35 @@ from .models import FacultyProfile, JournalPublication, ConferencePublication, R
 
 
 
-class Step1Form(forms.ModelForm):
+from django import forms
+from .models import FacultyProfile
+
+class FacultyProfileForm(forms.ModelForm):
     class Meta:
         model = FacultyProfile
-        fields = ['profile_image']
-
-class Step2Form(forms.ModelForm):
-    class Meta:
-        model = FacultyProfile
-        fields = ['school_faculty', 'department', 'designation', 'highest_qualification', 'area_of_specialization']
-
-class Step3Form(forms.ModelForm):
-    class Meta:
-        model = FacultyProfile
-        fields = ['orcid_id', 'scopus_id', 'google_scholar', 'vidwaan_id']
-
+        fields = [
+            'profile_image',
+            'school_faculty',
+            'department',
+            'designation',
+            'highest_qualification',
+            'area_of_specialization',
+            'orcid_id',
+            'scopus_id',
+            'google_scholar',
+            'vidwaan_id',
+        ]
+        widgets = {
+            'school_faculty': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter school/faculty name'}),
+            'department': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter department name'}),
+            'designation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your designation'}),
+            'highest_qualification': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., PhD, M.Tech'}),
+            'area_of_specialization': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter area of specialization'}),
+            'orcid_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter ORCID ID'}),
+            'scopus_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Scopus ID'}),
+            'google_scholar': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Enter Google Scholar URL'}),
+            'vidwaan_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Vidwaan ID'}),
+        }
 
 
 

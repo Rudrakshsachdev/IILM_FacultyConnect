@@ -26,7 +26,6 @@ urlpatterns = [
 
     path('profile-completion/', views.profile_completion, name='profile_completion'),
 
-    path('save-step/<str:step>/', views.save_step, name='save_step'),
 
     path('journal-publication/', views.journal_publication, name='journal_publication'),
 
