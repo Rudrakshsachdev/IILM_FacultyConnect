@@ -383,6 +383,8 @@
                       {{ submission.project_title }}
                     {% elif submission.submission_type == 'Editorial Roles' %}
                       {{ submission.journal_name }}
+                    {% elif submission.submission_type == 'Reviewer Roles' %}
+                      {{ submission.journal_or_conference_name }}
                     {% endif %}
                   </div>
                 </td>
@@ -414,6 +416,8 @@
             {{ submission.project_title }}
         {% elif submission.submission_type == 'Editorial Roles' %}
             {{ submission.journal_name }}
+        {% elif submission.submission_type == 'Reviewer Roles' %}
+            {{ submission.journal_or_conference_name }}
         {% endif %}
     </div>
 </td>

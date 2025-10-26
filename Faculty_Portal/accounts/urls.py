@@ -97,4 +97,8 @@ urlpatterns = [
     path('dean-review-editorial-roles/<int:pk>/', views.dean_review_editorial_roles, name='dean_review_editorial_roles'),
 
     path('reviewer-roles/', views.reviewer_roles, name='reviewer_roles'),
+
+    path('cluster-head/review-reviewer-roles/<int:submission_id>/', views.review_submission_reviewer_roles, name='review_submission_reviewer_roles'),
+
+    path('dean-review-reviewer-roles/<int:pk>/', views.dean_review_reviewer_roles, name='dean_review_reviewer_roles'),
 ]

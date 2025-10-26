@@ -362,6 +362,8 @@ def cluster_head_dashboard(request):
 
     editorial_roles_submissions = EditorialRoles.objects.filter(status='submitted').order_by('-submitted_at')
 
+    reviewer_roles_submissions = ReviewerRoles.objects.filter(status='submitted').order_by('-submitted_at')
+
     for sub in journal_publications:
         sub.submission_type = 'Journal Publication'
         sub.review_url = reverse('review_submission_journal', args=[sub.id])
@@ -401,9 +403,13 @@ def cluster_head_dashboard(request):
     for sub in editorial_roles_submissions:
         sub.submission_type = 'Editorial Roles'
         sub.review_url = reverse('review_submission_editorial_roles', args=[sub.id])
+    
+    for sub in reviewer_roles_submissions:
+        sub.submission_type = 'Reviewer Roles'
+        sub.review_url = reverse('review_submission_reviewer_roles', args=[sub.id])
 
     all_submissions = sorted(
-        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_projects_submissions) + list(editorial_roles_submissions),
+        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_projects_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -481,6 +487,8 @@ def my_submissions(request):
 
     editorial_roles_submissions = EditorialRoles.objects.filter(user=user).order_by('-submitted_at')
 
+    reviewer_roles_submissions = ReviewerRoles.objects.filter(user=user).order_by('-submitted_at')
+
     for sub in journal_submissions:
         sub.submission_type = 'Journal Publication'
         
@@ -511,10 +519,13 @@ def my_submissions(request):
     
     for sub in editorial_roles_submissions:
         sub.submission_type = 'Editorial Roles'
+    
+    for sub in reviewer_roles_submissions:
+        sub.submission_type = 'Reviewer Roles'
         
 
     submissions = sorted(
-        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions, book_chapter_submissions, books_authored_submissions, consultancy_project_submissions, editorial_roles_submissions),
+        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions, book_chapter_submissions, books_authored_submissions, consultancy_project_submissions, editorial_roles_submissions, reviewer_roles_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -590,10 +601,16 @@ def dean_dashboard(request):
     for sub in editorial_roles_submissions:
         sub.review_url = reverse('dean_review_editorial_roles', args=[sub.id])
         sub.submission_type = 'Editorial Roles'
+    
 
+    reviewer_roles_submissions = ReviewerRoles.objects.filter(status='approved_by_cluster').order_by('-submitted_at')
+
+    for sub in reviewer_roles_submissions:
+        sub.review_url = reverse('dean_review_reviewer_roles', args=[sub.id])
+        sub.submission_type = 'Reviewer Roles'
 
     all_submissions = sorted(
-        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_project_submissions) + list(editorial_roles_submissions),
+        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_project_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -1338,3 +1355,61 @@ def reviewer_roles(request):
     else:
         form = ReviewerRolesForm()
     return render(request, 'reviewer_roles.html', {'form': form})
+
+
+def review_submission_reviewer_roles(request, submission_id):
+    submission = get_object_or_404(ReviewerRoles, id=submission_id)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')  # 'approved_by_cluster', 'rejected_by_cluster', 'revision'
+        remarks = request.POST.get('remarks')
+
+        if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
+            messages.error(request, 'Invalid status.')
+            return redirect('review_submission_reviewer_roles', submission_id=submission.id)
+
+        # Map status to cluster_head_status
+        if status == 'approved_by_cluster':
+            submission.cluster_head_status = 'approved'
+            submission.status = 'approved_by_cluster'
+        elif status == 'rejected_by_cluster':
+            submission.cluster_head_status = 'rejected'
+            submission.status = 'rejected_by_cluster'
+        elif status == 'revision':
+            submission.cluster_head_status = 'revision'
+            submission.status = 'revision'
+
+        submission.cluster_head_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.journal_or_conference_name}' reviewed successfully.")
+        return redirect('cluster_head_dashboard')
+    return render(request, 'review_submission_reviewer_roles.html', {'submission': submission})
+
+
+def dean_review_reviewer_roles(request, pk):
+    submission = get_object_or_404(ReviewerRoles, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        remarks = request.POST.get('remarks')
+
+        # Validate and set dean review status
+        if action == 'approve':
+            submission.dean_status = 'approved'
+            submission.status = 'approved_by_dean'
+        elif action == 'reject':
+            submission.dean_status = 'rejected'
+            submission.status = 'rejected_by_dean'
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('dean_review_reviewer_roles', pk=pk)
+
+        # Save remarks separately for dean
+        submission.dean_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.journal_or_conference_name}' reviewed by Dean successfully.")
+        return redirect('dean_dashboard')
+
+    return render(request, 'dean_review_reviewer_roles.html', {'submission': submission})
