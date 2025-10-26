@@ -2,8 +2,8 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles
-from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm, ReviewerRolesForm
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements
+from .forms import Step1Form, Step2Form, Step3Form, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm, ReviewerRolesForm, AwardsAchievementsForm
 import random
 from django.conf import settings
 from django.contrib.auth import login
@@ -364,6 +364,8 @@ def cluster_head_dashboard(request):
 
     reviewer_roles_submissions = ReviewerRoles.objects.filter(status='submitted').order_by('-submitted_at')
 
+    awards_achievements_submissions = AwardsAchievements.objects.filter(status='submitted').order_by('-submitted_at')
+
     for sub in journal_publications:
         sub.submission_type = 'Journal Publication'
         sub.review_url = reverse('review_submission_journal', args=[sub.id])
@@ -407,9 +409,13 @@ def cluster_head_dashboard(request):
     for sub in reviewer_roles_submissions:
         sub.submission_type = 'Reviewer Roles'
         sub.review_url = reverse('review_submission_reviewer_roles', args=[sub.id])
+    
+    for sub in awards_achievements_submissions:
+        sub.submission_type = 'Awards & Achievements'
+        sub.review_url = reverse('review_submission_awards_achievements', args=[sub.id])
 
     all_submissions = sorted(
-        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_projects_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions),
+        list(journal_publications) + list(conference_publications) + list(research_projects) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_projects_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions) + list(awards_achievements_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -489,6 +495,8 @@ def my_submissions(request):
 
     reviewer_roles_submissions = ReviewerRoles.objects.filter(user=user).order_by('-submitted_at')
 
+    awards_achievements_submissions = AwardsAchievements.objects.filter(user=user).order_by('-submitted_at')
+
     for sub in journal_submissions:
         sub.submission_type = 'Journal Publication'
         
@@ -522,10 +530,13 @@ def my_submissions(request):
     
     for sub in reviewer_roles_submissions:
         sub.submission_type = 'Reviewer Roles'
+    
+    for sub in awards_achievements_submissions:
+        sub.submission_type = 'Awards & Achievements'
         
 
     submissions = sorted(
-        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions, book_chapter_submissions, books_authored_submissions, consultancy_project_submissions, editorial_roles_submissions, reviewer_roles_submissions),
+        chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions, book_chapter_submissions, books_authored_submissions, consultancy_project_submissions, editorial_roles_submissions, reviewer_roles_submissions, awards_achievements_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -609,8 +620,14 @@ def dean_dashboard(request):
         sub.review_url = reverse('dean_review_reviewer_roles', args=[sub.id])
         sub.submission_type = 'Reviewer Roles'
 
+    awards_achievements_submissions = AwardsAchievements.objects.filter(status='approved_by_cluster').order_by('-submitted_at')
+
+    for sub in awards_achievements_submissions:
+        sub.review_url = reverse('dean_review_awards_achievements', args=[sub.id])
+        sub.submission_type = 'Awards & Achievements'
+
     all_submissions = sorted(
-        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_project_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions),
+        list(journal_submissions) + list(conference_submissions) + list(research_submissions) + list(patent_submissions) + list(copyright_submissions) + list(phd_guidance_submissions) + list(book_chapter_submissions) + list(books_authored_submissions) + list(consultancy_project_submissions) + list(editorial_roles_submissions) + list(reviewer_roles_submissions) + list(awards_achievements_submissions),
         key=lambda x: x.submitted_at,
         reverse=True
     )
@@ -1413,3 +1430,82 @@ def dean_review_reviewer_roles(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review_reviewer_roles.html', {'submission': submission})
+
+
+
+def awards_achievements_submission(request):
+    if 'user_id' not in request.session:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = AwardsAchievementsForm(request.POST, request.FILES)
+        if form.is_valid():
+            award = form.save(commit=False)
+            user = FacultyUser.objects.get(user_id=request.session['user_id'])
+            award.user = user
+            award.save()
+            messages.success(request, "Award/Achievement submitted successfully.")
+            return redirect('my_submissions')
+    else:
+        form = AwardsAchievementsForm()
+    return render(request, 'awards_achievements_submission.html', {'form': form})
+
+
+
+def review_submission_awards_achievements(request, submission_id):
+    submission = get_object_or_404(AwardsAchievements, id=submission_id)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')  # 'approved_by_cluster', 'rejected_by_cluster', 'revision'
+        remarks = request.POST.get('remarks')
+
+        if status not in ['approved_by_cluster', 'rejected_by_cluster', 'revision']:
+            messages.error(request, 'Invalid status.')
+            return redirect('review_submission_awards_achievements', submission_id=submission.id)
+
+        # Map status to cluster_head_status
+        if status == 'approved_by_cluster':
+            submission.cluster_head_status = 'approved'
+            submission.status = 'approved_by_cluster'
+        elif status == 'rejected_by_cluster':
+            submission.cluster_head_status = 'rejected'
+            submission.status = 'rejected_by_cluster'
+        elif status == 'revision':
+            submission.cluster_head_status = 'revision'
+            submission.status = 'revision'
+
+        submission.cluster_head_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.title_of_award}' reviewed successfully.")
+        return redirect('cluster_head_dashboard')
+    return render(request, 'review_submission_awards_achievements.html', {'submission': submission})
+
+
+
+def dean_review_awards_achievements(request, pk):
+    submission = get_object_or_404(AwardsAchievements, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        remarks = request.POST.get('remarks')
+
+        # Validate and set dean review status
+        if action == 'approve':
+            submission.dean_status = 'approved'
+            submission.status = 'approved_by_dean'
+        elif action == 'reject':
+            submission.dean_status = 'rejected'
+            submission.status = 'rejected_by_dean'
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('dean_review_awards_achievements', pk=pk)
+
+        # Save remarks separately for dean
+        submission.dean_remarks = remarks
+        submission.save()
+
+        messages.success(request, f"Submission '{submission.title_of_award}' reviewed by Dean successfully.")
+        return redirect('dean_dashboard')
+
+    return render(request, 'dean_review_awards_achievements.html', {'submission': submission})

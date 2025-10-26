@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles
+from .models import FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements
 
 
 
@@ -323,4 +323,26 @@ class ReviewerRolesForm(forms.ModelForm):
             'publisher_or_organizer': forms.TextInput(attrs={'placeholder': 'Enter publisher or organizer'}),
             'frequency_of_review': forms.TextInput(attrs={'placeholder': 'Enter frequency of review'}),
             'indexing_of_journal': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+
+
+class AwardsAchievementsForm(forms.ModelForm):
+    class Meta:
+        model = AwardsAchievements
+        fields = [
+            'title_of_award',
+            'awarding_body',
+            'level',
+            'date',
+            'nature_of_contribution',
+            'pdf_upload',
+        ]
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'title_of_award': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title of award'}),
+            'awarding_body': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter awarding body'}),
+            'level': forms.Select(attrs={'class': 'form-select'}),
+            'nature_of_contribution': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Describe contribution recognized'}),
+            'pdf_upload': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }

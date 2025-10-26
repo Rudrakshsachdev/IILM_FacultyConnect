@@ -339,6 +339,8 @@
               {{ sub.journal_name }}
             {% elif sub.submission_type == 'Reviewer Roles' %}
               {{ sub.journal_or_conference_name }}
+              {% elif sub.submission_type == 'Awards & Achievements' %}
+              {{ sub.title_of_award }}
             {% else %}
               N/A
             {% endif %}
@@ -370,6 +372,8 @@
       {{ sub.journal_name }}
     {% elif sub.submission_type == 'Reviewer Roles' %}
       {{ sub.journal_or_conference_name }}
+    {% elif sub.submission_type == 'Awards & Achievements' %}
+      {{ sub.title_of_award }}
     {% else %}
       N/A
     {% endif %}

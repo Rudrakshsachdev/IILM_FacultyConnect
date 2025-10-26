@@ -273,8 +273,10 @@
                               title="{{ submission.project_title }}"
                             {% elif submission.submission_type == 'Editorial Roles' %}
                               title="{{ submission.journal_name }}"
-                              {% elif submission.submission_type == 'Reviewer Roles' %}
-                                title="{{ submission.journal_or_conference_name }}"
+                            {% elif submission.submission_type == 'Reviewer Roles' %}
+                              title="{{ submission.journal_or_conference_name }}"
+                            {% elif submission.submission_type == 'Awards & Achievements' %}
+                                title="{{ submission.title_of_award }}"
                         {% endif %}>
 
                       <div class="text-sm text-gray-500 truncate max-w-xs">
@@ -300,6 +302,8 @@
                             {{ submission.journal_name }}
                           {% elif submission.submission_type == 'Reviewer Roles' %}
                             {{ submission.journal_or_conference_name }}
+                          {% elif submission.submission_type == 'Awards & Achievements' %}
+                            {{ submission.title_of_award }}
                         {% endif %}
                       </div>
                     </div>
@@ -329,6 +333,8 @@
       {{ submission.journal_name }}
     {% elif submission.submission_type == 'Reviewer Roles' %}
       {{ submission.journal_or_conference_name }}
+    {% elif submission.submission_type == 'Awards & Achievements' %}
+      {{ submission.title_of_award }}
     {% else %}
       N/A
     {% endif %}

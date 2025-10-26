@@ -818,3 +818,62 @@ class ReviewerRoles(models.Model):
     def __str__(self):
         return f"{self.journal_or_conference_name} ({self.user.username})"
 
+
+class AwardsAchievements(models.Model):
+    LEVEL_CHOICES = [
+        ('institutional', 'Institutional'),
+        ('state', 'State'),
+        ('national', 'National'),
+        ('international', 'International'),
+    ]
+
+    REVIEW_STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('approved_by_cluster', 'Approved by Cluster Head'),
+        ('rejected_by_cluster', 'Rejected by Cluster Head'),
+        ('approved_by_dean', 'Approved by Dean'),
+        ('rejected_by_dean', 'Rejected by Dean'),
+        ('revision', 'Sent for Revision'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title_of_award = models.CharField(max_length=255)
+    awarding_body = models.CharField(max_length=255)
+    level = models.CharField(max_length=30, choices=LEVEL_CHOICES)
+    date = models.DateField()
+    nature_of_contribution = models.TextField()
+    pdf_upload = models.FileField(upload_to='awards_achievements/')
+
+    # Cluster Head Review
+    cluster_head_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('revision', 'Sent for Revision'),
+        ],
+        default='pending'
+    )
+    cluster_head_remarks = models.TextField(blank=True, null=True)
+
+    # Dean Review
+    dean_status = models.CharField(
+        max_length=30,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+        ],
+        default='pending'
+    )
+    dean_remarks = models.TextField(blank=True, null=True)
+
+    status = models.CharField(max_length=30, choices=REVIEW_STATUS_CHOICES, default='submitted')
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title_of_award} ({self.user.username})"
+
