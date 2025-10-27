@@ -669,42 +669,16 @@
           </h3>
           <p class="text-gray-500 mb-8">
             You haven't made any research submissions yet. Start by submitting
-            your first research publication.
+            your first form.
           </p>
           <a
-            href="{% url 'journal_publication' %}"
+            href="{% url 'research_form' %}"
             class="inline-flex items-center px-6 py-3 bg-iilm-blue text-white font-medium rounded-lg hover:bg-iilm-light-blue transition-colors shadow-sm"
           >
             <i class="fas fa-plus mr-2"></i>
-            New Journal Submission
+            New Form Submission
           </a>
-          <a href="{% url 'conference_publication' %}" 
-       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-iilm-gold hover:bg-yellow-500 transition-colors">
-        <i class="fas fa-plus mr-2"></i>
-        New Conference Submission
-    </a>
-
-            <a
-                href="{% url 'research_project' %}"
-                class="inline-flex items-center px-6 py-3 bg-iilm-blue text-white font-medium rounded-lg hover:bg-iilm-light-blue transition-colors shadow-sm ml-4"
-            >
-                <i class="fas fa-plus mr-2"></i>
-                New Research Project Submission
-            </a>
-            <a
-                href="{% url 'patent_submission' %}"
-                class="inline-flex items-center px-6 py-3 bg-iilm-blue text-white font-medium rounded-lg hover:bg-iilm-light-blue transition-colors shadow-sm ml-4"
-            >
-                <i class="fas fa-plus mr-2"></i>
-                New Patent Submission
-            </a>
-            <a
-                href="{% url 'copyright_submission' %}"
-                class="inline-flex items-center px-6 py-3 bg-iilm-blue text-white font-medium rounded-lg hover:bg-iilm-light-blue transition-colors shadow-sm ml-4"
-            >
-                <i class="fas fa-plus mr-2"></i>
-                New Copyright Submission
-            </a>
+          
         </div>
       </div>
       {% endif %}

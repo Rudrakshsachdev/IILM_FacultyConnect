@@ -45,6 +45,7 @@
           id="navbarNav"
         >
           <ul class="navbar-nav">
+            {% comment %} {% if user.is_authenticated %} {% endcomment %}
             <li class="nav-item">
               <a class="nav-link active" href="#">
                 <i class="fas fa-tachometer-alt me-1"></i>Dashboard
@@ -60,11 +61,6 @@
                 <i class="fas fa-user-circle me-1"></i>Research
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'cluster_head_dashboard' %}">
-                <i class="fas fa-user-circle me-1"></i>Cluster Head Dashboard
-              </a>
-            </li>
 
             <li class="nav-item">
               <a class="nav-link" href="{% url 'my_submissions' %}">
@@ -72,11 +68,28 @@
               </a>
             </li>
 
+            {% if request.session.user_role == 'cluster_head' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'cluster_head_dashboard' %}">
+                <i class="fas fa-user-circle me-1"></i>Cluster Head Dashboard
+              </a>
+            </li>
+            {% endif %}
+            
+            
+
+            
+
+            {% if request.session.user_role == 'dean' %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'dean_dashboard' %}">
                 <i class="fas fa-user-circle me-1"></i>Dean Dashboard
               </a>
             </li>
+            {% endif %}
+
+            {% comment %} {% endif %} {% endcomment %}
+            
 
             <li class="nav-item">
               <a class="nav-link" href="#">

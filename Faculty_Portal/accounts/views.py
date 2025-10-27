@@ -36,6 +36,7 @@ def signup(request):
         email = request.POST['email']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
+        role = request.POST['role']
 
         if FacultyUser.objects.filter(email=email).exists():
             messages.error(request, "Email already registered!")
@@ -63,6 +64,7 @@ def signup(request):
             'full_name': full_name,
             'email': email,
             'password': password,
+            'role': role,
         }
 
         return redirect('verify_otp')
@@ -91,6 +93,7 @@ def verify_otp(request):
                 full_name=temp_user['full_name'],
                 email=email,
                 password=temp_user['password'],
+                role=temp_user['role'],
                 is_verified=True
             )
             del otp_storage[email]
@@ -122,6 +125,7 @@ def login_view(request):
 
             if user.password == password or check_password(password, user.password):
                 request.session['user_id'] = str(user.user_id)
+                request.session['user_role'] = user.role
                 messages.success(request, "Login successful!")
 
                 
@@ -166,6 +170,9 @@ def dashboard(request):
     # ✅ Fetch user and related profile
     user = FacultyUser.objects.get(user_id=request.session['user_id'])
     profile = FacultyProfile.objects.filter(user=user).first()
+    user_role = request.session.get('user_role')
+
+    
 
     # ✅ Calculate profile completion percentage
     if profile:
@@ -184,7 +191,8 @@ def dashboard(request):
     return render(request, 'dashboard.html', {
         'user': user,
         'profile': profile,
-        'profile_completion': profile_completion
+        'profile_completion': profile_completion,
+        'user_role': user_role,
     })
 
 
@@ -532,6 +540,7 @@ def my_submissions(request):
     pending_count = sum(1 for sub in submissions if sub.dean_status in ['submitted', 'pending'])
 
     return render(request, 'my_submissions.html', {'submissions': submissions, 'approved_count': approved_count, 'pending_count': pending_count})
+
 
 
 def dean_dashboard(request):

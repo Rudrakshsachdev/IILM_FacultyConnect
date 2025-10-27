@@ -32,6 +32,14 @@ class FacultyUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name']
 
+    ROLE_CHOICES = [
+        ('faculty', 'Faculty'),
+        ('dean', 'Dean'),
+        ('cluster_head', 'Cluster Head'),
+        ]
+    
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='faculty')
+
     objects = FacultyUserManager()
 
     def __str__(self):
