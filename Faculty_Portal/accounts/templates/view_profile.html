@@ -1,0 +1,304 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.full_name }}'s Profile | IILM University</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/view_profile.css' %}">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-animation"></div>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <!-- Main Profile Container -->
+    <div class="profile-master-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="header-content">
+                <div class="avatar-container">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="Profile Image" class="profile-avatar">
+                    {% else %}
+                        <div class="profile-avatar" style="background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-circle" style="font-size: 120px; color: rgba(255,255,255,0.7);"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name">{{ user.full_name }}</h1>
+                    <p class="profile-designation">{{ profile.designation }}</p>
+                    <p class="profile-department">{{ profile.department }}, {{ profile.school_faculty }}</p>
+                    <div class="verification-badge">
+                        <i class="fas fa-{% if user.is_verified %}check-circle{% else %}clock{% endif %}"></i>
+                        Account {{ user.is_verified|yesno:"Verified,Pending Verification" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <!-- Personal Information Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 class="card-title">Personal Information</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value">{{ user.email }}</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-user-tag"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Role</div>
+                            <div class="info-value">{{ user.role }}</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Account Status</div>
+                            <div class="info-value">{{ user.is_verified|yesno:"Verified,Pending Verification" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Information Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h2 class="card-title">Academic Information</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">School / Faculty</div>
+                            <div class="info-value">
+                                {% if profile.school_faculty %}
+                                    {{ profile.school_faculty }}
+                                {% else %}
+                                    <span class="empty-value">Not specified</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Department</div>
+                            <div class="info-value">
+                                {% if profile.department %}
+                                    {{ profile.department }}
+                                {% else %}
+                                    <span class="empty-value">Not specified</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Designation</div>
+                            <div class="info-value">
+                                {% if profile.designation %}
+                                    {{ profile.designation }}
+                                {% else %}
+                                    <span class="empty-value">Not specified</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Highest Qualification</div>
+                            <div class="info-value">
+                                {% if profile.highest_qualification %}
+                                    {{ profile.highest_qualification }}
+                                {% else %}
+                                    <span class="empty-value">Not specified</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Area of Specialization</div>
+                            <div class="info-value">
+                                {% if profile.area_of_specialization %}
+                                    {{ profile.area_of_specialization }}
+                                {% else %}
+                                    <span class="empty-value">Not specified</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Research Profiles Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h2 class="card-title">Research Profiles</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">ORCID ID</div>
+                            <div class="info-value">
+                                {% if profile.orcid_id %}
+                                    {{ profile.orcid_id }}
+                                {% else %}
+                                    <span class="empty-value">Not provided</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Scopus ID</div>
+                            <div class="info-value">
+                                {% if profile.scopus_id %}
+                                    {{ profile.scopus_id }}
+                                {% else %}
+                                    <span class="empty-value">Not provided</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Google Scholar</div>
+                            <div class="info-value">
+                                {% if profile.google_scholar %}
+                                    <a href="{{ profile.google_scholar }}" target="_blank">
+                                        {{ profile.google_scholar|truncatechars:40 }}
+                                    </a>
+                                {% else %}
+                                    <span class="empty-value">Not provided</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Vidwaan ID</div>
+                            <div class="info-value">
+                                {% if profile.vidwaan_id %}
+                                    {{ profile.vidwaan_id }}
+                                {% else %}
+                                    <span class="empty-value">Not provided</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h2 class="card-title">Quick Actions</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item" style="cursor: pointer;" onclick="window.location.href='{% url 'profile_completion' %}'">
+                        <div class="info-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Edit Profile</div>
+                            <div class="info-value">Update your personal and academic information</div>
+                        </div>
+                    </div>
+                    <div class="info-item" style="cursor: pointer;" onclick="window.location.href='{% url 'dashboard' %}'">
+                        <div class="info-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Dashboard</div>
+                            <div class="info-value">Return to your main dashboard</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'profile_completion' %}" class="btn btn-primary">
+                <i class="fas fa-edit"></i>
+                Edit Profile
+            </a>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script src="{% static 'js/view_profile.js' %}"></script>
+</body>
+</html>

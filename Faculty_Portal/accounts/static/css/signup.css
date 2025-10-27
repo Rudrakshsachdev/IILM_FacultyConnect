@@ -684,7 +684,7 @@ body {
 }
 
 /* Custom dropdown arrow */
-.form-group::after {
+/* .form-group::after {
   content: "\f078";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
@@ -697,7 +697,7 @@ body {
   font-size: 13px;
   transition: var(--transition);
   z-index: 2;
-}
+} */
 
 /* Arrow color changes on focus/hover */
 .form-group:focus-within::after,

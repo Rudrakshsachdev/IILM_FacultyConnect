@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('profile-completion/', views.profile_completion, name='profile_completion'),
 
+    path('view-profile/', views.view_profile, name='view_profile'),
 
     path('journal-publication/', views.journal_publication, name='journal_publication'),
 

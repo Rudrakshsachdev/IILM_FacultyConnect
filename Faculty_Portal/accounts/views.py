@@ -293,6 +293,40 @@ def profile_completion(request):
     return render(request, 'profile_completion.html', {'form': form})
 
 
+def view_profile(request):
+    """
+    Displays the logged-in faculty member's complete profile information.
+
+    - Verifies if the user is logged in via session.
+    - Fetches the FacultyUser object and related FacultyProfile.
+    - If profile does not exist yet, shows a friendly message to complete profile.
+    - Passes both user and profile objects to the template for display.
+    """
+
+    user_id = request.session.get('user_id')
+
+    if not user_id:
+        messages.error(request, "Please log in to view your profile.")
+        return redirect('login')
+
+    try:
+        user = FacultyUser.objects.get(user_id=user_id)
+    except FacultyUser.DoesNotExist:
+        messages.error(request, "User not found. Please log in again.")
+        return redirect('login')
+
+    # Try to get related profile, if it exists
+    profile = FacultyProfile.objects.filter(user=user).first()
+
+    if not profile:
+        messages.info(request, "You haven’t completed your profile yet.")
+        return redirect('complete_profile')  # You can create this view later
+
+    return render(request, 'view_profile.html', {
+        'user': user,
+        'profile': profile
+    })
+
 def journal_publication(request):
     
 

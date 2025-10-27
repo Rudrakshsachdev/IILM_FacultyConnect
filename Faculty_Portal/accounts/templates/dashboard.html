@@ -52,7 +52,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{% url 'view_profile' %}">
                 <i class="fas fa-user-circle me-1"></i>Profile
               </a>
             </li>
@@ -282,13 +282,13 @@
             <div class="progress-container">
               <div class="progress-label">
                 <span>Profile Completion</span>
-                <span>{{ profile_completion|default:'80' }}%</span>
+                <span>{{ profile_completion|default:'0' }}%</span>
               </div>
               <div class="progress">
                 <div
                   class="progress-bar"
                   role="progressbar"
-                  style="width: {{ profile_completion|default:'80' }}%;"
+                  style="width: {{ profile_completion|default:'0' }}%;"
                 ></div>
               </div>
             </div>
