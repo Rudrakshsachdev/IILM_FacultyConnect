@@ -200,16 +200,250 @@
             <ul class="activity-list">
               <li class="activity-item">
                 <div class="activity-icon">
-                  <i class="fas fa-file-upload"></i>
+                  <i class="fas fa-file"></i>
                 </div>
                 <div class="activity-content">
                   <div class="activity-title">
-                    Uploaded course material for "Advanced Algorithms"
+                    {% for journal in recent_journal %}
+                      <div>
+                        <strong> Submitted Journal Titled {{ journal.title_of_paper }}</strong> - {{ journal.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent journal submissions.</div>
+                    {% endfor %}
                   </div>
-                  <div class="activity-time">2 hours ago</div>
+                  <div class="activity-time">{% for journal in recent_journal %}{{ journal.submitted_at }}{% empty %}No recent journal submissions.{% endfor %}</div>
                 </div>
               </li>
+
+
+
+
               <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for conference in recent_conference %}
+                      <div>
+                        <strong> Submitted Conference Titled {{ conference.title_of_paper }}</strong> - {{ conference.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent conference submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for conference in recent_conference %}{{ conference.submitted_at }}{% empty %}No recent conference submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for research in recent_research %}
+                      <div>
+                        <strong> Submitted Research Project Titled {{ research.project_title }}</strong> - {{ research.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent research project submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for research in recent_research %}{{ research.submitted_at }}{% empty %}No recent research project submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for patent in recent_patent %}
+                      <div>
+                        <strong> Submitted Patent Titled {{ patent.title_of_patent }}</strong> - {{ patent.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent patent submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for patent in recent_patent %}{{ patent.submitted_at }}{% empty %}No recent patent submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for copyright in recent_copyright %}
+                      <div>
+                        <strong> Submitted Copyright Titled {{ copyright.title_of_work }}</strong> - {{ copyright.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent copyright submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for copyright in recent_copyright %}{{ copyright.submitted_at }}{% empty %}No recent copyright submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for phd in recent_phd %}
+                      <div>
+                        <strong> Submitted PhD Thesis Titled {{ phd.thesis_title }}</strong> - {{ phd.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent PhD thesis submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for phd in recent_phd %}{{ phd.submitted_at }}{% empty %}No recent PhD thesis submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for books_authored in recent_book_authored %}
+                      <div>
+                        <strong> Submitted Book Titled {{ books_authored.book_title }}</strong> - {{ books_authored.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent book submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for books_authored in recent_book_authored %}{{ books_authored.submitted_at }}{% empty %}No recent book submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for book_chapter in recent_book_chapters %}
+                      <div>
+                        <strong> Submitted Book Chapter Titled {{ book_chapter.chapter_title }}</strong> - {{ book_chapter.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent book chapter submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for book_chapter in recent_book_chapters %}{{ book_chapter.submitted_at }}{% empty %}No recent book chapter submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for consultancy in recent_consultancy %}
+                      <div>
+                        <strong> Submitted Consultancy Titled {{ consultancy.project_title }}</strong> - {{ consultancy.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent consultancy submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for consultancy in recent_consultancy %}{{ consultancy.submitted_at }}{% empty %}No recent consultancy submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for editorial in recent_editorial %}
+                      <div>
+                        <strong> Submitted Editorial Titled {{ editorial.journal_title }}</strong> - {{ editorial.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent editorial submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for editorial in recent_editorial %}{{ editorial.submitted_at }}{% empty %}No recent editorial submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for reviewer in recent_reviewer %}
+                      <div>
+                        <strong> Submitted Review Titled {{ reviewer.journal_or_conference_name }}</strong> - {{ reviewer.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent review submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for reviewer in recent_reviewer %}{{ reviewer.submitted_at }}{% empty %}No recent reviewer submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for award in recent_awards %}
+                      <div>
+                        <strong> Submitted Award Titled {{ award.title_of_award }}</strong> - {{ award.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent award submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for award in recent_awards %}{{ award.submitted_at }}{% empty %}No recent award submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+
+              <li class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% for industry in recent_industry %}
+                      <div>
+                        <strong> Submitted Industry Paper Titled {{ industry.industry_name }}</strong> - {{ industry.submitted_at }}
+                      </div>
+                      {% empty %}
+                      <div>No recent industry submissions.</div>
+                    {% endfor %}
+                  </div>
+                  <div class="activity-time">{% for industry in recent_industry %}{{ industry.submitted_at }}{% empty %}No recent industry submissions.{% endfor %}</div>
+                </div>
+              </li>
+
+              {% comment %} <li class="activity-item">
                 <div class="activity-icon">
                   <i class="fas fa-user-check"></i>
                 </div>
@@ -241,7 +475,7 @@
                   </div>
                   <div class="activity-time">2 days ago</div>
                 </div>
-              </li>
+              </li> {% endcomment %}
             </ul>
           </div>
         </div>

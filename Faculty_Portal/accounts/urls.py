@@ -38,6 +38,7 @@ urlpatterns = [
 
     path('my-submissions/', views.my_submissions, name='my_submissions'),
 
+
     path('dean-dashboard/', views.dean_dashboard, name='dean_dashboard'),
 
     path('dean-review-journal/<int:pk>/', views.dean_review_journal, name='dean_review_journal'),

@@ -202,7 +202,31 @@ def dashboard(request):
 
     approval_rate = (approved_count / total_count * 100) if total_count > 0 else 0
 
+    recent_journal = JournalPublication.objects.filter(user=user).order_by('-submitted_at')[:5]
 
+    recent_conference = ConferencePublication.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_research = ResearchProject.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_patent = Patents.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_copyright = Copyright.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_phd = PhdGuidance.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_book_chapter = BookChapter.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_book_authored = BooksAuthored.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_consultancy = ConsultancyProjects.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_editorial = EditorialRoles.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_reviewer = ReviewerRoles.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_awards = AwardsAchievements.objects.filter(user=user).order_by('-submitted_at')[:5]
+
+    recent_industry = IndustryCollaboration.objects.filter(user=user).order_by('-submitted_at')[:5]
 
     # ✅ Render the dashboard template
     return render(request, 'dashboard.html', {
@@ -214,6 +238,19 @@ def dashboard(request):
         'pending_count': pending_count,
         'approved_count': approved_count,
         'approval_rate': approval_rate,
+        'recent_journal': recent_journal,
+        'recent_conference': recent_conference,
+        'recent_research': recent_research,
+        'recent_patent': recent_patent,
+        'recent_copyright': recent_copyright,
+        'recent_phd': recent_phd,
+        'recent_book_chapter': recent_book_chapter,
+        'recent_book_authored': recent_book_authored,
+        'recent_consultancy': recent_consultancy,
+        'recent_editorial': recent_editorial,
+        'recent_reviewer': recent_reviewer,
+        'recent_awards': recent_awards,
+        'recent_industry': recent_industry,
     })
 
 
@@ -341,7 +378,7 @@ def view_profile(request):
 
     if not profile:
         messages.info(request, "You haven’t completed your profile yet.")
-        return redirect('complete_profile')  # You can create this view later
+        return redirect('profile_completion')
 
     return render(request, 'view_profile.html', {
         'user': user,
@@ -629,6 +666,13 @@ def dean_dashboard(request):
     """
     The dean_dashboard function displays all journal publication submissions that were approved by the cluster head. It retrieves these submissions from the database and renders them in the dean_dashboard.html template.
     """
+
+
+    if 'user_id' not in request.session:
+        return redirect('login')
+
+    user = FacultyUser.objects.get(user_id=request.session['user_id'])
+
     journal_submissions = JournalPublication.objects.filter(status='approved_by_cluster').order_by('-submitted_at')
 
     for sub in journal_submissions:
@@ -715,7 +759,12 @@ def dean_dashboard(request):
         reverse=True
     )
 
-    return render(request, 'dean_dashboard.html', {'submissions': all_submissions})
+    total_faculty = FacultyUser.objects.filter(role='faculty').count()
+
+    approved_count = sum(1 for sub in all_submissions if sub.dean_status == 'approved_by_dean')
+
+    return render(request, 'dean_dashboard.html', {'submissions': all_submissions, 'approved_count': approved_count, 'total_faculty': total_faculty})
+
 
 
 def dean_review_journal(request, pk):
