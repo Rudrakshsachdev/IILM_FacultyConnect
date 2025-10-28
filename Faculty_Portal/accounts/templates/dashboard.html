@@ -121,8 +121,9 @@
             <div class="stat-icon">
               <i class="fas fa-book-open"></i>
             </div>
-            <div class="stat-value">4</div>
-            <div class="stat-label">Active Courses</div>
+            <div class="stat-value">{{ total_count }}</div>
+            <div class="stat-label">Total Submissions</div>
+            
           </div>
         </div>
         <div class="col-md-3 col-sm-6 mb-4">
@@ -130,8 +131,8 @@
             <div class="stat-icon">
               <i class="fas fa-users"></i>
             </div>
-            <div class="stat-value">142</div>
-            <div class="stat-label">Students</div>
+            <div class="stat-value">{{ pending_count }}</div>
+            <div class="stat-label">Pending Count</div>
           </div>
         </div>
         <div class="col-md-3 col-sm-6 mb-4">
@@ -139,8 +140,8 @@
             <div class="stat-icon">
               <i class="fas fa-file-alt"></i>
             </div>
-            <div class="stat-value">12</div>
-            <div class="stat-label">Publications</div>
+            <div class="stat-value">{{ approved_count }}</div>
+            <div class="stat-label">Approved</div>
           </div>
         </div>
         <div class="col-md-3 col-sm-6 mb-4">
@@ -148,8 +149,8 @@
             <div class="stat-icon">
               <i class="fas fa-star"></i>
             </div>
-            <div class="stat-value">4.8</div>
-            <div class="stat-label">Average Rating</div>
+            <div class="stat-value">{{approval_rate | floatformat:1}}%</div>
+            <div class="stat-label">Approval Rate</div>
           </div>
         </div>
       </div>
@@ -163,23 +164,23 @@
               Quick Actions
             </h3>
             <div class="actions-grid">
-              <a href="#" class="action-btn">
+              <a href="{% url 'research_form' %}" class="action-btn">
                 <div class="action-icon">
                   <i class="fas fa-plus"></i>
                 </div>
-                <div class="action-label">Add Course</div>
+                <div class="action-label">New Form Submission</div>
               </a>
-              <a href="#" class="action-btn">
+              <a href="{% url 'view_profile' %}" class="action-btn">
                 <div class="action-icon">
-                  <i class="fas fa-upload"></i>
+                  <i class="fas fa-user"></i>
                 </div>
-                <div class="action-label">Upload Material</div>
+                <div class="action-label">View Profile</div>
               </a>
-              <a href="#" class="action-btn">
+              <a href="{% url 'my_submissions' %}" class="action-btn">
                 <div class="action-icon">
-                  <i class="fas fa-calendar-plus"></i>
+                  <i class="fas fa-copy"></i>
                 </div>
-                <div class="action-label">Schedule Class</div>
+                <div class="action-label">My Submissions</div>
               </a>
               <a href="#" class="action-btn">
                 <div class="action-icon">
@@ -294,7 +295,7 @@
             </div>
 
             <!-- Edit Profile Button -->
-            <a href="{% url 'profile_completion' %}" class="edit-btn">
+            <a href="{% url 'edit_profile' %}" class="edit-btn">
               <i class="fas fa-edit"></i>
               Edit Profile
             </a>
@@ -314,9 +315,15 @@
             />
             <span class="text-lg font-semibold"></span>
           </div>
-          <div class="text-sm text-gray-300">
-            © 2025 AIgnite Clubs Initiative. All rights reserved.
-          </div>
+
+          <div class="text-center text-gray-400 text-sm py-4 bg-gray-900 rounded-t-lg mt-8 shadow-inner">
+  © 2025 <span class="text-white font-medium">AIgnite Clubs Initiative</span>. All rights reserved.
+  <p class="mt-1">
+    Engineered by <span class="text-blue-400 font-semibold">Rudraksh</span>
+  </p>
+</div>
+
+
         </div>
       </div>
     </footer>

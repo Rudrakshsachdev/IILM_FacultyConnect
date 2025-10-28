@@ -186,6 +186,16 @@ def dashboard(request):
         profile_completion = int((filled_fields / total_fields) * 100)
     else:
         profile_completion = 0
+    
+    total_count = JournalPublication.objects.filter(user=user).count() + ConferencePublication.objects.filter(user=user).count() + ResearchProject.objects.filter(user=user).count() + Patents.objects.filter(user=user).count() + Copyright.objects.filter(user=user).count() + PhdGuidance.objects.filter(user=user).count() + BookChapter.objects.filter(user=user).count() + BooksAuthored.objects.filter(user=user).count() + ConsultancyProjects.objects.filter(user=user).count() + EditorialRoles.objects.filter(user=user).count() + ReviewerRoles.objects.filter(user=user).count() + AwardsAchievements.objects.filter(user=user).count() + IndustryCollaboration.objects.filter(user=user).count()
+
+    pending_count = JournalPublication.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + ConferencePublication.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + ResearchProject.objects.filter(user=user, overall_status__in=['submitted', 'pending']).count() + Patents.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + Copyright.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + PhdGuidance.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + BookChapter.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + BooksAuthored.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + ConsultancyProjects.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + EditorialRoles.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + ReviewerRoles.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + AwardsAchievements.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + IndustryCollaboration.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count()
+
+    approved_count = total_count - pending_count
+
+    approval_rate = (approved_count / total_count * 100) if total_count > 0 else 0
+
+
 
     # ✅ Render the dashboard template
     return render(request, 'dashboard.html', {
@@ -193,6 +203,10 @@ def dashboard(request):
         'profile': profile,
         'profile_completion': profile_completion,
         'user_role': user_role,
+        'total_count': total_count,
+        'pending_count': pending_count,
+        'approved_count': approved_count,
+        'approval_rate': approval_rate,
     })
 
 
@@ -597,8 +611,9 @@ def my_submissions(request):
 
     approved_count = sum(1 for sub in submissions if sub.dean_status == 'approved_by_dean')
     pending_count = sum(1 for sub in submissions if sub.dean_status in ['submitted', 'pending'])
+    total_count = len(submissions)
 
-    return render(request, 'my_submissions.html', {'submissions': submissions, 'approved_count': approved_count, 'pending_count': pending_count})
+    return render(request, 'my_submissions.html', {'submissions': submissions, 'approved_count': approved_count, 'pending_count': pending_count, 'total_count': total_count})
 
 
 

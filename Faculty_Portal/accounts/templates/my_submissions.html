@@ -93,25 +93,25 @@
                   <p class="text-xs text-gray-500">{{ user.email }}</p>
                 </div>
                 <a
-                  href="#"
+                  href="{% url 'view_profile' %}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <i class="fas fa-user mr-3 text-gray-400"></i>
                   My Profile
                 </a>
                 <a
-                  href="#"
+                  href="{% url 'dashboard' %}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <i class="fas fa-cog mr-3 text-gray-400"></i>
-                  Account Settings
+                  Faculty Dashboard
                 </a>
                 <a
-                  href="#"
+                  href="{% url 'research_form' %}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 >
-                  <i class="fas fa-bell mr-3 text-gray-400"></i>
-                  Notifications
+                  <i class="fas fa-flask me-2"></i>
+                  Research Forms
                 </a>
                 <div class="border-t border-gray-100 my-1"></div>
                 <a
@@ -225,7 +225,7 @@
                     class="text-2xl font-bold text-gray-900"
                     id="total-submissions"
                   >
-                    {{ submissions|length }}
+                    {{ total_count }}
                   </p>
                 </div>
               </div>
@@ -696,11 +696,11 @@
             />
             <span class="text-xl font-semibold"></span>
           </div>
-          <div class="text-gray-300 text-center md:text-right">
-            <p class="text-sm">
-              © 2025 AIgnite Clubs Initiative. All rights reserved.
+          <div class="text-sm text-gray-300">
+            © 2025 AIgnite Clubs Initiative. All rights reserved.
+            <p class="mt-1">
+              Engineered by <span class="text-white-400 font-semibold">Rudraksh</span>
             </p>
-          </div>
         </div>
       </div>
     </footer>
