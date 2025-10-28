@@ -766,6 +766,55 @@ def dean_dashboard(request):
     return render(request, 'dean_dashboard.html', {'submissions': all_submissions, 'approved_count': approved_count, 'total_faculty': total_faculty})
 
 
+def dean_analytics_api(request):
+    total_submissions = (
+        JournalPublication.objects.count()
+        + ConferencePublication.objects.count()
+        + ResearchProject.objects.count()
+        + Patents.objects.count() + Copyright.objects.count()
+        + PhdGuidance.objects.count() + BookChapter.objects.count()
+        + BooksAuthored.objects.count() + ConsultancyProjects.objects.count() + EditorialRoles.objects.count()
+        + ReviewerRoles.objects.count() + AwardsAchievements.objects.count() + IndustryCollaboration.objects.count()
+    )
+    approved = (
+        JournalPublication.objects.filter(dean_status='approved').count()
+        + ConferencePublication.objects.filter(dean_status='approved').count()
+        + ResearchProject.objects.filter(overall_status='approved').count()
+        + Patents.objects.filter(dean_status='approved').count() + Copyright.objects.filter(dean_status='approved').count()
+        + PhdGuidance.objects.filter(dean_status='approved').count() + BookChapter.objects.filter(dean_status='approved').count()
+        + BooksAuthored.objects.filter(dean_status='approved').count() + ConsultancyProjects.objects.filter(dean_status='approved').count()
+        + EditorialRoles.objects.filter(dean_status='approved').count() + ReviewerRoles.objects.filter(dean_status='approved').count()
+        + AwardsAchievements.objects.filter(dean_status='approved').count() + IndustryCollaboration.objects.filter(dean_status='approved').count()
+    )
+    pending = (
+        JournalPublication.objects.filter(dean_status='pending').count()
+        + ConferencePublication.objects.filter(dean_status='pending').count()
+        + ResearchProject.objects.filter(overall_status='pending').count()
+        + Patents.objects.filter(dean_status='pending').count() + Copyright.objects.filter(dean_status='pending').count()
+        + PhdGuidance.objects.filter(dean_status='pending').count() + BookChapter.objects.filter(dean_status='pending').count()
+        + BooksAuthored.objects.filter(dean_status='pending').count() + ConsultancyProjects.objects.filter(dean_status='pending').count()
+        + EditorialRoles.objects.filter(dean_status='pending').count() + ReviewerRoles.objects.filter(dean_status='pending').count()
+        + AwardsAchievements.objects.filter(dean_status='pending').count() + IndustryCollaboration.objects.filter(dean_status='pending').count()
+    )
+    
+    revision = (
+        JournalPublication.objects.filter(dean_status='revision').count()
+        + ConferencePublication.objects.filter(dean_status='revision').count()
+        + ResearchProject.objects.filter(overall_status='revision').count()
+        + Patents.objects.filter(dean_status='revision').count() + Copyright.objects.filter(dean_status='revision').count()
+        + PhdGuidance.objects.filter(dean_status='revision').count() + BookChapter.objects.filter(dean_status='revision').count()
+        + BooksAuthored.objects.filter(dean_status='revision').count() + ConsultancyProjects.objects.filter(dean_status='revision').count()
+        + EditorialRoles.objects.filter(dean_status='revision').count() + ReviewerRoles.objects.filter(dean_status='revision').count()
+        + AwardsAchievements.objects.filter(dean_status='revision').count() + IndustryCollaboration.objects.filter(dean_status='revision').count()
+    )
+
+    return JsonResponse({
+        "approved": approved,
+        "pending": pending,
+        "revision": revision,
+        "total": total_submissions,
+    })
+
 
 def dean_review_journal(request, pk):
 
