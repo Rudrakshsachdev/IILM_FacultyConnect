@@ -327,6 +327,31 @@ def view_profile(request):
         'profile': profile
     })
 
+
+def edit_profile(request):
+    # ✅ Ensure user is logged in
+    if 'user_id' not in request.session:
+        return redirect('login')
+
+    user = FacultyUser.objects.get(user_id=request.session['user_id'])
+    profile, created = FacultyProfile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        form = FacultyProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('view_profile')  # redirect to profile page after update
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = FacultyProfileForm(instance=profile)
+
+    return render(request, 'edit_profile.html', {'form': form, 'user': user})
+
+
+
+
 def journal_publication(request):
     
 

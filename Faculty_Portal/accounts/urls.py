@@ -28,6 +28,8 @@ urlpatterns = [
 
     path('view-profile/', views.view_profile, name='view_profile'),
 
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
+
     path('journal-publication/', views.journal_publication, name='journal_publication'),
 
     path('cluster-head/dashboard/', views.cluster_head_dashboard, name='cluster_head_dashboard'),

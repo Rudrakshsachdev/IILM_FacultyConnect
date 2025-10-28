@@ -1,0 +1,329 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | IILM University</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/edit_profile.css' %}">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-animation"></div>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <!-- Main Edit Profile Container -->
+    <div class="edit-profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                <h1>Edit Profile</h1>
+                <p>Update your personal and academic information</p>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <form method="POST" enctype="multipart/form-data" id="editProfileForm">
+                {% csrf_token %}
+                
+                <!-- Profile Image Section -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Profile Image</h2>
+                            <p class="section-description">Upload a professional profile picture</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="profile-upload-area" id="profileUploadArea">
+                            <img id="imagePreview" class="image-preview" alt="Profile preview">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">
+                                <h4>Upload Profile Image</h4>
+                                <p>Drag & drop your image here or click to browse</p>
+                                <p class="upload-btn">
+                                    <i class="fas fa-image"></i>
+                                    Choose Image
+                                </p>
+                            </div>
+                            {{ form.profile_image }}
+                        </div>
+                        
+                        {% if form.profile_image.help_text %}
+                            <div class="form-text">
+                                <i class="fas fa-info-circle"></i>
+                                {{ form.profile_image.help_text }}
+                            </div>
+                        {% endif %}
+                        {% if form.profile_image.errors %}
+                            <div class="invalid-feedback">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ form.profile_image.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Academic Information Section -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Academic Information</h2>
+                            <p class="section-description">Update your academic details and qualifications</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <!-- School/Faculty Field -->
+                        <div class="form-group">
+                            <label for="{{ form.school_faculty.id_for_label }}" class="form-label required">
+                                <i class="fas fa-university"></i>
+                                School / Faculty
+                            </label>
+                            {{ form.school_faculty }}
+                            {% if form.school_faculty.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.school_faculty.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.school_faculty.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.school_faculty.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Department Field -->
+                        <div class="form-group">
+                            <label for="{{ form.department.id_for_label }}" class="form-label required">
+                                <i class="fas fa-building"></i>
+                                Department
+                            </label>
+                            {{ form.department }}
+                            {% if form.department.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.department.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.department.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.department.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Designation Field -->
+                        <div class="form-group">
+                            <label for="{{ form.designation.id_for_label }}" class="form-label required">
+                                <i class="fas fa-user-tie"></i>
+                                Designation
+                            </label>
+                            {{ form.designation }}
+                            {% if form.designation.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.designation.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.designation.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.designation.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Highest Qualification Field -->
+                        <div class="form-group">
+                            <label for="{{ form.highest_qualification.id_for_label }}" class="form-label required">
+                                <i class="fas fa-award"></i>
+                                Highest Qualification
+                            </label>
+                            {{ form.highest_qualification }}
+                            {% if form.highest_qualification.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.highest_qualification.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.highest_qualification.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.highest_qualification.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Area of Specialization Field -->
+                        <div class="form-group">
+                            <label for="{{ form.area_of_specialization.id_for_label }}" class="form-label required">
+                                <i class="fas fa-microscope"></i>
+                                Area of Specialization
+                            </label>
+                            {{ form.area_of_specialization }}
+                            {% if form.area_of_specialization.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.area_of_specialization.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.area_of_specialization.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.area_of_specialization.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Research Profiles Section -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Research Profiles</h2>
+                            <p class="section-description">Update your research profile links and identifiers</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <!-- ORCID ID Field -->
+                        <div class="form-group">
+                            <label for="{{ form.orcid_id.id_for_label }}" class="form-label">
+                                <i class="fas fa-fingerprint"></i>
+                                ORCID ID
+                            </label>
+                            {{ form.orcid_id }}
+                            {% if form.orcid_id.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.orcid_id.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.orcid_id.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.orcid_id.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Scopus ID Field -->
+                        <div class="form-group">
+                            <label for="{{ form.scopus_id.id_for_label }}" class="form-label">
+                                <i class="fas fa-book"></i>
+                                Scopus ID
+                            </label>
+                            {{ form.scopus_id }}
+                            {% if form.scopus_id.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.scopus_id.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.scopus_id.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.scopus_id.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Google Scholar Field -->
+                        <div class="form-group">
+                            <label for="{{ form.google_scholar.id_for_label }}" class="form-label">
+                                <i class="fas fa-graduation-cap"></i>
+                                Google Scholar Link
+                            </label>
+                            {{ form.google_scholar }}
+                            {% if form.google_scholar.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.google_scholar.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.google_scholar.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.google_scholar.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Vidwaan ID Field -->
+                        <div class="form-group">
+                            <label for="{{ form.vidwaan_id.id_for_label }}" class="form-label">
+                                <i class="fas fa-user-graduate"></i>
+                                Vidwaan ID
+                            </label>
+                            {{ form.vidwaan_id }}
+                            {% if form.vidwaan_id.help_text %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ form.vidwaan_id.help_text }}
+                                </div>
+                            {% endif %}
+                            {% if form.vidwaan_id.errors %}
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ form.vidwaan_id.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-section">
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                        <a href="{% url 'view_profile' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/edit_profile.js' %}"></script>
+</body>
+</html>
