@@ -36,7 +36,7 @@ def signup(request):
         email = request.POST['email']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
-        role = request.POST['role']
+        #role = request.POST['role']
 
         if FacultyUser.objects.filter(email=email).exists():
             messages.error(request, "Email already registered!")
@@ -45,6 +45,13 @@ def signup(request):
         if password != confirm_password:
             messages.error(request, "Passwords do not match!")
             return redirect('signup')
+        
+        if email in settings.DEAN_EMAIL:
+            role = 'dean'
+        elif email in settings.CLUSTER_HEAD_EMAIL:
+            role = 'cluster_head'
+        else:
+            role = 'faculty'
 
         # Generate OTP
         otp = str(random.randint(100000, 999999))
@@ -1662,3 +1669,72 @@ def dean_review_industry_collaboration(request, pk):
         return redirect('dean_dashboard')
 
     return render(request, 'dean_review_industry_collaboration.html', {'submission': submission})
+
+
+def analytics_api(request):
+    """
+    Returns real-time analytics data for the logged-in faculty user.
+    Data includes total submissions, approved, pending, and approval rate.
+    """
+
+    # ✅ Get the logged-in user (session-based authentication)
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    # ✅ Fetch user safely
+    user = get_object_or_404(FacultyUser, user_id=user_id)
+
+    # ✅ Calculate total submissions across models
+    total_count = (
+        JournalPublication.objects.filter(user=user).count() +
+        ConferencePublication.objects.filter(user=user).count() +
+        ResearchProject.objects.filter(user=user).count() +
+        Patents.objects.filter(user=user).count() + Copyright.objects.filter(user=user).count() +
+        PhdGuidance.objects.filter(user=user).count() + BookChapter.objects.filter(user=user).count() +
+        BooksAuthored.objects.filter(user=user).count() + ConsultancyProjects.objects.filter(user=user).count() +
+        EditorialRoles.objects.filter(user=user).count() + ReviewerRoles.objects.filter(user=user).count() + AwardsAchievements.objects.filter(user=user).count() + IndustryCollaboration.objects.filter(user=user).count()
+    )
+
+    # ✅ Count pending submissions (Dean or Cluster review stages)
+    pending_count = (
+        JournalPublication.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() +
+        ConferencePublication.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() +
+        ResearchProject.objects.filter(user=user, overall_status__in=['pending', 'submitted']).count() +
+        Patents.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() + Copyright.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() +
+        PhdGuidance.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() + BookChapter.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() +
+        BooksAuthored.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() + ConsultancyProjects.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() +
+        EditorialRoles.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() + ReviewerRoles.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() + AwardsAchievements.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count() + IndustryCollaboration.objects.filter(user=user, dean_status__in=['pending', 'submitted']).count()
+    )
+
+    # ✅ Count approved submissions
+    approved_count = total_count - pending_count
+
+    # ✅ Calculate approval rate (safe division)
+    approval_rate = (approved_count / total_count * 100) if total_count > 0 else 0
+
+    # ✅ Return JSON response
+    return JsonResponse({
+        'user': user.full_name,
+        'role': user.role,
+        'total_count': total_count,
+        'pending_count': pending_count,
+        'approved_count': approved_count,
+        'approval_rate': round(approval_rate, 2),
+    })
+
+
+def view_analytics(request):
+    """
+    Renders the analytics dashboard for the logged-in faculty user.
+    """
+
+    # ✅ Get the logged-in user (session-based authentication)
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login')
+
+    # ✅ Fetch user safely
+    user = get_object_or_404(FacultyUser, user_id=user_id)
+
+    return render(request, 'view_analytics.html', {'user': user})

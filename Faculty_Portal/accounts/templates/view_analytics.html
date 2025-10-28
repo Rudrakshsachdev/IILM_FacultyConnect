@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faculty Analytics Dashboard | IILM University</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Styling -->
+    <link rel="stylesheet" href="{% static 'css/view_analytics.css' %}" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Header Card -->
+      <div class="header-card">
+        <div class="header-content">
+          <div class="header-icon">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <h2>Faculty Analytics Dashboard</h2>
+          <p>Real-time research submission insights and performance metrics</p>
+        </div>
+      </div>
+
+      <!-- Analytics Card -->
+      <div class="analytics-card">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+          <div class="spinner"></div>
+          <p>Loading analytics data...</p>
+        </div>
+
+        <!-- Content State (initially hidden) -->
+        <div id="contentState" style="display: none">
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-icon">
+                <i class="fas fa-file-upload"></i>
+              </div>
+              <div class="stat-title">Total Submissions</div>
+              <div class="stat-value" id="totalCount">0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-title">Pending Review</div>
+              <div class="stat-value" id="pendingCount">0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stat-title">Approved</div>
+              <div class="stat-value" id="approvedCount">0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="stat-title">Approval Rate</div>
+              <div class="stat-value" id="approvalRate">0%</div>
+            </div>
+          </div>
+
+          <!-- Chart Container -->
+          <div class="chart-container">
+            <canvas id="analyticsChart"></canvas>
+          </div>
+
+          <!-- Refresh Info -->
+           
+          <div class="refresh-info">
+            <i class="fas fa-sync-alt"></i>
+            Auto-refreshing every 10 seconds
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/view_analytics.js' %}"></script>
+
+    <a
+      href="{% url 'dashboard' %}"
+      class="floating-back-btn"
+      style="
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: var(--gradient);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        transition: all 0.3s ease;
+      "
+    >
+      <i class="fas fa-arrow-left"></i>
+      Dashboard
+    </a>
+  </body>
+</html>

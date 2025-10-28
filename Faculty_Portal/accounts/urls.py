@@ -115,4 +115,9 @@ urlpatterns = [
     path('cluster-head/review-industry-collaboration/<int:submission_id>/', views.review_submission_industry_collaboration, name='review_submission_industry_collaboration'),
 
     path('dean-review-industry-collaboration/<int:pk>/', views.dean_review_industry_collaboration, name='dean_review_industry_collaboration'),
+
+
+    path('analytics_api/', views.analytics_api, name='analytics_api'),
+    path('view_analytics/', views.view_analytics, name='view_analytics'),
+
 ]

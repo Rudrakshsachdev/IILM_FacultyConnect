@@ -143,3 +143,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Actual filesystem path to store 
 
 AUTH_USER_MODEL = 'accounts.FacultyUser'
 LOGIN_URL = '/login/'
+
+
+DEAN_EMAIL = ['sonasachdeva81@gmail.com']
+CLUSTER_HEAD_EMAIL = ['amar.shukla@iilm.edu']

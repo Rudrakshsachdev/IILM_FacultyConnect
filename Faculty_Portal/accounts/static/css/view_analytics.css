@@ -1,0 +1,306 @@
+:root {
+        --iilm-blue: #003366;
+        --iilm-gold: #d4af37;
+        --iilm-light-blue: #0055a5;
+        --light-bg: #f8f9fa;
+        --white: #ffffff;
+        --text-dark: #2c3e50;
+        --text-light: #6c757d;
+        --border-color: #e9ecef;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.15);
+        --radius: 16px;
+        --gradient: linear-gradient(
+          135deg,
+          var(--iilm-blue) 0%,
+          var(--iilm-light-blue) 100%
+        );
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        color: var(--text-dark);
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      .dashboard-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+        min-height: 100vh;
+      }
+
+      /* Header Card */
+      .header-card {
+        background: var(--gradient);
+        color: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        padding: 30px;
+        width: 90%;
+        max-width: 800px;
+        margin-bottom: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+
+      .header-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .header-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .header-card h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .header-card p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+      }
+
+      /* Main Analytics Card */
+      .analytics-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        padding: 35px;
+        width: 90%;
+        max-width: 800px;
+        margin-bottom: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .analytics-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--gradient);
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-box {
+        background: var(--light-bg);
+        border-radius: 12px;
+        padding: 25px 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--iilm-blue);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-box:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow);
+        background: rgba(0, 51, 102, 0.03);
+      }
+
+      .stat-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 51, 102, 0.05),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .stat-box:hover::before {
+        left: 100%;
+      }
+
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.3rem;
+        margin: 0 auto 15px;
+        box-shadow: 0 4px 12px rgba(0, 51, 102, 0.2);
+      }
+
+      .stat-title {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--iilm-blue);
+        transition: all 0.3s ease;
+      }
+
+      .stat-box:hover .stat-value {
+        color: var(--iilm-light-blue);
+      }
+
+      /* Chart Container */
+      .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 30px 0;
+        padding: 20px;
+        background: var(--light-bg);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+      }
+
+      /* Refresh Info */
+      .refresh-info {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(0, 51, 102, 0.05);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 0.95rem;
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      .refresh-info i {
+        color: var(--iilm-blue);
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Loading Animation */
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--light-bg);
+        border-top: 3px solid var(--iilm-blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .dashboard-container {
+          padding: 20px 15px;
+        }
+
+        .header-card,
+        .analytics-card {
+          width: 95%;
+          padding: 25px;
+        }
+
+        .header-card h2 {
+          font-size: 1.8rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 15px;
+        }
+
+        .stat-box {
+          padding: 20px 10px;
+        }
+
+        .stat-value {
+          font-size: 1.7rem;
+        }
+
+        .chart-container {
+          height: 250px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .header-card h2 {
+          font-size: 1.5rem;
+        }
+
+        .header-icon {
+          width: 60px;
+          height: 60px;
+          font-size: 2rem;
+        }
+      }
