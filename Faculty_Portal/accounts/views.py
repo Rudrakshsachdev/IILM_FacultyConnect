@@ -1836,3 +1836,33 @@ def view_analytics(request):
     user = get_object_or_404(FacultyUser, user_id=user_id)
 
     return render(request, 'view_analytics.html', {'user': user})
+
+
+def faculty_wise_submissions_api(request):
+    """
+    Returns real-time submission counts per faculty member across all modules.
+    """
+
+    # ✅ Collect submission counts across all models
+    faculty_data = []
+
+    for faculty in FacultyUser.objects.filter(role='faculty'):
+        total_submissions = (
+            JournalPublication.objects.filter(user=faculty).count() +
+            ConferencePublication.objects.filter(user=faculty).count() +
+            ResearchProject.objects.filter(user=faculty).count() +
+            Patents.objects.filter(user=faculty).count() + Copyright.objects.filter(user=faculty).count() +
+            PhdGuidance.objects.filter(user=faculty).count() + BookChapter.objects.filter(user=faculty).count() +
+            BooksAuthored.objects.filter(user=faculty).count() + ConsultancyProjects.objects.filter(user=faculty).count() +
+            EditorialRoles.objects.filter(user=faculty).count() + ReviewerRoles.objects.filter(user=faculty).count() + AwardsAchievements.objects.filter(user=faculty).count() + IndustryCollaboration.objects.filter(user=faculty).count()
+        )
+
+        faculty_data.append({
+            'name': faculty.full_name,
+            'count': total_submissions
+        })
+
+    # ✅ Sort by submission count (descending)
+    faculty_data.sort(key=lambda x: x['count'], reverse=True)
+
+    return JsonResponse({'faculty_data': faculty_data})
