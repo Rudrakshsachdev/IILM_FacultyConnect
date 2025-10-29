@@ -1,4 +1,5 @@
 # faculty/views.py
+import os
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -21,6 +22,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from itertools import chain
 
+from django.views.decorators.clickjacking import xframe_options_exempt
+from django.http import FileResponse, Http404
 
 
 otp_storage = {}  # Temporary dictionary to hold OTPs (use Redis in production)
@@ -157,8 +160,7 @@ def logout_view(request):
     The logout_view function is simpler — it checks if there’s an active session containing user_id, and if so, deletes it to log the user out. Afterward, a success message is displayed, and the user is redirected back to the login page.
     """
 
-    if 'user_id' in request.session:
-        del request.session['user_id']
+    request.session.flush()
     messages.success(request, "Logged out successfully!")
     return redirect('login')
 
@@ -846,8 +848,12 @@ def dean_review_journal(request, pk):
 
         messages.success(request, f"Submission '{submission.title_of_paper}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = JournalPublication.objects.count()
+    approved_count = JournalPublication.objects.filter(dean_status='approved').count()
+    rejected_count = JournalPublication.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_journal.html', {'submission': submission})
+    return render(request, 'dean_review_journal.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 def research_form(request):
     return render(request, 'research_forms.html')
@@ -924,8 +930,12 @@ def dean_review_conference(request, pk):
 
         messages.success(request, f"Submission '{submission.title_of_paper}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = ConferencePublication.objects.count()
+    approved_count = ConferencePublication.objects.filter(dean_status='approved').count()
+    rejected_count = ConferencePublication.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_conference.html', {'submission': submission})
+    return render(request, 'dean_review_conference.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 def research_project(request):
     if 'user_id' not in request.session:
@@ -997,8 +1007,12 @@ def dean_review_research(request, pk):
 
         messages.success(request, f"Submission '{submission.project_title}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = ResearchProject.objects.count()
+    approved_count = ResearchProject.objects.filter(dean_status='approved').count()
+    rejected_count = ResearchProject.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_research.html', {'submission': submission})
+    return render(request, 'dean_review_research.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 def patent_submission(request):
@@ -1072,8 +1086,12 @@ def dean_review_patent(request, pk):
 
         messages.success(request, f"Submission '{submission.title_of_patent}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = Patents.objects.count()
+    approved_count = Patents.objects.filter(dean_status='approved').count()
+    rejected_count = Patents.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_patent.html', {'submission': submission})
+    return render(request, 'dean_review_patent.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 def copyright_submission(request):
@@ -1149,8 +1167,12 @@ def dean_review_copyright(request, pk):
 
         messages.success(request, f"Submission '{submission.title_of_work}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = Copyright.objects.count()
+    approved_count = Copyright.objects.filter(dean_status='approved').count()
+    rejected_count = Copyright.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_copyright.html', {'submission': submission})
+    return render(request, 'dean_review_copyright.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 def phd_guidance_submission(request):
@@ -1225,8 +1247,12 @@ def dean_review_phd_guidance(request, pk):
 
         messages.success(request, f"Submission '{submission.thesis_title}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = PhdGuidance.objects.count()
+    approved_count = PhdGuidance.objects.filter(dean_status='approved').count()
+    rejected_count = PhdGuidance.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_phd_guidance.html', {'submission': submission})
+    return render(request, 'dean_review_phd_guidance.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 def book_chapter_submission(request):
@@ -1303,8 +1329,12 @@ def dean_review_book_chapter(request, pk):
 
         messages.success(request, f"Submission '{submission.chapter_title}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = BookChapter.objects.count()
+    approved_count = BookChapter.objects.filter(dean_status='approved').count()
+    rejected_count = BookChapter.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_book_chapter.html', {'submission': submission})
+    return render(request, 'dean_review_book_chapter.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 def books_authored_submission(request):
@@ -1379,8 +1409,12 @@ def dean_review_books_authored(request, pk):
 
         messages.success(request, f"Submission '{submission.book_title}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = BooksAuthored.objects.count()
+    approved_count = BooksAuthored.objects.filter(dean_status='approved').count()
+    rejected_count = BooksAuthored.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_books_authored.html', {'submission': submission})
+    return render(request, 'dean_review_books_authored.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 def consultancy_project(request):
     if 'user_id' not in request.session:
@@ -1454,8 +1488,12 @@ def dean_review_consultancy_project(request, pk):
 
         messages.success(request, f"Submission '{submission.project_title}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = ConsultancyProjects.objects.count()
+    approved_count = ConsultancyProjects.objects.filter(dean_status='approved').count()
+    rejected_count = ConsultancyProjects.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_consultancy_project.html', {'submission': submission})
+    return render(request, 'dean_review_consultancy_project.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 
@@ -1533,8 +1571,12 @@ def dean_review_editorial_roles(request, pk):
 
         messages.success(request, f"Submission '{submission.editorial_role}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = EditorialRoles.objects.count()
+    approved_count = EditorialRoles.objects.filter(dean_status='approved').count()
+    rejected_count = EditorialRoles.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_editorial_roles.html', {'submission': submission})
+    return render(request, 'dean_review_editorial_roles.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 def reviewer_roles(request):
@@ -1609,8 +1651,12 @@ def dean_review_reviewer_roles(request, pk):
 
         messages.success(request, f"Submission '{submission.journal_or_conference_name}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = ReviewerRoles.objects.count()
+    approved_count = ReviewerRoles.objects.filter(dean_status='approved').count()
+    rejected_count = ReviewerRoles.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_reviewer_roles.html', {'submission': submission})
+    return render(request, 'dean_review_reviewer_roles.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 
@@ -1688,8 +1734,12 @@ def dean_review_awards_achievements(request, pk):
 
         messages.success(request, f"Submission '{submission.title_of_award}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    approved_count = AwardsAchievements.objects.filter(dean_status='approved').count()
+    total_count = AwardsAchievements.objects.count()
+    rejected_count = AwardsAchievements.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_awards_achievements.html', {'submission': submission})
+    return render(request, 'dean_review_awards_achievements.html', {'submission': submission, 'approved_count': approved_count, 'rejected_count': rejected_count, 'total_count': total_count})
 
 
 def industry_collaboration(request):
@@ -1765,8 +1815,12 @@ def dean_review_industry_collaboration(request, pk):
 
         messages.success(request, f"Submission '{submission.industry_name}' reviewed by Dean successfully.")
         return redirect('dean_dashboard')
+    
+    total_count = IndustryCollaboration.objects.count()
+    approved_count = IndustryCollaboration.objects.filter(dean_status='approved').count()
+    rejected_count = IndustryCollaboration.objects.filter(dean_status='rejected').count()
 
-    return render(request, 'dean_review_industry_collaboration.html', {'submission': submission})
+    return render(request, 'dean_review_industry_collaboration.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 
 def analytics_api(request):
@@ -1866,3 +1920,12 @@ def faculty_wise_submissions_api(request):
     faculty_data.sort(key=lambda x: x['count'], reverse=True)
 
     return JsonResponse({'faculty_data': faculty_data})
+
+
+@xframe_options_exempt
+def serve_pdf(request, path):
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+    else:
+        raise Http404("PDF not found")

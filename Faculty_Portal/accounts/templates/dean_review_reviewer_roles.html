@@ -77,11 +77,11 @@
                         
                         <div x-show="open" @click.away="open = false" 
                              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <a href="{% url 'view_profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <i class="fas fa-user mr-2"></i>Profile
                             </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-cog mr-2"></i>Settings
+                            <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
                             </a>
                             <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <i class="fas fa-sign-out-alt mr-2"></i>Logout
@@ -105,7 +105,7 @@
                 <a href="{% url 'dean_dashboard' %}" 
                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                     <i class="fas fa-arrow-left mr-2"></i>
-                    Back to Dashboard
+                    Back to Dean Dashboard
                 </a>
             </div>
             
@@ -235,7 +235,7 @@
                                     <span class="text-sm font-medium text-gray-700">PDF Preview</span>
                                 </div>
                                 <div class="h-96 bg-gray-100 flex items-center justify-center">
-                                    <iframe src="{{ submission.pdf_upload.url }}" class="w-full h-full" frameborder="0"></iframe>
+                                    <iframe src="{% url 'serve_pdf' submission.pdf_upload.name %}" class="w-full h-full" frameborder="0"></iframe>
                                 </div>
                             </div>
                         {% else %}
@@ -352,16 +352,16 @@
                     </h4>
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-600">Pending Reviews</span>
-                            <span class="text-xs font-medium bg-amber-100 text-amber-800 px-2 py-1 rounded">5</span>
+                            <span class="text-xs text-gray-600">Total Count</span>
+                            <span class="text-xs font-medium bg-amber-100 text-amber-800 px-2 py-1 rounded">{{ total_count }}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-gray-600">Approved This Month</span>
-                            <span class="text-xs font-medium bg-green-100 text-green-800 px-2 py-1 rounded">12</span>
+                            <span class="text-xs font-medium bg-green-100 text-green-800 px-2 py-1 rounded">{{ approved_count }}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-gray-600">Rejected This Month</span>
-                            <span class="text-xs font-medium bg-red-100 text-red-800 px-2 py-1 rounded">3</span>
+                            <span class="text-xs font-medium bg-red-100 text-red-800 px-2 py-1 rounded">{{ rejected_count }}</span>
                         </div>
                     </div>
                 </div>
@@ -382,7 +382,10 @@
                     <span class="text-lg font-semibold"></span>
                 </div>
                 <div class="text-sm text-gray-300">
-                    © 2025 AIgnite Clubs Initiative. All rights reserved.
+                    © 2025 <span class="text-white-400 font-semibold">AIgnite Clubs Initiative.</span> All rights reserved.
+                    <p class="mt-1">
+                        Engineered by <span class="text-white-400 font-semibold">Rudraksh</span>
+                    </p>
                 </div>
             </div>
         </div>

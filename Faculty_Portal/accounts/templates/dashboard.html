@@ -58,20 +58,20 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'research_form' %}">
-                <i class="fas fa-user-circle me-1"></i>Research
+                <i class="fas fa-copy me-1"></i>Research
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" href="{% url 'my_submissions' %}">
-                <i class="fas fa-user-circle me-1"></i>My Submissions
+                <i class="fas fa-book me-1"></i>My Submissions
               </a>
             </li>
 
             {% if request.session.user_role == 'cluster_head' %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'cluster_head_dashboard' %}">
-                <i class="fas fa-user-circle me-1"></i>Cluster Head Dashboard
+                <i class="fa-solid fa-building-columns me-2"></i>Cluster Head Dashboard
               </a>
             </li>
             {% endif %}
@@ -83,7 +83,7 @@
             {% if request.session.user_role == 'dean' %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'dean_dashboard' %}">
-                <i class="fas fa-user-circle me-1"></i>Dean Dashboard
+                <i class="fa-solid fa-building-columns me-2"></i>Dean Dashboard
               </a>
             </li>
             {% endif %}
@@ -91,11 +91,11 @@
             {% comment %} {% endif %} {% endcomment %}
             
 
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               <a class="nav-link" href="#">
                 <i class="fas fa-cog me-1"></i>Settings
               </a>
-            </li>
+            </li> {% endcomment %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'logout' %}">
                 <i class="fas fa-sign-out-alt me-1"></i>Logout
@@ -550,12 +550,12 @@
             <span class="text-lg font-semibold"></span>
           </div>
 
-          <div class="text-center text-gray-400 text-sm py-4 bg-gray-900 rounded-t-lg mt-8 shadow-inner">
-  © 2025 <span class="text-white font-medium">AIgnite Clubs Initiative</span>. All rights reserved.
-  <p class="mt-1">
-    Engineered by <span class="text-blue-400 font-semibold">Rudraksh</span>
-  </p>
-</div>
+          <div class="text-sm text-gray-300">
+          © 2025 <span class="text-white-400 font-semibold">AIgnite Clubs Initiative.</span> All rights reserved.
+          <p class="mt-1">
+          Engineered by <span class="text-white-400 font-semibold">Rudraksh</span>
+          </p>
+        </div>
 
 
         </div>

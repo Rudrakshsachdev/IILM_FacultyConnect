@@ -147,3 +147,7 @@ LOGIN_URL = '/login/'
 
 DEAN_EMAIL = ['sonasachdeva81@gmail.com']
 CLUSTER_HEAD_EMAIL = ['amar.shukla@iilm.edu']
+
+# settings.py
+X_FRAME_OPTIONS = 'SAMEORIGIN' # To allow embedding in iframes from the same origin
+

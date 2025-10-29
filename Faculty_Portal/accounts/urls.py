@@ -123,6 +123,10 @@ urlpatterns = [
 
 
     path('analytics_api/', views.analytics_api, name='analytics_api'),
+
+
     path('view_analytics/', views.view_analytics, name='view_analytics'),
 
+
+    path('pdf-view/<path:path>/', views.serve_pdf, name='serve_pdf'),
 ]
