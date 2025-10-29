@@ -528,7 +528,16 @@ def cluster_head_dashboard(request):
         key=lambda x: x.submitted_at,
         reverse=True
     )
-    return render(request, 'cluster_head_dashboard.html', {'submissions': all_submissions})
+
+    total_submissions = len(all_submissions)
+
+    pending_submissions = sum(1 for sub in all_submissions if sub.cluster_head_status == 'pending')
+
+    approved_submissions = sum(1 for sub in all_submissions if sub.cluster_head_status == 'approved_by_cluster')
+
+    rejected_submissions = sum(1 for sub in all_submissions if sub.cluster_head_status == 'rejected_by_cluster')
+
+    return render(request, 'cluster_head_dashboard.html', {'submissions': all_submissions, 'total_submissions': total_submissions, 'pending_submissions': pending_submissions, 'approved_submissions': approved_submissions, 'rejected_submissions': rejected_submissions})
 
 
 

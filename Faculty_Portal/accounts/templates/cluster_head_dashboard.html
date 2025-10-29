@@ -104,16 +104,16 @@
                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 animate__animated animate__fadeIn"
               >
                 <a
-                  href="#"
+                  href="{% url 'view_profile' %}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   <i class="fas fa-user mr-2"></i>Profile
                 </a>
                 <a
-                  href="#"
+                  href="{% url 'dashboard' %}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  <i class="fas fa-cog mr-2"></i>Settings
+                  <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
                 </a>
                 <a
                   href="{% url 'logout' %}"
@@ -151,7 +151,7 @@
               <div>
                 <p class="text-sm text-gray-500">Total Submissions</p>
                 <p class="text-2xl font-bold text-gray-900">
-                  {{ submissions|length }}
+                  {{ total_submissions }}
                 </p>
               </div>
             </div>
@@ -167,7 +167,7 @@
               <div>
                 <p class="text-sm text-gray-500">Pending Review</p>
                 <p class="text-2xl font-bold text-gray-900">
-                  {% with pending=submissions|length %}{{ pending }}{% endwith %}
+                  {{ pending_submissions }}
                 </p>
               </div>
             </div>
@@ -183,7 +183,7 @@
               <div>
                 <p class="text-sm text-gray-500">Approved</p>
                 <p class="text-2xl font-bold text-gray-900">
-                  {% with approved=0 %}{{ approved }}{% endwith %}
+                  {{ approved_submissions }}
                 </p>
               </div>
             </div>
@@ -199,7 +199,7 @@
               <div>
                 <p class="text-sm text-gray-500">Rejected</p>
                 <p class="text-2xl font-bold text-gray-900">
-                  {% with rejected=0 %}{{ rejected }}{% endwith %}
+                  {{ rejected_submissions }}
                 </p>
               </div>
             </div>
@@ -494,7 +494,10 @@
             <span class="text-lg font-semibold"></span>
           </div>
           <div class="text-sm text-gray-300">
-            © 2025 AIgnite Clubs Initiative. All rights reserved.
+            © 2025 <span class="text-white-400 font-semibold">AIgnite Clubs Initiative.</span> All rights reserved.
+            <p class="mt-1">
+            Engineered by <span class="text-white-400 font-semibold">Rudraksh</span>
+            </p>
           </div>
         </div>
       </div>
@@ -534,9 +537,14 @@
           const statusChart = new Chart(statusCtx, {
               type: 'doughnut',
               data: {
-                  labels: ['Pending', 'Approved', 'Rejected', 'Under Review'],
+                  labels: ['Pending', 'Approved', 'Rejected', 'Total Submissions'],
                   datasets: [{
-                      data: [{% with pending=submissions|length %}{{ pending }}{% endwith %}, 0, 0, 0],
+                      data: [
+                          {{ pending_submissions }},
+                          {{ approved_submissions }},
+                          {{ rejected_submissions }},
+                          {{ total_submissions }}
+                      ],
                       backgroundColor: [
                           '#f59e0b',
                           '#10b981',
@@ -586,6 +594,10 @@
                       row.style.display = '';
                       return;
                   }
+
+                  if (selectedStatus === 'pending') {
+                      selectedStatus = 'submitted';
+                  } 
 
                   const statusCell = row.querySelector('td:nth-child(3) span');
                   if (statusCell) {
