@@ -436,21 +436,21 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap border-b">
-                  {% if submission.status == 'approved_by_cluster' %}
+                  {% if submission.cluster_head_status == 'approved' %}
                   <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
                   >
                     <i class="fas fa-check-circle mr-1"></i>
                     Approved
                   </span>
-                  {% elif submission.status == 'rejected_by_cluster' %}
+                  {% elif submission.cluster_head_status == 'rejected' %}
                   <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
                   >
                     <i class="fas fa-times-circle mr-1"></i>
                     Rejected
                   </span>
-                  {% elif submission.status == 'revision' %}
+                  {% elif submission.cluster_head_status == 'revision' %}
                   <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                     <i class="fas fa-edit mr-1"></i>
@@ -469,14 +469,14 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap border-b">
-                  {% if submission.status == 'approved_by_dean' %}
+                  {% if submission.dean_status == 'approved' %}
                   <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
                   >
                     <i class="fas fa-check-circle mr-1"></i>
                     Approved
                   </span>
-                  {% elif submission.status == 'rejected_by_dean' %}
+                  {% elif submission.dean_status == 'rejected' %}
                   <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
                   >
@@ -621,6 +621,7 @@
             </h4>
             <div class="space-y-4" id="recent-activity">
               {% for submission in submissions|slice:":3" %}
+              
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
                   <div
@@ -631,10 +632,36 @@
                   <div>
                     <span
                       class="text-sm text-purple-700 block truncate max-w-xs"
-                      >{{ submission.title_of_paper }}</span
-                    >
+                      >{% if submission.submission_type == 'Journal Publication' %}
+                      {{ submission.title_of_paper }}
+                    {% elif submission.submission_type == 'Conference Publication' %}
+                      {{ submission.title_of_paper }}
+                      {% elif submission.submission_type == 'Research Project' %}
+                      {{ submission.project_title }}
+                      {% elif submission.submission_type == 'Patent Submission' %}
+            {{ submission.title_of_patent }}
+        {% elif submission.submission_type == 'Copyright Submission' %}
+            {{ submission.title_of_work }}
+        {% elif submission.submission_type == 'PhD Guidance' %}
+            {{ submission.thesis_title }}
+        {% elif submission.submission_type == 'Book Chapter' %}
+            {{ submission.chapter_title }}
+        {% elif submission.submission_type == 'Books Authored' %}
+            {{ submission.book_title }}
+        {% elif submission.submission_type == 'Consultancy Project' %}
+            {{ submission.project_title }}
+        {% elif submission.submission_type == 'Editorial Roles' %}
+            {{ submission.journal_name }}
+        {% elif submission.submission_type == 'Reviewer Roles' %}
+            {{ submission.journal_or_conference_name }}
+        {% elif submission.submission_type == 'Awards & Achievements' %}
+            {{ submission.title_of_award }}
+        {% elif submission.submission_type == 'Industry Collaboration' %}
+            {{ submission.industry_name }}
+                    {% endif %}
+                    </span>
                     <span class="text-xs text-purple-500"
-                      >{{ submission.journal_name }}</span
+                      >{{ submission.submission_type }}</span
                     >
                   </div>
                 </div>
@@ -644,7 +671,7 @@
                   >
                     {{ submission.submitted_at|date:"M d" }}
                   </span>
-                  {% if submission.dean_status == 'approved_by_dean' %}
+                  {% if submission.dean_status == 'approved' %}
                   <span class="text-xs text-green-600">Approved</span>
                   {% elif submission.dean_status == 'rejected' %}
                   <span class="text-xs text-red-600">Rejected</span>
@@ -669,7 +696,7 @@
             No Submissions Yet
           </h3>
           <p class="text-gray-500 mb-8">
-            You haven't made any research submissions yet. Start by submitting
+            You haven't made any form submissions yet. Start by submitting
             your first form.
           </p>
           <a

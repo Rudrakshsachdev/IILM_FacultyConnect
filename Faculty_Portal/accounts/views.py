@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements, IndustryCollaboration
+from .models import FacultyUser, FacultyProfile, JournalPublication, ConferencePublication, ResearchProject, Patents, Copyright, PhdGuidance, BookChapter, BooksAuthored, ConsultancyProjects, EditorialRoles, ReviewerRoles, AwardsAchievements, IndustryCollaboration, EmailOTP, PasswordResetOTP
 
 
 from .forms import FacultyProfileForm, JournalPublicationForm, ConferencePublicationForm, ResearchProjectForm, PatentForm, CopyrightForm, PhdGuidanceForm, BookChapterForm, BooksAuthoredForm, ConsultancyProjectsForm, EditorialRolesForm, ReviewerRolesForm, AwardsAchievementsForm, IndustryCollaborationForm
@@ -25,8 +25,11 @@ from itertools import chain
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.http import FileResponse, Http404
 
+from django.utils import timezone
+from datetime import timedelta
 
-otp_storage = {}  # Temporary dictionary to hold OTPs (use Redis in production)
+
+
 
 def signup(request):
 
@@ -41,6 +44,10 @@ def signup(request):
         confirm_password = request.POST['confirm_password']
         #role = request.POST['role']
 
+        if not email.endswith('@iilm.edu'):
+            messages.error(request, 'Only IILM University email IDs (@iilm.edu) are allowed for registration.')
+            return redirect('signup')
+
         if FacultyUser.objects.filter(email=email).exists():
             messages.error(request, "Email already registered!")
             return redirect('signup')
@@ -53,17 +60,37 @@ def signup(request):
             role = 'dean'
         elif email in settings.CLUSTER_HEAD_EMAIL:
             role = 'cluster_head'
-        else:
+        elif email in settings.FACULTY_EMAIL:
             role = 'faculty'
+        else:
+            messages.error(request, "Email ID didn't Matched")
+            return redirect('signup')
 
         # Generate OTP
         otp = str(random.randint(100000, 999999))
-        otp_storage[email] = otp
+        #otp_storage[email] = otp
+        EmailOTP.objects.update_or_create(email=email, defaults={'otp': otp})
+        
+
+        message = message=f'''Dear Faculty Member,
+
+Thank you for registering on the IILM University Gurugram Faculty Portal.
+
+Your One-Time Verification Code (OTP) is: {otp}
+
+Please enter this code on the verification page to complete your registration. 
+This code is valid for 10 minutes. For your security, do not share this code with anyone.
+
+If you did not initiate this request, please disregard this email.
+
+Warm regards,
+IILM University, Gurugram
+Team AIgnite'''
 
         # Send OTP via email
         send_mail(
-            subject='Faculty Portal Verification Code',
-            message=f'Your verification code is: {otp}',
+            subject='IILM University, Gurugram | Faculty Portal - Email Verification OTP',
+            message=message,
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[email],
             fail_silently=False
@@ -98,7 +125,20 @@ def verify_otp(request):
             return redirect('signup')
 
         email = temp_user['email']
-        if otp_storage.get(email) == entered_otp:
+
+        try:
+            otp_record = EmailOTP.objects.get(email=email)
+        except EmailOTP.DoesNotExist:
+            messages.error(request, "No OTP found. Please register again.")
+            return redirect('signup')
+        
+        if otp_record.is_expired():
+            otp_record.delete()
+            messages.error(request, "OTP expired. Please request again.")
+            return redirect('signup')
+
+        # ✅ Get OTP from Redis or fallback
+        if otp_record.otp == entered_otp:
             FacultyUser.objects.create(
                 full_name=temp_user['full_name'],
                 email=email,
@@ -106,7 +146,8 @@ def verify_otp(request):
                 role=temp_user['role'],
                 is_verified=True
             )
-            del otp_storage[email]
+            # ✅ Delete OTP after success
+            otp_record.delete()
             del request.session['temp_user']
             messages.success(request, "Account verified successfully!")
             return redirect('login')
@@ -126,6 +167,11 @@ def login_view(request):
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
+
+        if not email.endwith('@iilm.edu'):
+            messages.error(request, 'Only IILM University email IDs (@iilm.edu) are allowed for registration.')
+            return redirect('login')
+
 
         try:
             user = FacultyUser.objects.get(email=email)
@@ -200,7 +246,7 @@ def dashboard(request):
 
     pending_count = JournalPublication.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + ConferencePublication.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + ResearchProject.objects.filter(user=user, overall_status__in=['submitted', 'pending']).count() + Patents.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + Copyright.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + PhdGuidance.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + BookChapter.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + BooksAuthored.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + ConsultancyProjects.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + EditorialRoles.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + ReviewerRoles.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + AwardsAchievements.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count() + IndustryCollaboration.objects.filter(user=user, dean_status__in=['submitted', 'pending']).count()
 
-    approved_count = total_count - pending_count
+    approved_count = JournalPublication.objects.filter(user=user, dean_status='approved').count() + ConferencePublication.objects.filter(user=user, dean_status='approved').count() + ResearchProject.objects.filter(user=user, overall_status='approved').count() + Patents.objects.filter(user=user, dean_status='approved').count() + Copyright.objects.filter(user=user, dean_status='approved').count() + PhdGuidance.objects.filter(user=user, dean_status='approved').count() + BookChapter.objects.filter(user=user, dean_status='approved').count() + BooksAuthored.objects.filter(user=user, dean_status='approved').count() + ConsultancyProjects.objects.filter(user=user, dean_status='approved').count() + EditorialRoles.objects.filter(user=user, dean_status='approved').count() + ReviewerRoles.objects.filter(user=user, dean_status='approved').count() + AwardsAchievements.objects.filter(user=user, dean_status='approved').count() + IndustryCollaboration.objects.filter(user=user, dean_status='approved').count()
 
     approval_rate = (approved_count / total_count * 100) if total_count > 0 else 0
 
@@ -270,12 +316,35 @@ def reset_password_request(request):
         try:
             user = FacultyUser.objects.get(email=email)
             otp = str(random.randint(100000, 999999))
-            reset_otp_storage[email] = otp
+
+            PasswordResetOTP.objects.update_or_create(
+                email=email,
+                defaults={'otp': otp, 'created_at': timezone.now()}
+            )
+
+            subject = "IILM University Faculty Portal – Password Reset Verification Code"
+
+            message = f"""
+Dear Faculty Member,
+
+We received a request to reset your password for the IILM University Faculty Portal.
+
+Your One-Time Password (OTP) for verification is: {otp}
+
+Please enter this OTP on the password reset page to proceed. 
+This code is valid for the next 15 minutes.
+
+If you did not request a password reset, please ignore this email or contact the system administrator.
+
+Best regards,  
+IILM University, Gurugram  
+Team AIgnite
+"""
 
             # Send OTP to email
             send_mail(
-                subject='Password Reset OTP',
-                message=f'Your password reset OTP is: {otp}',
+                subject=subject,
+                message=message,
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[email],
                 fail_silently=False
@@ -306,7 +375,20 @@ def verify_reset_otp(request):
             messages.error(request, 'Session expired. Try again.')
             return redirect('reset_password')
 
-        if reset_otp_storage.get(email) != entered_otp:
+        try:
+            otp_record = PasswordResetOTP.objects.get(email=email)
+        except PasswordResetOTP.DoesNotExist:
+            messages.error(request, 'OTP not found. Please request again.')
+            return redirect('reset_password')
+        
+        # Check expiration
+        if otp_record.is_expired():
+            otp_record.delete()
+            messages.error(request, 'OTP expired. Please request a new one.')
+            return redirect('reset_password')
+
+        # Check correctness
+        if otp_record.otp != entered_otp:
             messages.error(request, 'Invalid OTP. Try again.')
             return redirect('verify_reset_otp')
 
@@ -319,7 +401,7 @@ def verify_reset_otp(request):
         user.password = new_password
         user.save()
 
-        del reset_otp_storage[email]
+        otp_record.delete()
         del request.session['reset_email']
 
         messages.success(request, 'Password reset successful! You can now log in.')
@@ -533,9 +615,9 @@ def cluster_head_dashboard(request):
 
     pending_submissions = sum(1 for sub in all_submissions if sub.cluster_head_status == 'pending')
 
-    approved_submissions = sum(1 for sub in all_submissions if sub.cluster_head_status == 'approved_by_cluster')
+    approved_submissions = sum(1 for sub in all_submissions if sub.cluster_head_status == 'approved')
 
-    rejected_submissions = sum(1 for sub in all_submissions if sub.cluster_head_status == 'rejected_by_cluster')
+    rejected_submissions = sum(1 for sub in all_submissions if sub.cluster_head_status == 'rejected')
 
     return render(request, 'cluster_head_dashboard.html', {'submissions': all_submissions, 'total_submissions': total_submissions, 'pending_submissions': pending_submissions, 'approved_submissions': approved_submissions, 'rejected_submissions': rejected_submissions})
 
@@ -622,41 +704,39 @@ def my_submissions(request):
         
     for sub in conference_submissions:
         sub.submission_type = 'Conference Publication'
-        
 
     for sub in research_submissions:
         sub.submission_type = 'Research Project'
-    
+
     for sub in patent_submissions:
         sub.submission_type = 'Patent Submission'
-    
+
     for sub in copyright_submissions:
         sub.submission_type = 'Copyright Submission'
-    
+
     for sub in phd_guidance_submissions:
         sub.submission_type = 'PhD Guidance'
-    
+
     for sub in book_chapter_submissions:
         sub.submission_type = 'Book Chapter'
-    
+
     for sub in books_authored_submissions:
         sub.submission_type = 'Books Authored'
-    
+
     for sub in consultancy_project_submissions:
         sub.submission_type = 'Consultancy Project'
-    
+
     for sub in editorial_roles_submissions:
         sub.submission_type = 'Editorial Roles'
-    
+
     for sub in reviewer_roles_submissions:
         sub.submission_type = 'Reviewer Roles'
-    
+
     for sub in awards_achievements_submissions:
         sub.submission_type = 'Awards & Achievements'
-    
+
     for sub in industry_collaboration_submissions:
         sub.submission_type = 'Industry Collaboration'
-        
 
     submissions = sorted(
         chain(journal_submissions, conference_submissions, research_submissions, patent_submissions, copyright_submissions, phd_guidance_submissions, book_chapter_submissions, books_authored_submissions, consultancy_project_submissions, editorial_roles_submissions, reviewer_roles_submissions, awards_achievements_submissions, industry_collaboration_submissions),
@@ -664,7 +744,7 @@ def my_submissions(request):
         reverse=True
     )
 
-    approved_count = sum(1 for sub in submissions if sub.dean_status == 'approved_by_dean')
+    approved_count = sum(1 for sub in submissions if sub.dean_status == 'approved')
 
     pending_count = sum(1 for sub in submissions if sub.dean_status in ['submitted', 'pending'])
 
@@ -672,7 +752,7 @@ def my_submissions(request):
 
     revision_count = sum(1 for sub in submissions if sub.dean_status == 'revision')
 
-    rejected_count = sum(1 for sub in submissions if sub.dean_status == 'rejected_by_dean')
+    rejected_count = sum(1 for sub in submissions if sub.dean_status == 'rejected')
 
     approved_by_cluster_count = sum(1 for sub in submissions if sub.cluster_head_status == 'approved')
 
@@ -787,7 +867,7 @@ def dean_dashboard(request):
 
     total_faculty = FacultyUser.objects.filter(role='faculty').count()
 
-    approved_count = sum(1 for sub in all_submissions if sub.dean_status == 'approved_by_dean')
+    approved_count = sum(1 for sub in all_submissions if sub.dean_status == 'approved')
 
     return render(request, 'dean_dashboard.html', {'submissions': all_submissions, 'approved_count': approved_count, 'total_faculty': total_faculty})
 

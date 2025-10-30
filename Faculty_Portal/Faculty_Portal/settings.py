@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'unsafe-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
 
@@ -137,9 +137,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = 'rudrakshsachdeva22@gmail.com'
+DEFAULT_FROM_EMAIL = 'rudrakshsachdeva22@gmail.com'
+EMAIL_HOST_PASSWORD = 'gkej nlmm nzsp zxse'
 
 
 MEDIA_URL = '/media/'  # URL to access media files in browser
@@ -150,8 +150,10 @@ LOGIN_URL = '/login/'
 
 
 DEAN_EMAIL = ['shamik.tiwari@iilm.edu']
-CLUSTER_HEAD_EMAIL = ['amar.shukla@iilm.edu', 'amar.shukla@iilm.edu', 'umang.garg@iilm.edu']
 
+CLUSTER_HEAD_EMAIL = ['amar.shukla@iilm.edu', 'umang.garg@iilm.edu', 'akshat.agrawal@iilm.edu']
+
+FACULTY_EMAIL = ['puja.acharya@iilm.edu', 'pallavi.pandey@iilm.edu', 'sonam.lata@iilm.edu', 'pooja.nagpal@iilm.edu', 'aarti.chugh@iilm.edu', 'sapna.arora@iilm.edu', 'neha.bansal@iilm.edu', 'samridhi.singhal@iilm.edu',  'preeti.mehta@iilm.edu', 'jayati.tripathi@iilm.edu', 'rahul.thakur@iilm.edu', 'aarti.tewari@iilm.edu', 'naved.ahmad@iilm.edu', 'shagun.panghal@iilm.edu', 'abhishek.toofani@iilm.edu', 'amit.kumar.tiwari@iilm.edu', 'tanu.gupta@iilm.edu', 'vikas.jayswal@iilm.edu', 'puneet.bawa@iilm.edu', 'vardaan.pajnoo@iilm.edu', 'vishwa.prakash@iilm.edu', 'devraj.sharma@iilm.edu', 'anurag.jain@iilm.edu', 'aashish.kaushik@iilm.edu']
 
 # settings.py
 X_FRAME_OPTIONS = 'SAMEORIGIN' # To allow embedding in iframes from the same origin
