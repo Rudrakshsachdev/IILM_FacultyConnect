@@ -665,10 +665,25 @@ def my_submissions(request):
     )
 
     approved_count = sum(1 for sub in submissions if sub.dean_status == 'approved_by_dean')
+
     pending_count = sum(1 for sub in submissions if sub.dean_status in ['submitted', 'pending'])
+
     total_count = len(submissions)
 
-    return render(request, 'my_submissions.html', {'submissions': submissions, 'approved_count': approved_count, 'pending_count': pending_count, 'total_count': total_count})
+    revision_count = sum(1 for sub in submissions if sub.dean_status == 'revision')
+
+    rejected_count = sum(1 for sub in submissions if sub.dean_status == 'rejected_by_dean')
+
+    approved_by_cluster_count = sum(1 for sub in submissions if sub.cluster_head_status == 'approved')
+
+    pending_by_cluster_count = sum(1 for sub in submissions if sub.cluster_head_status == 'pending')
+    
+    revision_by_cluster_count = sum(1 for sub in submissions if sub.cluster_head_status == 'revision')
+
+    rejected_by_cluster_count = sum(1 for sub in submissions if sub.cluster_head_status == 'rejected')
+
+
+    return render(request, 'my_submissions.html', {'submissions': submissions, 'approved_count': approved_count, 'pending_count': pending_count, 'total_count': total_count, 'revision_count': revision_count, 'approved_by_cluster_count': approved_by_cluster_count, 'pending_by_cluster_count': pending_by_cluster_count, 'revision_by_cluster_count': revision_by_cluster_count, 'rejected_by_cluster_count': rejected_by_cluster_count, 'rejected_count': rejected_count})
 
 
 
@@ -840,6 +855,8 @@ def dean_review_journal(request, pk):
         action = request.POST.get('action')
         remarks = request.POST.get('remarks')
 
+        
+
         # Validate and set dean review status
         if action == 'approve':
             submission.dean_status = 'approved'
@@ -849,7 +866,7 @@ def dean_review_journal(request, pk):
             submission.status = 'rejected_by_dean'
         else:
             messages.error(request, "Invalid action.")
-            return redirect('dean_review', pk=pk)
+            return redirect('dean_review_journal', pk=pk)   
 
         # Save remarks separately for dean
         submission.dean_remarks = remarks
