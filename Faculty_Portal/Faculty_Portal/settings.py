@@ -82,7 +82,7 @@ DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=False  # Change to True when using PostgreSQL on Render
+        ssl_require=True  # Change to True when using PostgreSQL on Render
     )
 }
 # Password validation
