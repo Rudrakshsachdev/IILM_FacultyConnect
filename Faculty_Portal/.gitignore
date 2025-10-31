@@ -1,9 +1,0 @@
-/myenv
-
-/db.sqlite3
-
-/staticfiles
-/media
-/images
-/__pycache__/
-/.gitignore

@@ -127,7 +127,7 @@ class JournalPublication(models.Model):
     impact_factor = models.CharField(max_length=50, blank=True, null=True)
     doi_link = models.URLField(blank=True, null=True)
     funding_acknowledged = models.CharField(max_length=3, choices=FUNDING_CHOICES)
-    pdf_upload = models.FileField(upload_to='journal_papers/')
+    pdf_upload = models.FileField(upload_to='journal_publications/')
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
     # 🟢 CLUSTER HEAD REVIEW
@@ -217,7 +217,7 @@ class ConferencePublication(models.Model):
     indexed_in = models.CharField(max_length=20, choices=INDEX_CHOICES)
     other_index = models.CharField(max_length=255, blank=True, null=True)
     funding_acknowledged = models.CharField(max_length=3, choices=FUNDING_CHOICES)
-    pdf_upload = models.FileField(upload_to='conference_papers/')
+    pdf_upload = models.FileField(upload_to='conference_publications/')
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
     # 🟢 CLUSTER HEAD REVIEW

@@ -168,7 +168,7 @@ def login_view(request):
         email = request.POST['email']
         password = request.POST['password']
 
-        if not email.endwith('@iilm.edu'):
+        if not email.endswith('@iilm.edu'):
             messages.error(request, 'Only IILM University email IDs (@iilm.edu) are allowed for registration.')
             return redirect('login')
 
