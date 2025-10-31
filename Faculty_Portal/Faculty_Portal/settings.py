@@ -131,16 +131,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-# Email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'  # ← This is literally the word 'apikey'
-EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+# Email configuration using SendGrid API (not SMTP)
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+
+# Your SendGrid API key from environment variables
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+
+# Optional but recommended settings
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False  # Set True if you just want to test without sending emails
+SENDGRID_ECHO_TO_STDOUT = True          # Prints email content to logs for debugging
 
 # Default sender email (must match your verified sender in SendGrid)
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
+
 
 
 MEDIA_URL = '/media/'  # URL to access media files in browser

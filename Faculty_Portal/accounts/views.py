@@ -91,7 +91,7 @@ Team AIgnite'''
         send_mail(
             subject='IILM University, Gurugram | Faculty Portal - Email Verification OTP',
             message=message,
-            from_email=settings.EMAIL_HOST_USER,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
             fail_silently=False
         )
