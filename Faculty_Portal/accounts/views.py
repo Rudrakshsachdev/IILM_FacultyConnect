@@ -963,7 +963,17 @@ def dean_review_journal(request, pk):
     return render(request, 'dean_review_journal.html', {'submission': submission, 'total_count': total_count, 'approved_count': approved_count, 'rejected_count': rejected_count})
 
 def research_form(request):
-    return render(request, 'research_forms.html')
+    total_count = JournalPublication.objects.count() + ConferencePublication.objects.count() + ResearchProject.objects.count() + Patents.objects.count() + Copyright.objects.count() + PhdGuidance.objects.count() + BookChapter.objects.count() + BooksAuthored.objects.count() + ConsultancyProjects.objects.count() + EditorialRoles.objects.count() + ReviewerRoles.objects.count() + AwardsAchievements.objects.count() + IndustryCollaboration.objects.count()
+
+
+    pending_count = JournalPublication.objects.filter(dean_status='pending').count() + ConferencePublication.objects.filter(dean_status='pending').count() + ResearchProject.objects.filter(overall_status='pending').count() + Patents.objects.filter(dean_status='pending').count() + Copyright.objects.filter(dean_status='pending').count() + PhdGuidance.objects.filter(dean_status='pending').count() + BookChapter.objects.filter(dean_status='pending').count() + BooksAuthored.objects.filter(dean_status='pending').count() + ConsultancyProjects.objects.filter(dean_status='pending').count() + EditorialRoles.objects.filter(dean_status='pending').count() + ReviewerRoles.objects.filter(dean_status='pending').count() + AwardsAchievements.objects.filter(dean_status='pending').count() + IndustryCollaboration.objects.filter(dean_status='pending').count()
+
+    approved_by_cluster_head = JournalPublication.objects.filter(cluster_head_status='approved').count() + ConferencePublication.objects.filter(cluster_head_status='approved').count() + ResearchProject.objects.filter(cluster_head_status='approved').count() + Patents.objects.filter(cluster_head_status='approved').count() + Copyright.objects.filter(cluster_head_status='approved').count() + PhdGuidance.objects.filter(cluster_head_status='approved').count() + BookChapter.objects.filter(cluster_head_status='approved').count() + BooksAuthored.objects.filter(cluster_head_status='approved').count() + ConsultancyProjects.objects.filter(cluster_head_status='approved').count() + EditorialRoles.objects.filter(cluster_head_status='approved').count() + ReviewerRoles.objects.filter(cluster_head_status='approved').count() + AwardsAchievements.objects.filter(cluster_head_status='approved').count() + IndustryCollaboration.objects.filter(cluster_head_status='approved').count()
+
+
+    approved_by_dean = JournalPublication.objects.filter(dean_status='approved').count() + ConferencePublication.objects.filter(dean_status='approved').count() + ResearchProject.objects.filter(overall_status='approved').count() + Patents.objects.filter(dean_status='approved').count() + Copyright.objects.filter(dean_status='approved').count() + PhdGuidance.objects.filter(dean_status='approved').count() + BookChapter.objects.filter(dean_status='approved').count() + BooksAuthored.objects.filter(dean_status='approved').count() + ConsultancyProjects.objects.filter(dean_status='approved').count() + EditorialRoles.objects.filter(dean_status='approved').count() + ReviewerRoles.objects.filter(dean_status='approved').count() + AwardsAchievements.objects.filter(dean_status='approved').count() + IndustryCollaboration.objects.filter(dean_status='approved').count()
+
+    return render(request, 'research_forms.html', {'total_count': total_count, 'pending_count': pending_count, 'approved_by_cluster_head': approved_by_cluster_head, 'approved_by_dean': approved_by_dean})
 
 def conference_publication(request):
     if 'user_id' not in request.session:

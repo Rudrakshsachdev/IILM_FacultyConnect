@@ -29,20 +29,20 @@
         <!-- Stats Section -->
         <div class="stats-container">
             <div class="stat-card">
-                <div class="stat-number">12</div>
+                <div class="stat-number">{{ total_count }}</div>
                 <div class="stat-label">Total Submissions</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">5</div>
+                <div class="stat-number">{{ pending_count }}</div>
                 <div class="stat-label">Pending Review</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">7</div>
-                <div class="stat-label">Approved</div>
+                <div class="stat-number">{{ approved_by_cluster_head }}</div>
+                <div class="stat-label">Approved by Cluster Head</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">3</div>
-                <div class="stat-label">This Month</div>
+                <div class="stat-number">{{ approved_by_dean }}</div>
+                <div class="stat-label">Approved by Dean</div>
             </div>
         </div>
 
