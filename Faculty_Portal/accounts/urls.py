@@ -128,5 +128,7 @@ urlpatterns = [
     path('view_analytics/', views.view_analytics, name='view_analytics'),
 
 
-    path('pdf-view/<path:path>/', views.serve_pdf, name='serve_pdf'),
+    #path('pdf-view/<path:path>/', views.serve_pdf, name='serve_pdf'),
+
+    path('view-pdf/<int:publication_id>/', views.serve_pdf, name='serve_pdf'),
 ]

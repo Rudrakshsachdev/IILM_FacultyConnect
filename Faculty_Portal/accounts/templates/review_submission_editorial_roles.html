@@ -252,7 +252,7 @@
                                     </div>
                                 </div>
                                 <div id="pdf-viewer" class="h-96 bg-gray-100 flex items-center justify-center">
-                                    <iframe src="{% url 'serve_pdf' submission.pdf_upload.name %}" class="w-full h-full" frameborder="0"></iframe>
+                                    <iframe src="{{ submission.pdf_upload.url }}" class="w-full h-full" frameborder="0"></iframe>
                                 </div>
                             </div>
                         {% else %}

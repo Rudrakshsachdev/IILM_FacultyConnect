@@ -23,7 +23,7 @@ from django.urls import reverse
 from itertools import chain
 
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpResponseRedirect
 
 from django.utils import timezone
 from datetime import timedelta
@@ -2039,10 +2039,29 @@ def faculty_wise_submissions_api(request):
     return JsonResponse({'faculty_data': faculty_data})
 
 
+# @xframe_options_exempt
+# def serve_pdf(request, path):
+#     file_path = os.path.join(settings.MEDIA_ROOT, path)
+#     if os.path.exists(file_path):
+#         return FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+#     else:
+#         raise Http404("PDF not found")
+
 @xframe_options_exempt
-def serve_pdf(request, path):
-    file_path = os.path.join(settings.MEDIA_ROOT, path)
-    if os.path.exists(file_path):
-        return FileResponse(open(file_path, 'rb'), content_type='application/pdf')
-    else:
-        raise Http404("PDF not found")
+def serve_pdf(request, publication_id):
+    """
+    Redirects the user to the Cloudinary-hosted PDF for the given JournalPublication.
+    If the publication or file doesn't exist, raises a 404 error.
+    """
+    try:
+        # Retrieve the publication by ID
+        publication = JournalPublication.objects.get(id=publication_id)
+
+        # Check if a PDF is uploaded for this record
+        if publication.pdf_upload and publication.pdf_upload.url:
+            # ✅ Cloudinary provides a direct CDN URL
+            return HttpResponseRedirect(publication.pdf_upload.url)
+        else:
+            raise Http404("PDF not found.")
+    except JournalPublication.DoesNotExist:
+        raise Http404("Publication not found.")

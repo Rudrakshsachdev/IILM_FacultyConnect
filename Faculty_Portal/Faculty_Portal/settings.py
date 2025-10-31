@@ -14,6 +14,17 @@ from pathlib import Path
 import os
 import dj_database_url
 
+# Cloudinary configuration
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config(
+    cloud_name = 'dga5pdibb',
+    api_key = '954543629496627',
+    api_secret = '12z5bQ_L746UAJMX7VvdvXKaUHU',
+    secure = True
+)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -146,8 +159,9 @@ DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
 
 
-MEDIA_URL = '/media/'  # URL to access media files in browser
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Actual filesystem path to store uploaded files
+# Use Cloudinary for media storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'accounts.FacultyUser'
 LOGIN_URL = '/login/'

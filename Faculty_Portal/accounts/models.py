@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 
+from cloudinary.models import CloudinaryField
+
 class EmailOTP(models.Model):
     email = models.EmailField(unique=True)
     otp = models.CharField(max_length=6)
@@ -73,7 +75,7 @@ class FacultyUser(AbstractBaseUser, PermissionsMixin):
 
 class FacultyProfile(models.Model):
     user = models.OneToOneField(FacultyUser, on_delete=models.CASCADE)
-    profile_image = models.ImageField(upload_to='profile_images/')
+    profile_image = CloudinaryField('profile_image', folder='profile_images', blank=True, null=True)
     school_faculty = models.CharField(max_length=255)
     department = models.CharField(max_length=255)
     designation = models.CharField(max_length=255)
@@ -127,7 +129,11 @@ class JournalPublication(models.Model):
     impact_factor = models.CharField(max_length=50, blank=True, null=True)
     doi_link = models.URLField(blank=True, null=True)
     funding_acknowledged = models.CharField(max_length=3, choices=FUNDING_CHOICES)
-    pdf_upload = models.FileField(upload_to='journal_publications/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
     # 🟢 CLUSTER HEAD REVIEW
@@ -217,7 +223,11 @@ class ConferencePublication(models.Model):
     indexed_in = models.CharField(max_length=20, choices=INDEX_CHOICES)
     other_index = models.CharField(max_length=255, blank=True, null=True)
     funding_acknowledged = models.CharField(max_length=3, choices=FUNDING_CHOICES)
-    pdf_upload = models.FileField(upload_to='conference_publications/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
     # 🟢 CLUSTER HEAD REVIEW
@@ -295,7 +305,11 @@ class ResearchProject(models.Model):
     duration_to = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     outcome = models.CharField(max_length=20, choices=OUTCOME_CHOICES)
-    pdf_upload = models.FileField(upload_to='research_projects/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
     # 🟢 CLUSTER HEAD REVIEW
@@ -390,7 +404,11 @@ class Patents(models.Model):
     date_granted = models.DateField(blank=True, null=True)
     jurisdiction = models.CharField(max_length=20, choices=JURISDICTION_CHOICES)
     patent_type = models.CharField(max_length=20, choices=PATENT_TYPE_CHOICES)
-    pdf_upload = models.FileField(upload_to='patents/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
     submitted_at = models.DateTimeField(auto_now_add=True)
     remarks = models.TextField(blank=True, null=True)
@@ -424,7 +442,11 @@ class Copyright(models.Model):
     authors = models.TextField()
     registration_number = models.CharField(max_length=100)
     date_of_grant = models.DateField()
-    pdf_upload = models.FileField(upload_to='copyrights/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
     # 🟢 CLUSTER HEAD REVIEW
@@ -507,7 +529,11 @@ class PhdGuidance(models.Model):
     phd_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     date_of_completion = models.DateField(null=True, blank=True)
     other_supervisors = models.TextField(blank=True, null=True)
-    pdf_upload = models.FileField(upload_to='phd_guidance/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
     # 🟢 CLUSTER HEAD REVIEW
@@ -566,7 +592,11 @@ class BookChapter(models.Model):
     indexed = models.CharField(max_length=3, choices=YES_NO_CHOICES)
     author_position = models.CharField(max_length=100)
     corresponding_author = models.CharField(max_length=255)
-    pdf_upload = models.FileField(upload_to='book_chapters/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
 
 
@@ -633,7 +663,11 @@ class BooksAuthored(models.Model):
     indexed = models.CharField(max_length=3, choices=YES_NO_CHOICES)
     authors_or_editors = models.TextField()
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
-    pdf_upload = models.FileField(upload_to='books/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
 
     # Cluster Head Review
     cluster_head_status = models.CharField(
@@ -697,8 +731,11 @@ class ConsultancyProjects(models.Model):
     mou_signed = models.CharField(max_length=3, choices=YES_NO_CHOICES)
 
     no_of_other_authors_from_iilm = models.PositiveIntegerField(default=0)
-    pdf_upload = models.FileField(upload_to='consultancy_projects/')
-
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
 
     # Cluster Head Review
     cluster_head_status = models.CharField(
@@ -758,7 +795,11 @@ class EditorialRoles(models.Model):
     editorial_role = models.CharField(max_length=50, choices=ROLE_CHOICES)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
-    pdf_upload = models.FileField(upload_to='editorial_roles/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
     no_of_other_editors_from_iilm = models.PositiveIntegerField(default=0)
 
     # Cluster Head Review
@@ -816,7 +857,11 @@ class ReviewerRoles(models.Model):
     publisher_or_organizer = models.CharField(max_length=255)
     frequency_of_review = models.CharField(max_length=100)
     indexing_of_journal = models.CharField(max_length=20, choices=INDEXING_CHOICES)
-    pdf_upload = models.FileField(upload_to='reviewer_roles/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
 
     # Cluster Head Review
     cluster_head_status = models.CharField(
@@ -875,7 +920,11 @@ class AwardsAchievements(models.Model):
     level = models.CharField(max_length=30, choices=LEVEL_CHOICES)
     date = models.DateField()
     nature_of_contribution = models.TextField()
-    pdf_upload = models.FileField(upload_to='awards_achievements/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
 
     # Cluster Head Review
     cluster_head_status = models.CharField(
@@ -935,7 +984,11 @@ class IndustryCollaboration(models.Model):
     end_date = models.DateField()
     outcomes = models.CharField(max_length=255, help_text="(e.g., Internship / Research / Product / Course Developed)")
     mou_signed = models.CharField(max_length=10, choices=MOU_CHOICES)
-    pdf_upload = models.FileField(upload_to='industry_collaboration/')
+    pdf_upload = CloudinaryField(
+        'pdf',
+        resource_type='raw',
+        folder='journal_publications'
+    )
 
     # Cluster Head Review
     cluster_head_status = models.CharField(
