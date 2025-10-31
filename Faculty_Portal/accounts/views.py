@@ -72,14 +72,15 @@ def signup(request):
         EmailOTP.objects.update_or_create(email=email, defaults={'otp': otp})
         
 
-        message = message=f'''Dear Faculty Member,
+        message = message=f'''Dear {full_name},
 
 Thank you for registering on the IILM University Gurugram Faculty Portal.
 
 Your One-Time Verification Code (OTP) is: {otp}
 
-Please enter this code on the verification page to complete your registration. 
-This code is valid for 10 minutes. For your security, do not share this code with anyone.
+Please enter this code on the verification page to complete your registration.
+
+This code is valid for 15 minutes. For your security, do not share this code with anyone.
 
 If you did not initiate this request, please disregard this email.
 
