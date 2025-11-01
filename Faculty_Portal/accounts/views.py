@@ -185,7 +185,7 @@ def login_view(request):
                 request.session['user_role'] = user.role
                 messages.success(request, "Login successful!")
 
-                
+                request.session.set_expiry(1800)  # Set session expiry to 30 minutes
 
                 return redirect('dashboard')
             else:
