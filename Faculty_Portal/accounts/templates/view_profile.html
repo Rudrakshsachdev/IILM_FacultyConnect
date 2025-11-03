@@ -118,6 +118,25 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-id-badge"></i>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-label">Employee ID</div>
+                            <div class="info-value">
+                                {% if profile.EMP_ID %}
+                                    {{ profile.EMP_ID }}
+                                {% else %}
+                                    <span class="empty-value">Not specified</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="info-item">
                         <div class="info-icon">
                             <i class="fas fa-building"></i>

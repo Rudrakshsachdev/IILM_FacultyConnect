@@ -13,6 +13,7 @@ class FacultyProfileForm(forms.ModelForm):
         fields = [
             'profile_image',
             'school_faculty',
+            'EMP_ID',
             'department',
             'designation',
             'highest_qualification',
@@ -24,6 +25,7 @@ class FacultyProfileForm(forms.ModelForm):
         ]
         widgets = {
             'school_faculty': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter school/faculty name'}),
+            'EMP_ID': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Employee ID'}),
             'department': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter department name'}),
             'designation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your designation'}),
             'highest_qualification': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., PhD, M.Tech'}),

@@ -100,6 +100,8 @@
                             {% endif %}
                         </div>
                     </div>
+
+
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="{{ form.department.id_for_label }}" class="form-label required">
@@ -163,6 +165,23 @@
                             {% endif %}
                             {% if form.area_of_specialization.errors %}
                                 <div class="text-danger mt-1">{{ form.area_of_specialization.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="{{ form.EMP_ID.id_for_label }}" class="form-label required">
+                                <i class="fas fa-id-badge"></i>
+                                Employee ID
+                            </label>
+                            {{ form.EMP_ID }}
+                            {% if form.EMP_ID.help_text %}
+                                <div class="form-text">{{ form.EMP_ID.help_text }}</div>
+                            {% endif %}
+                            {% if form.EMP_ID.errors %}
+                                <div class="text-danger mt-1">{{ form.EMP_ID.errors.0 }}</div>
                             {% endif %}
                         </div>
                     </div>

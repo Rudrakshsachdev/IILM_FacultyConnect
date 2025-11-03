@@ -76,6 +76,7 @@ class FacultyUser(AbstractBaseUser, PermissionsMixin):
 class FacultyProfile(models.Model):
     user = models.OneToOneField(FacultyUser, on_delete=models.CASCADE)
     profile_image = CloudinaryField('profile_image', folder='profile_images', blank=True, null=True)
+    EMP_ID = models.CharField(max_length=50, unique=True)
     school_faculty = models.CharField(max_length=255)
     department = models.CharField(max_length=255)
     designation = models.CharField(max_length=255)
