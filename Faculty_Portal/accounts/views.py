@@ -2065,3 +2065,7 @@ def serve_pdf(request, publication_id):
             raise Http404("PDF not found.")
     except JournalPublication.DoesNotExist:
         raise Http404("Publication not found.")
+
+
+def Faculty_forms(request):
+    return render(request, 'Faculty_forms.html')
